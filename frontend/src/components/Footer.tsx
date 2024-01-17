@@ -1,46 +1,76 @@
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import {
+  FaEnvelope,
+  FaFacebook,
+  FaInstagram,
+  FaPhone,
+  FaTiktok,
+} from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
 
-function Footer() {
+const Footer: React.FC = () => {
   return (
     <footer>
       <Container>
         <Row>
           <Col md={6}>
-            <span className="fw-bold">About app:</span>
+            <span style={{ fontWeight: "bold" }}>About us:</span>
             <br />
             <br />
-            This can probably be some app description or something else <br />
+            Annedora is a small family owned business making honey and other bee
+            products. We're passionate about our bees and we want to share our
+            passion with you. We hope you'll enjoy our products as much as we do
+            !<br />
           </Col>
 
           <Col md={3}>
             <ListGroup variant="flush">
-              <span className="fw-bold">Contact info:</span>
+              <span style={{ fontWeight: "bold" }}>Contact info:</span>
               <ListGroup.Item className="mt-3">
-                <i className="fa-solid fa-envelope"></i>{" "}
-                support.email@rolls-royce.com
+                <FaEnvelope /> info@annedora.ca
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaPhone /> + 1 (514) 824-6417
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <FaLocationDot /> Chateauguay, QC, Canada
               </ListGroup.Item>
             </ListGroup>
           </Col>
 
           <Col md={3}>
             <ListGroup variant="flush">
-              <span className="fw-bold">Phone numbers ?</span>
+              <span style={{ fontWeight: "bold" }}>
+                Follow the bees on social media !
+              </span>
               <ListGroup.Item
                 action
                 href="https://www.instagram.com/miellerie.annedora/"
                 className="mt-3"
               >
-                <i className="fa-brands fa-instagram"></i> +1 (514) 123 - 4567
+                <FaInstagram /> miellerie.annedora
+              </ListGroup.Item>
+              <ListGroup.Item
+                action
+                href="https://www.facebook.com/profile.php?id=100087444407877"
+              >
+                <FaFacebook /> Miellerie Annedora
+              </ListGroup.Item>
+              <ListGroup.Item
+                action
+                href="https://www.tiktok.com/@miellerieannedoraa"
+              >
+                <FaTiktok /> miellerieannedoraa
               </ListGroup.Item>
             </ListGroup>
           </Col>
         </Row>
         <Row>
-          <Col className="text-center py-3"> Copyright &copy; Rolls-Royce</Col>
+          <Col className="text-center py-3"> Copyright &copy; Annedora</Col>
         </Row>
       </Container>
     </footer>
   );
-}
+};
 
 export default Footer;
