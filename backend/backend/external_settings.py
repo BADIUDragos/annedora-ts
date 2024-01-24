@@ -4,7 +4,7 @@ ACCESS_TOKEN_LIFETIME = timedelta(seconds=6)
 REFRESH_TOKEN_LIFETIME = timedelta(days=1)
 SIGNING_KEY = "S-XaAKGH70dyODsFJH18HphHG2zsa1gha4RG6OLbo2E"
 
-DB_NAME = 'postgres'
+DB_NAME = 'newdb'
 DB_USER = 'postgres'
 DB_PASSWORD = 'Maudeg12.34'
 DB_HOST = 'localhost'
