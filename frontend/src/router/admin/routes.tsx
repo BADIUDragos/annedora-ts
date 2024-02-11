@@ -8,8 +8,6 @@ const adminRoutes = {
     adminProductRoutes,
     adminUsersRoutes,
     adminOrdersRoutes
-    // { path: "users", element: <AdminUsersPage/> },
-    // { path: "orders", element: <AdminOrdersPage/> }
   ],
 };
 export default adminRoutes;
