@@ -1,0 +1,8 @@
+backend/.idea*
+backend/.idea/misc.xml
+backend/.idea/backend.iml
+*.xml
+*.iml
+
+backend/.idea/backend.iml
+backend/.idea/misc.xml
