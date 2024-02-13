@@ -6,5 +6,5 @@ export interface ProductState {
   description: string;
   rating: number;
   price: number;
-  count_in_stock: number;
+  countInStock: number;
 }
