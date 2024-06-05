@@ -15,8 +15,7 @@ from dotenv import load_dotenv
 import os
 
 # Load environment variables from .env file
-env_path = Path('.env')
-load_dotenv(dotenv_path=env_path)
+load_dotenv()
 
 # Read environment variables
 SIGNING_KEY = os.getenv('SIGNING_KEY')
@@ -26,7 +25,7 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')
 TIME_ZONE = os.getenv('TIME_ZONE')
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
