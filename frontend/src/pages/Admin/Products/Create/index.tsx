@@ -1,5 +1,5 @@
 import { Container} from "react-bootstrap";
-import ProductForm from "./ProductForm";
+import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateProductMutation } from "../../../../store/apis/productApi";
