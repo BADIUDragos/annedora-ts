@@ -12,7 +12,8 @@ class ProductSerializer(serializers.ModelSerializer):
         image = validated_data.pop('image', None)
         instance = super().create(validated_data)
         if image:
-            instance.image.save(image.name, image)
+            instance.image = image
+            instance.save()
         return instance
 
 

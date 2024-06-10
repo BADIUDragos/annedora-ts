@@ -9,11 +9,11 @@ class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (DjangoModelPermissions, IsAuthenticated)
-    authentication_classes = JWTAuthentication
+    authentication_classes = [JWTAuthentication]
 
 
 class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (DjangoModelPermissions, IsAuthenticated)
-    authentication_classes = JWTAuthentication
+    authentication_classes = [JWTAuthentication]

@@ -6,11 +6,11 @@ const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createProduct: builder.mutation<ProductState, FormData>({
       query: (formData) => ({
-        url: 'base/products/',
+        url: 'base/product/',
         method: 'POST',
         body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
         },
       }),
       invalidatesTags: [{ type: productTag, id: 'LIST'}]
