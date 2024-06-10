@@ -1,62 +1,28 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import { useCreateProductMutation } from "../../../../store/apis/productApi";
+import { Alert, Button, Col, Form, Row } from "react-bootstrap";
 import FormContainer from "../../../../components/FormContainer";
 import { ProductState } from "../../../../store/interfaces/productInterfaces";
-import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
+import getErrorString from "../../../../store/errorHandling/getErrorString";
 
-export const ProductForm: React.FC = () => {
-  const [addProduct, { isLoading, isSuccess, error }] =
-    useCreateProductMutation();
-  const [productData, setProductData] = useState<
-    Omit<ProductState, "id" | "image" | "rating">
-  >({
-    name: "",
-    category: "",
-    description: "",
-    price: 0,
-    countInStock: 0,
-  });
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const navigate = useNavigate()
+interface ProductFormProps {
+  productData: ProductState;
+  imagePreview: string | null;
+  isLoading: boolean;
+  error: any;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
 
-  useEffect(() => {
-    if(isSuccess) {
-      navigate("/admin/products")
-    }
-  }, [isSuccess])
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProductData((prevState) => ({
-      ...prevState,
-      [name]:
-        name === "price" || name === "countInStock" ? parseFloat(value) : value,
-    }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData();
-    Object.entries(productData).forEach(([key, value]) => {
-      formData.append(key, value.toString());
-    });
-    if (image) {
-      formData.append("image", image);
-    }
-    await addProduct(formData);
-  };
-
+const ProductForm: React.FC<ProductFormProps> = ({
+  productData,
+  imagePreview,
+  isLoading,
+  error,
+  handleInputChange,
+  handleFileChange,
+  handleSubmit,
+}) => {
   return (
     <FormContainer xs={12} className="justify-content-md-center">
       <Form onSubmit={handleSubmit}>
@@ -106,20 +72,26 @@ export const ProductForm: React.FC = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control type="file" onChange={handleFileChange} />
             </Form.Group>
-            {isLoading ? 
-            <Loader/> : 
-            <Button
-              type="submit"
-              variant="primary"
-              className="btn-block w-100 mt-3"
-            >
-              Create
-            </Button>}
-            
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <Button
+                type="submit"
+                variant="primary"
+                className="btn-block w-100 mt-3"
+              >
+                Create
+              </Button>
+            )}
+            {error && !isLoading && <Alert variant="danger" className="mt-3">{getErrorString(error)}</Alert>}
           </Col>
           <Col>
             {imagePreview && (
-                <img src={imagePreview} alt="Image Preview" style={{ width: '60%', marginTop: '20px' }} />
+              <img
+                src={imagePreview}
+                alt="Image Preview"
+                style={{ width: "60%", marginTop: "20px" }}
+              />
             )}
           </Col>
         </Row>
@@ -127,3 +99,5 @@ export const ProductForm: React.FC = () => {
     </FormContainer>
   );
 };
+
+export default ProductForm
