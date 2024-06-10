@@ -2,9 +2,9 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 interface IFormContainer {
-  xs: number;
-  md: number;
-  children: React.ReactNode;
+  xs?: number;
+  md?: number;
+  children?: React.ReactNode;
   className?: string;
 }
 

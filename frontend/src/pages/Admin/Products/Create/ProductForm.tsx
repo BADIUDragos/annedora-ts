@@ -58,7 +58,7 @@ export const ProductForm: React.FC = () => {
   };
 
   return (
-    <FormContainer xs={12} md={6} className="justify-content-md-center">
+    <FormContainer xs={12} className="justify-content-md-center">
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col>
@@ -119,7 +119,7 @@ export const ProductForm: React.FC = () => {
           </Col>
           <Col>
             {imagePreview && (
-                <img src={imagePreview} alt="Image Preview" style={{ width: '100%', marginTop: '20px' }} />
+                <img src={imagePreview} alt="Image Preview" style={{ width: '60%', marginTop: '20px' }} />
             )}
           </Col>
         </Row>
