@@ -8,12 +8,12 @@ import { ProductState } from "../../../../store/interfaces/productInterfaces";
 export const AdminCreateProductPage: React.FC = () => {
   const [addProduct, { isLoading, isSuccess, error }] = useCreateProductMutation();
   const [productData, setProductData] = useState<ProductState>({
-    id: undefined,
+    id: 0,
     name: "",
-    image: undefined,
+    image: "",
     category: "",
     description: "",
-    rating: undefined,
+    rating: 0,
     price: 0,
     countInStock: 0,
   });

@@ -1,10 +1,10 @@
 export interface ProductState {
-  id?: number; 
+  id: number; 
   name: string;
-  image?: string;
+  image: string;
   category: string;
   description: string;
-  rating?: number;
+  rating: number;
   price: number;
   countInStock: number;
 }

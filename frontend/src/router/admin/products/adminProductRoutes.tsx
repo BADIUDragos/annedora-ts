@@ -1,6 +1,6 @@
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import { AdminCreateProductPage } from "../../../pages/Admin/Products/Create";
-import { AdminEditProductPage } from "../../../pages/Admin/Products/View";
+import { AdminEditProductPage } from "../../../pages/Admin/Products/Update";
 import { AdminProductsPage } from "../../../pages/Admin/Products/Table";
 
 const adminProductRoutes = {
