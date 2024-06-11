@@ -66,6 +66,7 @@ export const AdminCreateProductPage: React.FC = () => {
         handleInputChange={handleInputChange}
         handleFileChange={handleFileChange}
         handleSubmit={handleSubmit}
+        isUpdate={false}
       />
     </Container>
   );

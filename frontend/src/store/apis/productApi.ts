@@ -31,14 +31,34 @@ const productApi = baseApi.injectEndpoints({
             ]
           : [{ type: productTag, id: 'LIST' }],
     }),
+    getProductById: builder.query<ProductState, number>({
+      query: (id) => ({
+        url: `base/product/${id}/`,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      }),
+    }),
     deleteProduct: builder.mutation<void, number>({
       query: (id) => ({
           url: `base/product/${id}/`,
           method: 'DELETE',
       }),
       invalidatesTags: [{ type: productTag, id: 'LIST' }],
-  }),
+    }),
+    updateProduct: builder.mutation<ProductState, { id: number; formData: FormData }>({
+        query: ({ id, formData }) => ({
+            url: `base/product/${id}/`,
+            method: 'PUT',
+            body: formData,
+            headers: {
+                Accept: 'application/json',
+            },
+        }),
+        invalidatesTags: [{ type: productTag, id: 'LIST' }],
+    }),
   })
 })
 
-export const { useCreateProductMutation, useListProductsQuery, useDeleteProductMutation } = productApi
+export const { useCreateProductMutation, useListProductsQuery, useDeleteProductMutation, useUpdateProductMutation, useGetProductByIdQuery } = productApi

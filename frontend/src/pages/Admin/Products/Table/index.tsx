@@ -61,7 +61,7 @@ export const AdminProductsPage = () => {
               <td>${product.price}</td>
 
               <td>
-                <NavLink to={`/admin/product/${product.id}`}>
+                <NavLink to={`/admin/products/${product.id}`}>
                   <Button className="btn-sm" variant="info">
                     <FaEdit />
                   </Button>

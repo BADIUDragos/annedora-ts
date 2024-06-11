@@ -12,6 +12,7 @@ interface ProductFormProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isUpdate: boolean;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -22,6 +23,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   handleInputChange,
   handleFileChange,
   handleSubmit,
+  isUpdate,
 }) => {
   return (
     <FormContainer xs={12} className="justify-content-md-center">
@@ -80,10 +82,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 variant="primary"
                 className="btn-block w-100 mt-3"
               >
-                Create
+                {isUpdate ? "Update" : "Create"}
               </Button>
             )}
-            {error && !isLoading && <Alert variant="danger" className="mt-3">{getErrorString(error)}</Alert>}
+            {error && !isLoading && (
+              <Alert variant="danger" className="mt-3">
+                {getErrorString(error)}
+              </Alert>
+            )}
           </Col>
           <Col>
             {imagePreview && (
@@ -100,4 +106,4 @@ const ProductForm: React.FC<ProductFormProps> = ({
   );
 };
 
-export default ProductForm
+export default ProductForm;
