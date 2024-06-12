@@ -50,7 +50,6 @@ export const AdminEditProductPage = () => {
     setProductData((prevState) => {
       const newValue = name === "price" || name === "count_in_stock" ? parseFloat(value) : value;
       const updatedData = { ...prevState, [name]: newValue };
-      console.log(updatedData); // Log updated data to verify the change
       return updatedData;
     });
   };
