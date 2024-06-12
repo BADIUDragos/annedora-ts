@@ -3,14 +3,23 @@ import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductState } from "../../../../store/interfaces/productInterfaces";
-import { useGetProductByIdQuery, useUpdateProductMutation } from "../../../../store/apis/productApi";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../../../store/apis/productApi";
 
 export const AdminEditProductPage = () => {
-
   const { id } = useParams<{ id: string }>();
-  const { data: product, isLoading: isFetching, error: fetchError } = useGetProductByIdQuery(Number(id));
-  const [updateProduct, { isLoading: isUpdating, isSuccess, error: updateError }] = useUpdateProductMutation();
- 
+  const {
+    data: product,
+    isLoading: isFetching,
+    error: fetchError,
+  } = useGetProductByIdQuery(Number(id));
+  const [
+    updateProduct,
+    { isLoading: isUpdating, isSuccess, error: updateError },
+  ] = useUpdateProductMutation();
+
   const [productData, setProductData] = useState<ProductState>({
     id: 0,
     name: "",
@@ -19,7 +28,7 @@ export const AdminEditProductPage = () => {
     description: "",
     rating: 0,
     price: 0,
-    countInStock: 0,
+    count_in_stock: 0,
   });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -34,14 +43,16 @@ export const AdminEditProductPage = () => {
     if (isSuccess) {
       navigate("/admin/products");
     }
-  }, [product, isSuccess, navigate]);
+  }, [product, isSuccess]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProductData((prevState) => ({
-      ...prevState,
-      [name]: name === "price" || name === "countInStock" ? parseFloat(value) : value,
-    }));
+    setProductData((prevState) => {
+      const newValue = name === "price" || name === "count_in_stock" ? parseFloat(value) : value;
+      const updatedData = { ...prevState, [name]: newValue };
+      console.log(updatedData); // Log updated data to verify the change
+      return updatedData;
+    });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +71,8 @@ export const AdminEditProductPage = () => {
     });
     if (image) {
       formData.append("image", image);
+    } else {
+      formData.delete("image");
     }
     await updateProduct({ id: Number(id), formData });
   };

@@ -27,7 +27,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 }) => {
   return (
     <FormContainer xs={12} className="justify-content-md-center">
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} encType="multipart/form">
         <Row>
           <Col>
             <Form.Group controlId="productName" className="mt-3">
@@ -39,6 +39,20 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 value={productData.name}
                 onChange={handleInputChange}
               />
+            </Form.Group>
+            <Form.Group controlId="productCategory" className="mt-3">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                as="select"
+                name="category"
+                value={productData.category}
+                onChange={handleInputChange}
+              >
+                <option value="honey">Honey</option>
+                <option value="candles">Candles</option>
+                <option value="soaps">Soaps</option>
+                <option value="other">Other</option>
+              </Form.Control>
             </Form.Group>
             <Form.Group controlId="productPrice" className="mt-3">
               <Form.Label>Price</Form.Label>
@@ -54,9 +68,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
               <Form.Label>Stock</Form.Label>
               <Form.Control
                 type="number"
-                name="countInStock"
+                name="count_in_stock"
                 placeholder="Enter stock"
-                value={productData.countInStock}
+                value={productData.count_in_stock}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -75,7 +89,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               <Form.Control type="file" onChange={handleFileChange} />
             </Form.Group>
             {isLoading ? (
-              <Loader />
+              <Loader style={{ height: '40px', width: '40px' }} className="mt-3"/>
             ) : (
               <Button
                 type="submit"

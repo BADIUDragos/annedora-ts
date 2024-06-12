@@ -12,16 +12,13 @@ const Header: React.FC<IHeader> = ({ className }) => {
     <header className={className}>
       <Navbar bg="black" variant="dark" expand="lg" collapseOnSelect>
         <Container>
-          <Navbar.Brand>
-            <Link to={"/"}>
-              <img
-                src={"/images/logo_cut.png"}
-                style={{ width: 400, marginTop: -7 }}
-                alt="Annedora"
-              />
-            </Link>
+          <Navbar.Brand as={Link} to="/">
+            <img
+              src="/images/logo_cut.png"
+              style={{ width: 400, marginTop: -7 }}
+              alt="Annedora"
+            />
           </Navbar.Brand>
-
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">

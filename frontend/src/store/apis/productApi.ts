@@ -39,6 +39,7 @@ const productApi = baseApi.injectEndpoints({
           Accept: 'application/json',
         },
       }),
+      providesTags: (result, error, id) => [{ type: productTag, id }],
     }),
     deleteProduct: builder.mutation<void, number>({
       query: (id) => ({
@@ -52,11 +53,11 @@ const productApi = baseApi.injectEndpoints({
             url: `base/product/${id}/`,
             method: 'PUT',
             body: formData,
-            headers: {
-                Accept: 'application/json',
-            },
         }),
-        invalidatesTags: [{ type: productTag, id: 'LIST' }],
+        invalidatesTags: (result, error, { id }) => [
+          { type: productTag, id },
+          { type: productTag, id: 'LIST' },
+        ],
     }),
   })
 })
