@@ -2,6 +2,7 @@ import {
   RefreshToken,
   LoginCredentials,
   TokensState,
+  RegisterCredentials,
 } from "../interfaces/authInterfaces";
 import { logOut, setCredentials } from "../.";
 import { baseApi } from "./baseApi";
@@ -17,11 +18,13 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setCredentials({tokens: data}));
-        } catch (error: unknown) { /* empty */ }
+          dispatch(setCredentials({ tokens: data }));
+        } catch (error: unknown) {
+          /* empty */
+        }
       },
     }),
-    logout: build.mutation<null, RefreshToken>({
+    logout: build.mutation<void, RefreshToken>({
       query: (refresh) => ({
         url: "/auth/logout",
         method: "POST",
@@ -36,8 +39,23 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    register: build.mutation<TokensState, RegisterCredentials>({
+      query: (credentials) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials({ tokens: data }));
+        } catch (error: unknown) {
+          /* empty */
+        }
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation,  useLogoutMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = authApi;
 export { authApi };

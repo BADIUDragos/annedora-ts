@@ -2,12 +2,13 @@ import { Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { useAuth, useLogoutMutation } from "../../store";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import { FaUser } from "react-icons/fa";
 
 const Login: React.FC = () => {
   return (
     <LinkContainer to="/login">
       <Nav.Link>
-        <div className="fas fa-user" style={{ marginRight: "0.4rem" }} />
+        <FaUser style={{ marginRight: '0.4rem' }}/>
         Login
       </Nav.Link>
     </LinkContainer>
@@ -32,6 +33,7 @@ const UserMenu: React.FC = () => {
       {userInfo ? (
         <>
           <NavDropdown title={userInfo.username} id="username" className="me-3">
+            
             <LinkContainer to={"/profile"}>
               <NavDropdown.Item>Profile</NavDropdown.Item>
             </LinkContainer>

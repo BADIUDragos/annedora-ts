@@ -1,6 +1,7 @@
 import { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage } from "../pages"
 import { createBrowserRouter } from "react-router-dom";
 import adminRoutes from "./admin/routes";
+import profileRoutes from "./profile/routes";
 
 export const routes = [
   {
@@ -8,6 +9,7 @@ export const routes = [
     children: [
       { path: "/", element: <HomePage/> },
       adminRoutes,
+      profileRoutes,
       { path: "/login", element: <LoginPage/> },
       { path: "*", element: <NotFoundPage/> }
     ],

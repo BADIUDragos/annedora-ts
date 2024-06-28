@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 
 import { useLoginMutation, useAuth } from "../store";
 import Loader from "../components/Loader";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import getErrorString from "../store/errorHandling/getErrorString";
 
 const LoginPage: React.FC = () => {
@@ -66,6 +66,21 @@ const LoginPage: React.FC = () => {
           </Button>
         )}
       </Form>
+
+      <Row className="py-3">
+        <Col>
+          New Customer?{" "}
+          <NavLink to={"/profile/register"}>
+            Register
+          </NavLink>
+        </Col>
+        <Col>
+          Forgot Password?{" "}
+          <NavLink to={`/profile/resetpassword`}>
+            Reset Password
+          </NavLink>
+        </Col>
+      </Row>
 
       {error && (
         <Alert variant="danger" className="mt-3">
