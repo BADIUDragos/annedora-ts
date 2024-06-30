@@ -8,8 +8,8 @@ export const routes = [
     element: <Layout/>,
     children: [
       { path: "/", element: <HomePage/> },
-      adminRoutes,
-      profileRoutes,
+      ...adminRoutes,
+      ...profileRoutes,
       { path: "/login", element: <LoginPage/> },
       { path: "*", element: <NotFoundPage/> }
     ],
