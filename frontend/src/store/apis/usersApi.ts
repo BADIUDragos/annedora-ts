@@ -30,7 +30,17 @@ const userApi = baseApi.injectEndpoints({
         }),
         providesTags: (result, error, id) => [{ type: userTag, id }],
       }),
+      deleteUser: builder.mutation<void, number>({
+        query: (id) => ({
+          url: `base/users/${id}/`,
+          method: 'DELETE',
+          headers: {
+            Accept: 'application/json',
+          },
+        }),
+        invalidatesTags: (result, error, id) => [{ type: userTag, id }, { type: userTag, id: 'LIST' }],
+      }),
     }),
   });
   
-  export const { useListUsersQuery, useGetUserByIdQuery } = userApi;
+  export const { useListUsersQuery, useGetUserByIdQuery, useDeleteUserMutation } = userApi;

@@ -14,7 +14,7 @@ class UserListView(generics.ListAPIView):
 
 
 @permission_classes([IsAuthenticated, IsSelfOrAdmin])
-class UserDetailView(generics.RetrieveAPIView):
+class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsSelfOrAdmin]

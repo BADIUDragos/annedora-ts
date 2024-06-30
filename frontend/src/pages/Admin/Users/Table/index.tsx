@@ -1,5 +1,5 @@
 import { Button, Container, Table } from "react-bootstrap";
-import { useListUsersQuery } from "../../../../store/apis/usersApi";
+import { useDeleteUserMutation, useListUsersQuery } from "../../../../store/apis/usersApi";
 import { UserInfoState } from "../../../../store/interfaces/authInterfaces";
 import { FaCheck, FaEdit, FaTimes, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -9,12 +9,14 @@ export const AdminTableUsersPage = () => {
   const navigate = useNavigate()
 
   const { data: users, error, isLoading } = useListUsersQuery();
+  const [deleteUser] = useDeleteUserMutation()
 
+  const deleteUserHandler = async (id: number) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      await deleteUser(id);
+    }
+  };
 
-
-  function deleteUserHandler(id: number): void {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <Container>
