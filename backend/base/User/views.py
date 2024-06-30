@@ -18,3 +18,10 @@ class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsSelfOrAdmin]
+
+
+@permission_classes([IsAuthenticated, IsAdminUser])
+class UserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]

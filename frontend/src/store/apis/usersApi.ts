@@ -40,7 +40,19 @@ const userApi = baseApi.injectEndpoints({
         }),
         invalidatesTags: (result, error, id) => [{ type: userTag, id }, { type: userTag, id: 'LIST' }],
       }),
+      updateUser: builder.mutation<void, { id: number; data: Partial<UserInfoState> }>({
+        query: ({ id, data }) => ({
+          url: `base/users/update/${id}/`,
+          method: 'PUT',
+          body: data,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }),
+        invalidatesTags: (result, error, { id }) => [{ type: userTag, id }],
+      }),
     }),
   });
   
-  export const { useListUsersQuery, useGetUserByIdQuery, useDeleteUserMutation } = userApi;
+  export const { useListUsersQuery, useGetUserByIdQuery, useDeleteUserMutation, useUpdateUserMutation } = userApi;
