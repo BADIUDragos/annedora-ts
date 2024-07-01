@@ -1,20 +1,21 @@
 import { Badge, Nav } from "react-bootstrap";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { RootState } from "../../store";
 
 const CartMenu: React.FC = () => {
-  const totalItemsQuantity = 0;
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const totalItemsQuantity = Object.values(cartItems).reduce((acc, item) => acc + item.qty, 0);
 
   return (
     <Nav className="ms-auto">
-      <Link to="/cart">
-        <Nav.Link>
-          <FaShoppingCart />
-          <Badge pill className="bg-danger">
-            {totalItemsQuantity}
-          </Badge>
-        </Nav.Link>
-      </Link>
+      <NavLink to="/cart" className="nav-link">
+        <FaShoppingCart />
+        <Badge pill className="bg-danger">
+          {totalItemsQuantity}
+        </Badge>
+      </NavLink>
     </Nav>
   );
 };
