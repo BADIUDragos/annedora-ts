@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
       <Row className="py-3">
         <Col>
           New Customer?{" "}
-          <NavLink to={"/profile/register"}>
+          <NavLink to={"/register"}>
             Register
           </NavLink>
         </Col>

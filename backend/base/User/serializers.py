@@ -9,11 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
     isStaff = serializers.BooleanField(source='is_staff')
     permissions = serializers.SerializerMethodField()
 
-    username = serializers.CharField(validators=[validate_username])
+    first_name = serializers.CharField(validators=[validate_username])
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'isSuperuser', 'isStaff', 'permissions']
+        fields = ['id', 'first_name', 'email', 'isSuperuser', 'isStaff', 'permissions']
 
     def get_permissions(self, obj):
         return [perm.codename for perm in obj.user_permissions.all()]
