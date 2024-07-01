@@ -32,7 +32,7 @@ export const AdminViewUserPage = () => {
 
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    await updateUser({ id: Number(id), data: { username: username, email: email, isStaff: isStaff } });
+    await updateUser({ id: Number(id), data: { first_name: username, email: email, isStaff: isStaff } });
   };
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const AdminViewUserPage = () => {
     }
 
     if (getUserSuccess) {
-      setName(user.username);
+      setName(user.first_name);
       setEmail(user.email);
       setIsStaff(user.isStaff);
     }

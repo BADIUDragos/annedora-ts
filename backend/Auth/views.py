@@ -13,7 +13,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['id'] = user.id
-        token['username'] = user.username
+        token['first_name'] = user.first_name
         token['permissions'] = [str(permission.codename) for permission in user.user_permissions.all()]
         token['email'] = user.email
         token['isSuperuser'] = user.is_superuser

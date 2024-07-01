@@ -5,7 +5,7 @@ export interface AuthState {
 
 export interface UserInfoState {
   id: number
-  username: string
+  first_name: string
   permissions: string[]
   email: string
   isSuperuser: boolean

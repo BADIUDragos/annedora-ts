@@ -33,11 +33,11 @@ const LoginPage: React.FC = () => {
 
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="username">
-          <Form.Label>Username</Form.Label>
+          <Form.Label>Email</Form.Label>
           <Form.Control
             required
-            type="username"
-            placeholder="Enter Username"
+            type="email"
+            placeholder="Enter Email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           ></Form.Control>

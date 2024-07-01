@@ -32,7 +32,7 @@ const UserMenu: React.FC = () => {
     <>
       {userInfo ? (
         <>
-          <NavDropdown title={userInfo.username} id="username" className="me-3">
+          <NavDropdown title={userInfo.first_name} id="username" className="me-3">
             
             <LinkContainer to={"/profile"}>
               <NavDropdown.Item>Profile</NavDropdown.Item>

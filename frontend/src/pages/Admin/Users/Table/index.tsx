@@ -59,7 +59,7 @@ export const AdminTableUsersPage = () => {
           {users?.map((user: UserInfoState) => (
             <tr key={user.id}>
               <td>{user.id}</td>
-              <td>{user.username}</td>
+              <td>{user.first_name}</td>
               <td>{user.email}</td>
               <td>
                 {user.isStaff ? (
