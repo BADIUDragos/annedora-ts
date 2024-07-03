@@ -1,5 +1,6 @@
 import { Container } from "react-bootstrap";
 import AnnedoraCarousel from "./AnnedoraCarousel";
+import ProductCategories from "./ProductCategories";
 
 const HomePage = () => {
 
@@ -7,13 +8,8 @@ const HomePage = () => {
     <Container>
       <h1>Beekeeping life</h1>
       <AnnedoraCarousel/>
-      {/* <h1 className='mt-3'>Featured</h1>
-      <ProductCarousel/> */}
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+      <h1>Our Products</h1>
+      <ProductCategories/>
     </Container>
   );
 };

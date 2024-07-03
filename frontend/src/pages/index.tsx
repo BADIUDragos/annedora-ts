@@ -4,5 +4,6 @@ import Layout from "./Layout";
 import ErrorPage from "./ErrorPage";
 import NotFoundPage from "./NotFoundPage";
 import CartPage from './CartPage';
+import ProductsPage from './ProductsPage';
 
-export { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage, CartPage}
+export { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage, CartPage, ProductsPage}
