@@ -5,8 +5,7 @@ from base.Product.models import Product, Review
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ['id', 'user', 'name', 'rating', 'comment', 'created_at']
-        read_only_fields = ['id', 'user', 'name', 'created_at']
+        fields = ['id', 'name', 'rating', 'comment', 'created_at']
 
 
 class ProductSerializer(serializers.ModelSerializer):

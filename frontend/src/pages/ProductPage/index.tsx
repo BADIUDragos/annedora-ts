@@ -208,7 +208,7 @@ const ProductPage = () => {
             {productData.num_reviews !== 0 &&
               productData.reviews.map((review) => (
                 <ListGroup.Item key={review.id}>
-                  <strong>{review.user}</strong>
+                  <strong>{review.name}</strong>
                   <Rating value={review.rating} color="#f8ea25" text={""} />
                   <p>{moment(review.created_at).format("MMMM Do, YYYY")}</p>
                   <p>{review.comment}</p>

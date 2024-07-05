@@ -38,12 +38,18 @@ class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def create_product_review(request, id):
+def create_product_review(request):
     user = request.user
-    product = Product.objects.get(id=id)
     data = request.data
+    product_id = data.get('id')
 
-    already_exists = product.review_set.filter(user=user).exists()
+    if not product_id:
+        content = {'detail': "Product ID is required"}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    product = Product.objects.get(id=product_id)
+
+    already_exists = product.reviews.filter(user=user).exists()
 
     if already_exists:
         content = {'detail': "You've already reviewed this product"}
