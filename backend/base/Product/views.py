@@ -25,8 +25,15 @@ class ProductListCreateView(generics.ListCreateAPIView):
 class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = (DjangoModelPermissions, IsAuthenticated)
     authentication_classes = [JWTAuthentication]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return []
+        elif self.request.method == 'DELETE':
+            return [IsAuthenticated(), IsAdminUser()]
+        else:
+            return [IsAuthenticated()]
 
 
 @api_view(['POST'])

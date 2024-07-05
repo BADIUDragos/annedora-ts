@@ -1,3 +1,12 @@
+interface Review {
+  id: number;
+  user: number;
+  name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
 export interface ProductState {
   id: number; 
   name: string;
@@ -8,4 +17,5 @@ export interface ProductState {
   price: number;
   count_in_stock: number;
   num_reviews: number;
+  reviews: Review[];
 }
