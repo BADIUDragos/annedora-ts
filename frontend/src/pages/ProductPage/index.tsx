@@ -23,6 +23,7 @@ import { ProductState } from "../../store/interfaces/productInterfaces";
 import getErrorString from "../../store/errorHandling/getErrorString";
 import { addItemToCart } from "../../store/slices/cartSlice";
 import { useDispatch } from "react-redux";
+import { CartItem } from "../../store/interfaces/cartInterfaces";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -75,15 +76,16 @@ const ProductPage = () => {
   }, [successProductReview, product, isSuccess]);
 
   const addToCartHandler = () => {
+    const cartItem: CartItem = {
+      id: productData.id,
+      name: productData.name,
+      image: productData.image,
+      price: productData.price,
+      count_in_stock: productData.count_in_stock,
+      qty,
+    };
 
-    dispatch(addItemToCart({
-        product: productData.id,
-        name: productData.name,
-        image: productData.image,
-        price: productData.price,
-        countInStock: productData.count_in_stock,
-        qty,
-      }));
+    dispatch(addItemToCart(cartItem));
 
     setShowAddToCartSuccess(true);
     setTimeout(() => setShowAddToCartSuccess(false), 3000);
@@ -194,78 +196,81 @@ const ProductPage = () => {
         </Col>
       </Row>
       <Row>
-      <Col md={6}>
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <h4 className="mt-5">Reviews</h4>
-                  {productData.num_reviews === 0 && (
-                    <Alert variant="info">No reviews yet, be our first!</Alert>
-                  )}
+        <Col md={6}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h4 className="mt-5">Reviews</h4>
+              {productData.num_reviews === 0 && (
+                <Alert variant="info">No reviews yet, be our first!</Alert>
+              )}
+            </ListGroup.Item>
+
+            {productData.num_reviews !== 0 &&
+              productData.reviews.map((review) => (
+                <ListGroup.Item key={review.id}>
+                  <strong>{review.user}</strong>
+                  <Rating value={review.rating} color="#f8ea25" text={""} />
+                  <p>{moment(review.created_at).format("MMMM Do, YYYY")}</p>
+                  <p>{review.comment}</p>
                 </ListGroup.Item>
+              ))}
 
-                {productData.num_reviews !== 0 && productData.reviews.map((review) => (
-                  <ListGroup.Item key={review.id}>
-                    <strong>{review.user}</strong>
-                    <Rating value={review.rating} color="#f8ea25" text={""} />
-                    <p>{moment(review.created_at).format("MMMM Do, YYYY")}</p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
-                ))}
+            <ListGroup.Item>
+              <h4 className="mt-5">Add a review</h4>
+              {loadingProductReview && <Loader />}
+              {successProductReview && (
+                <Alert variant="success">Review submitted!</Alert>
+              )}
+              {errorProductReview && (
+                <Alert variant="danger">
+                  {getErrorString(errorProductReview)}
+                </Alert>
+              )}
 
-                <ListGroup.Item>
-                  <h4 className="mt-5">Add a review</h4>
-                  {loadingProductReview && <Loader />}
-                  {successProductReview && (
-                    <Alert variant="success">Review submitted!</Alert>
-                  )}
-                  {errorProductReview && (
-                    <Alert variant="danger">{getErrorString(errorProductReview)}</Alert>
-                  )}
+              {userInfo ? (
+                <Form onSubmit={submitHandler}>
+                  <Form.Group controlId="rating">
+                    <Form.Label>Rating</Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={rating}
+                      onChange={(e) => setRating(Number(e.target.value))}
+                    >
+                      <option value="">Select...</option>
+                      <option value="1">1 - Poor</option>
+                      <option value="2">2 - Fair</option>
+                      <option value="3">3 - Good</option>
+                      <option value="4">4 - Very good</option>
+                      <option value="5">5 - Excellent</option>
+                    </Form.Control>
+                  </Form.Group>
+                  <Form.Group controlId="comment">
+                    <Form.Label className="mt-2">Review</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
 
-                  {userInfo ? (
-                    <Form onSubmit={submitHandler}>
-                      <Form.Group controlId="rating">
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control
-                          as="select"
-                          value={rating}
-                          onChange={(e) => setRating(Number(e.target.value))}
-                        >
-                          <option value="">Select...</option>
-                          <option value="1">1 - Poor</option>
-                          <option value="2">2 - Fair</option>
-                          <option value="3">3 - Good</option>
-                          <option value="4">4 - Very good</option>
-                          <option value="5">5 - Excellent</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group controlId="comment">
-                        <Form.Label className="mt-2">Review</Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={5}
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                        ></Form.Control>
-                      </Form.Group>
-
-                      <Button
-                        disabled={loadingProductReview}
-                        type="submit"
-                        variant="primary"
-                        className="mt-3"
-                      >
-                        Submit
-                      </Button>
-                    </Form>
-                  ) : (
-                    <Alert variant="info">
-                      Please <NavLink to="/login">login</NavLink> to write a review
-                    </Alert>
-                  )}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
+                  <Button
+                    disabled={loadingProductReview}
+                    type="submit"
+                    variant="primary"
+                    className="mt-3"
+                  >
+                    Submit
+                  </Button>
+                </Form>
+              ) : (
+                <Alert variant="info">
+                  Please <NavLink to="/login">login</NavLink> to write a review
+                </Alert>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
       </Row>
     </Container>
   );

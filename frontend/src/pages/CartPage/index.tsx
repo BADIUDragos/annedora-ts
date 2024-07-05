@@ -61,7 +61,7 @@ const CartPage: React.FC = () => {
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col md={3}>
-                      <NavLink to={`/product/${item.id}`}>{item.name}</NavLink>
+                      <NavLink to={`/products/${item.id}`}>{item.name}</NavLink>
                     </Col>
                     <Col md={2}>${item.price}</Col>
                     <Col md={3}>
