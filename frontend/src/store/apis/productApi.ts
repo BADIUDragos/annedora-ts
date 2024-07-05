@@ -59,7 +59,15 @@ const productApi = baseApi.injectEndpoints({
           { type: productTag, id: 'LIST' },
         ],
     }),
+    createProductReview: builder.mutation<void, { id: number; rating: number; comment: string }>({
+      query: ({ id, rating, comment }) => ({
+        url: `product/${id}/review/`,
+        method: 'POST',
+        body: { rating, comment },
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Product', id }],
+    }),
   })
 })
 
-export const { useCreateProductMutation, useListProductsQuery, useDeleteProductMutation, useUpdateProductMutation, useGetProductByIdQuery } = productApi
+export const { useCreateProductMutation, useListProductsQuery, useDeleteProductMutation, useUpdateProductMutation, useGetProductByIdQuery, useCreateProductReviewMutation } = productApi

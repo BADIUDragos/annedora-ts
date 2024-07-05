@@ -1,21 +1,19 @@
-import { ProductsPage } from "../../pages";
+import { ProductPage, ProductsPage } from "../../pages";
 
-const adminProductRoutes = {
+const productRoutes = [
+  {
     path: "products",
     children: [
       {
         index: true,
-        element: <ProductsPage/>,
+        element: <ProductsPage />,
       },
-    //   {
-    //     path: ":id",
-    //     element: (
-    //       <ProtectedRoute requiredStaff={true}>
-    //         <AdminEditProductPage />
-    //       </ProtectedRoute>
-    //     ),
-    //   },
+      {
+        path: ":id",
+        element: <ProductPage />,
+      },
     ],
-  };
-  
-  export default adminProductRoutes;
+  },
+];
+
+export default productRoutes;

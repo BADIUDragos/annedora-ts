@@ -2,6 +2,7 @@ import { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage, CartPage, Product
 import { createBrowserRouter } from "react-router-dom";
 import adminRoutes from "./admin/routes";
 import profileRoutes from "./profile/routes";
+import productRoutes from "./products/routes";
 
 export const routes = [
   {
@@ -10,7 +11,7 @@ export const routes = [
       { path: "/", element: <HomePage/> },
       ...adminRoutes,
       ...profileRoutes,
-      { path: "/products", element: <ProductsPage/>},
+      ...productRoutes,
       { path: "/cart", element: <CartPage/>},
       { path: "/login", element: <LoginPage/> },
       { path: "*", element: <NotFoundPage/> }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Dropdown } from "react-bootstrap";
 import { useListProductsQuery } from "../../store/apis/productApi";
+import Product from "./Product";
+import Loader from "../../components/Loader";
 
 const categories = ["All Products", "Honey", "Candles", "Soaps", "Special"];
 
@@ -28,6 +30,10 @@ const ProductsPage: React.FC = () => {
       navigate(`/products?category=${category.toLowerCase()}`);
     }
   };
+
+  const filteredProducts = products?.filter((product) =>
+    selectedCategory === "All Products" || product.category === selectedCategory
+  );
 
   return (
     <Container>
@@ -56,7 +62,19 @@ const ProductsPage: React.FC = () => {
         </Col>
       </Row>
       <Row>
-        {selectedCategory && <h2>Category: {selectedCategory}</h2>}
+        {isLoading && <Loader/>}
+        {filteredProducts && filteredProducts.map((product) => (
+          <Col
+            key={product.id}
+            sm={12}
+            md={6}
+            lg={4}
+            xl={3}
+            style={{ display: "flex" }}
+          >
+            <Product {...product} />
+          </Col>
+        ))}
       </Row>
     </Container>
   );

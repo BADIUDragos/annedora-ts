@@ -7,4 +7,5 @@ export interface ProductState {
   rating: number;
   price: number;
   count_in_stock: number;
+  num_reviews: number;
 }
