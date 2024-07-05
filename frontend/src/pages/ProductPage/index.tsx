@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams, NavLink, Link } from "react-router-dom";
 import {
   Row,
   Col,
@@ -21,10 +21,13 @@ import Loader from "../../components/Loader";
 import { useAuth } from "../../store";
 import { ProductState } from "../../store/interfaces/productInterfaces";
 import getErrorString from "../../store/errorHandling/getErrorString";
+import { addItemToCart } from "../../store/slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   const {
     data: product,
@@ -72,6 +75,16 @@ const ProductPage = () => {
   }, [successProductReview, product, isSuccess]);
 
   const addToCartHandler = () => {
+
+    dispatch(addItemToCart({
+        product: productData.id,
+        name: productData.name,
+        image: productData.image,
+        price: productData.price,
+        countInStock: productData.count_in_stock,
+        qty,
+      }));
+
     setShowAddToCartSuccess(true);
     setTimeout(() => setShowAddToCartSuccess(false), 3000);
   };
@@ -83,9 +96,9 @@ const ProductPage = () => {
 
   return (
     <Container>
-      <NavLink to="/products" className="btn btn-light my-3">
+      <Link to="/products" className="btn btn-light my-3">
         Go Back
-      </NavLink>
+      </Link>
 
       <Row>
         <Col md={6}>
