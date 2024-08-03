@@ -15,5 +15,14 @@
     "admin": "Admin",
     "users": "Users",
     "products": "Products",
-    "orders": "Orders"
+    "orders": "Orders",
+    "email": "Email",
+    "emailPlaceholder": "Enter Email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter Password",
+    "newCustomer": "New Customer",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "signIn": "Sign In"
   }

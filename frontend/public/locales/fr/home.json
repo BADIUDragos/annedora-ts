@@ -15,5 +15,14 @@
   "admin": "Admin",
   "users": "Utilisateurs",
   "products": "Produits",
-  "orders": "Commandes"
+  "orders": "Commandes",
+  "email": "Courriel",
+  "emailPlaceholder": "Entrez le courriel",
+  "password": "Mot de passe",
+  "passwordPlaceholder": "Entrez le mot de passe",
+  "newCustomer": "Nouveau Client",
+  "register": "S'enregistrer",
+  "forgotPassword": "Mot de passe oublié",
+  "resetPassword": "Réinitialiser",
+  "signIn": "Se connecter"
 }
