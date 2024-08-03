@@ -1,13 +1,23 @@
-import { Navbar, Container, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import CartMenu from "./CartMenu";
-import UserMenu from "./UserInfo";
+import React from 'react';
+import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import CartMenu from './CartMenu';
+import UserMenu from './UserInfo';
+import { useTranslation } from 'react-i18next';
 
 interface IHeader {
   className?: string;
 }
 
 const Header: React.FC<IHeader> = ({ className }) => {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  const currentLanguage = i18n.language;
+
   return (
     <header className={className}>
       <Navbar bg="black" variant="dark" expand="lg" collapseOnSelect>
@@ -24,6 +34,9 @@ const Header: React.FC<IHeader> = ({ className }) => {
             <Nav className="ms-auto">
               <CartMenu />
               <UserMenu />
+              <Nav.Link onClick={() => changeLanguage(currentLanguage === 'en' ? 'fr' : 'en')}>
+                {currentLanguage === 'en' ? 'FR' : 'EN'}
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

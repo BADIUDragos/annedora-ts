@@ -1,14 +1,17 @@
 import { Container } from "react-bootstrap";
 import AnnedoraCarousel from "./AnnedoraCarousel";
 import ProductCategories from "./ProductCategories";
+import { useTranslation } from 'react-i18next';
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
+
+  const { t } = useTranslation('home')
 
   return (
     <Container>
-      <h1>Beekeeping life</h1>
+      <h1>{t('carouselTitle')}</h1>
       <AnnedoraCarousel/>
-      <h1>Our Products</h1>
+      <h1>{t('categoriesTitle')}</h1>
       <ProductCategories/>
     </Container>
   );
