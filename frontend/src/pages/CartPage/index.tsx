@@ -17,8 +17,11 @@ import {
 } from "../../store/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, useAuth } from "../../store";
+import { useTranslation } from "react-i18next";
 
 const CartPage: React.FC = () => {
+  const { t } = useTranslation("cart");
+
   const { userInfo } = useAuth();
 
   const navigate = useNavigate();
@@ -47,10 +50,11 @@ const CartPage: React.FC = () => {
     <Container>
       <Row>
         <Col md={8}>
-          <h1>Shopping Cart</h1>
+          <h1>{t("shoppingCart")}</h1>
           {cartItemsArray.length === 0 ? (
             <Alert variant="info">
-              Your cart is empty! <NavLink to="/">Browse our products</NavLink>
+              {t("yourCartIsEmpty")}!{" "}
+              <NavLink to="/">{t("browseOurProducts")}</NavLink>
             </Alert>
           ) : (
             <ListGroup variant="flush">
@@ -99,9 +103,9 @@ const CartPage: React.FC = () => {
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h2>
-                  Subtotal (
+                  {t("subtotal")} (
                   {cartItemsArray.reduce((acc, item) => acc + item.qty, 0)})
-                  items
+                  {t("items")}
                 </h2>
                 $
                 {cartItemsArray
@@ -118,7 +122,7 @@ const CartPage: React.FC = () => {
               disabled={cartItemsArray.length === 0}
               onClick={checkoutHandler}
             >
-              CHECKOUT
+              {t("checkout")}
             </Button>
           ) : (
             <Button
@@ -126,7 +130,7 @@ const CartPage: React.FC = () => {
               className="btn-block mt-3 w-100"
               onClick={loginHandler}
             >
-              LOGIN
+              {t("login")}
             </Button>
           )}
         </Col>
