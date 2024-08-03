@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style></style>
+  </head>
+  <body>
+    <div>
+      <img src="cid:logo_cut" alt="Annedora" style="max-width: 800px" />
+      <h2>Order Confirmation</h2>
+      <p>Dear {{ user.first_name }},</p>
+      <p>Thank you for your order!</p>
+
+      {% if order.order_option == 'Pick-up' %}
+        <h2>The address for pickup is 33A rue Dupont Ouest J6J 1G1 in Châteauguay , please call our phone number (514) 824-6417 in order to arrange your pickup.</h2>
+      {% endif %}
+
+      <p>Your order details are as follows:</p>
+
+      <p>Order ID: {{ order.id }}</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.qty }}</td>
+            <td>${{ item.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <table>
+        <tr>
+          <td>Subtotal:</td>
+          <td>{{ order.itemsPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Shipping:</td>
+          <td>{{ order.shippingPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Tax:</td>
+          <td>{{ order.taxPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Total:</td>
+          <td>{{ order.totalPrice }}$</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

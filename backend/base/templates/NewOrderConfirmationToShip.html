@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style></style>
+  </head>
+  <body>
+    <div>
+      <h2>Order Confirmation {{ order.order_option }}</h2>
+      <p>O noua comanda pentru: {{ user.first_name }},</p>
+      <p>Adresa comenzii: {{ order.shippingaddress.city }}, {{ order.shippingaddress.address}},
+        {{order.shippingaddress.postalCode }}</p>
+      <p>Detaliile comenzii:</p>
+      <p>Numarul comenzii: {{ order.id }}</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produs</th>
+            <th>Cantitate</th>
+            <th>Pret</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.qty }}</td>
+            <td>${{ item.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <table>
+        <tr>
+          <td>Subtotal:</td>
+          <td>{{ order.itemsPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Shipping:</td>
+          <td>{{ order.shippingPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Tax:</td>
+          <td>{{ order.taxPrice }}$</td>
+        </tr>
+        <tr>
+          <td>Total:</td>
+          <td>{{ order.totalPrice }}$</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
