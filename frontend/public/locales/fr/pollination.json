@@ -1,0 +1,14 @@
+{
+  "quoteRequestTitle": "Vous voulez augmenter le rendemant de votre espace agricole ? ",
+  "quoteDescription": "Nous serions ravis de vous aider ! Indiquez-nous simplement quelques informations rapides sur vous et nous vous contacterons dans les plus brefs délais.",
+  "name": "Votre nom:",
+  "namePlaceholder": "Jacques Tremblay",
+  "email": "Votre courriel:",
+  "emailPlaceholder": "jacques@tremblay.com",
+  "address": "L'adresse de votre ferme:",
+  "addressPlaceholder": "1234 rue Victoria, Montreal, H1H 1H1, Qc, Canada",
+  "surfaceArea": "La superficie de votre ferme:",
+  "surfaceAreaPlaceholder": "Préferablement en acres",
+  "produce": "Ce que vous produisez:",
+  "producePlaceholder": "Bluets, Tomates, Raisins, etc."
+}

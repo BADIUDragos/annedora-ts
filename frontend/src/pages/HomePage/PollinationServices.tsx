@@ -1,9 +1,11 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const PollinationServices: React.FC = () => {
   const { t } = useTranslation("home");
+  const navigate = useNavigate()
 
   const buttonStyle = {
     backgroundColor: "#ffc600",
@@ -15,6 +17,10 @@ const PollinationServices: React.FC = () => {
 
   const hoverStyle = {
     backgroundColor: "#c9a204",
+  };
+
+  const handleClick = () => {
+    navigate('/pollinationcontact');
   };
 
   return (
@@ -36,6 +42,7 @@ const PollinationServices: React.FC = () => {
           onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
             Object.assign((e.target as HTMLButtonElement).style, buttonStyle);
           }}
+          onClick={handleClick}
         >
           {t("hostOurBees")}
         </Button>

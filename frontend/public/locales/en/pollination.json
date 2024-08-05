@@ -1,0 +1,14 @@
+{
+  "quoteRequestTitle": "Do you wish to increase your agricultural yield ?",
+  "quoteDescription": "We gladly want to help you ! Simply tell us some quick information about you and we will be in touch with you in no time.",
+  "name": "Your name:",
+  "namePlaceholder": "John Doe",
+  "email": "Your email:",
+  "emailPlaceholder": "john@doe.com",
+  "address": "Your farm's address:",
+  "addressPlaceholder": "1234 Victoria street, Montreal, H1H 1H1, Qc, Canada",
+  "surfaceArea": "Your farm's surface area:",
+  "surfaceAreaPlaceholder": "Preferably in acres",
+  "produce": "What you grow:",
+  "producePlaceholder": "Blueberries, Tomatoes, Grapes, etc."
+}
