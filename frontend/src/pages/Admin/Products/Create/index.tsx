@@ -7,7 +7,7 @@ import { ProductState } from "../../../../store/interfaces/productInterfaces";
 
 export const AdminCreateProductPage: React.FC = () => {
   const [addProduct, { isLoading, isSuccess, error }] = useCreateProductMutation();
-  const [productData, setProductData] = useState<ProductState>({
+  const [productData, setProductData] = useState<Partial<ProductState>>({
     id: 0,
     name: "",
     image: "",
@@ -15,8 +15,9 @@ export const AdminCreateProductPage: React.FC = () => {
     description: "",
     rating: 0,
     price: 0,
-    countInStock: 0,
+    count_in_stock: 0,
   });
+  
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();

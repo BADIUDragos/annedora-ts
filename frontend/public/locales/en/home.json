@@ -24,9 +24,5 @@
     "register": "Register",
     "forgotPassword": "Forgot Password",
     "resetPassword": "Reset Password",
-    "signIn": "Sign In",
-    "pollinationTitle": "Are you a farmer ?",
-    "increaseYourYield": "Boost your crop yield",
-    "weOfferPollinationServices": "With currently tens of locations across the province, we proudly help local farmers with pollination services in order to bring more food for many families like ours.",
-    "hostOurBees": "Contact our bees"
+    "signIn": "Sign In"
   }

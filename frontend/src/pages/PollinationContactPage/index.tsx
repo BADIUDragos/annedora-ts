@@ -1,12 +1,21 @@
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import FormContainer from "../../components/FormContainer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useMakeContactMutation } from "../../store/apis/contactApi";
+import { ContactState } from "../../store/interfaces/contactInterface";
+import Loader from "../../components/Loader";
+import BeeButton from "../../components/BeeButton";
+import { useNavigate } from "react-router-dom";
 
 const PollinationContactPage: React.FC = () => {
   const { t } = useTranslation("pollination");
+  const navigate = useNavigate();
 
-  const [formState, setFormState] = useState({
+  const [makeContact, { isLoading, isSuccess, error }] =
+    useMakeContactMutation();
+
+  const [formData, setFormData] = useState<ContactState>({
     name: "",
     email: "",
     address: "",
@@ -15,11 +24,29 @@ const PollinationContactPage: React.FC = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState({
-      ...formState,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+
+    await makeContact(data);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
+    }
+  }, [isSuccess, navigate]);
 
   return (
     <Container>
@@ -31,69 +58,88 @@ const PollinationContactPage: React.FC = () => {
           </Container>
         </Col>
         <Col>
-          <FormContainer className="mx-5 mt5 pt-5">
-            <Form>
-              <Form.Group controlId="name" className="mt-3">
-                <Form.Label>{t("name")}</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  name="name"
-                  placeholder={t("namePlaceholder")}
-                  value={formState.name}
-                  onChange={handleChange}
-                ></Form.Control>
-              </Form.Group>
+          {isSuccess ? (
+            <Container className="mx-5 mt-5 pt-5">
+              <h1>Thank you!</h1>
+              <p>We will be in touch with you shortly. You will be redirected to the home page in 5 seconds.</p>
+            </Container>
+          ) : (
+            <FormContainer className="mx-5 mt5 pt-5">
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="name" className="mt-3">
+                  <Form.Label>{t("name")}</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="name"
+                    placeholder={t("namePlaceholder")}
+                    value={formData.name}
+                    onChange={handleChange}
+                  ></Form.Control>
+                </Form.Group>
 
-              <Form.Group controlId="email" className="mt-3">
-                <Form.Label>{t("email")}</Form.Label>
-                <Form.Control
-                  required
-                  type="email"
-                  name="email"
-                  placeholder={t("emailPlaceholder")}
-                  value={formState.email}
-                  onChange={handleChange}
-                ></Form.Control>
-              </Form.Group>
+                <Form.Group controlId="email" className="mt-3">
+                  <Form.Label>{t("email")}</Form.Label>
+                  <Form.Control
+                    required
+                    type="email"
+                    name="email"
+                    placeholder={t("emailPlaceholder")}
+                    value={formData.email}
+                    onChange={handleChange}
+                  ></Form.Control>
+                </Form.Group>
 
-              <Form.Group controlId="address" className="mt-3">
-                <Form.Label>{t("address")}</Form.Label>
-                <Form.Control
-                  required
-                  type="address"
-                  name="address"
-                  placeholder={t("addressPlaceholder")}
-                  value={formState.address}
-                  onChange={handleChange}
-                ></Form.Control>
-              </Form.Group>
+                <Form.Group controlId="address" className="mt-3">
+                  <Form.Label>{t("address")}</Form.Label>
+                  <Form.Control
+                    required
+                    type="address"
+                    name="address"
+                    placeholder={t("addressPlaceholder")}
+                    value={formData.address}
+                    onChange={handleChange}
+                  ></Form.Control>
+                </Form.Group>
 
-              <Form.Group controlId="surface" className="mt-3">
-                <Form.Label>{t("surfaceArea")}</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  name="surfaceArea"
-                  placeholder={t("surfaceAreaPlaceholder")}
-                  value={formState.surfaceArea}
-                  onChange={handleChange}
-                ></Form.Control>
-              </Form.Group>
+                <Form.Group controlId="surface" className="mt-3">
+                  <Form.Label>{t("surfaceArea")}</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="surfaceArea"
+                    placeholder={t("surfaceAreaPlaceholder")}
+                    value={formData.surfaceArea}
+                    onChange={handleChange}
+                  ></Form.Control>
+                </Form.Group>
 
-              <Form.Group controlId="produce" className="mt-3">
-                <Form.Label>{t("produce")}</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  name="produce"
-                  placeholder={t("producePlaceholder")}
-                  value={formState.produce}
-                  onChange={handleChange}
-                ></Form.Control>
-              </Form.Group>
-            </Form>
-          </FormContainer>
+                <Form.Group controlId="produce" className="mt-3">
+                  <Form.Label>{t("produce")}</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="produce"
+                    placeholder={t("producePlaceholder")}
+                    value={formData.produce}
+                    onChange={handleChange}
+                  ></Form.Control>
+                </Form.Group>
+
+                {isLoading ? (
+                  <Loader
+                    testid="loader"
+                    className="mt-3"
+                    style={{ height: "40px", width: "40px" }}
+                  />
+                ) : (
+                  <Container className="d-flex justify-content-center">
+                    <BeeButton className='mt-4' type="submit">{t("contactOurBees")}</BeeButton>
+                  </Container>
+                )}
+              </Form>
+            </FormContainer>
+          )}
         </Col>
       </Row>
     </Container>

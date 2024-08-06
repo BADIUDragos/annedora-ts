@@ -24,9 +24,5 @@
   "register": "S'enregistrer",
   "forgotPassword": "Mot de passe oublié",
   "resetPassword": "Réinitialiser",
-  "signIn": "Se connecter",
-  "pollinationTitle": "Êtes-vous un fermier ?",
-  "increaseYourYield": "Augmentez vos rendements agricoles",
-  "weOfferPollinationServices": "Avec actuellement des dizaines de sites à travers la province, nous aidons fièrement les agriculteurs de chez nous avec des services de pollinisation afin d'apporter plus de nourriture à de nombreuses familles comme la notre.",
-  "hostOurBees": "Contactez nos abeilles"
+  "signIn": "Se connecter"
 }

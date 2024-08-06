@@ -5,7 +5,7 @@ import Loader from "../../../../components/Loader";
 import getErrorString from "../../../../store/errorHandling/getErrorString";
 
 interface ProductFormProps {
-  productData: ProductState;
+  productData: Partial<ProductState>;
   imagePreview: string | null;
   isLoading: boolean;
   error: any;

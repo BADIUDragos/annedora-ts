@@ -2,25 +2,14 @@ import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import BeeButton from "../../components/BeeButton";
 
 const PollinationServices: React.FC = () => {
-  const { t } = useTranslation("home");
-  const navigate = useNavigate()
-
-  const buttonStyle = {
-    backgroundColor: "#ffc600",
-    color: "black",
-    borderRadius: "5px",
-    borderColor: "#ffc600",
-    transition: "background-color 0.3s, transform 0.3s",
-  };
-
-  const hoverStyle = {
-    backgroundColor: "#c9a204",
-  };
+  const { t } = useTranslation("pollination");
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/pollinationcontact');
+    navigate("/pollinationcontact");
   };
 
   return (
@@ -33,19 +22,7 @@ const PollinationServices: React.FC = () => {
       <p className="mx-5">{t("weOfferPollinationServices")}</p>
 
       <Container className="d-flex justify-content-center">
-        <Button
-          className="mt-3"
-          style={buttonStyle}
-          onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => {
-            Object.assign((e.target as HTMLButtonElement).style, hoverStyle);
-          }}
-          onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
-            Object.assign((e.target as HTMLButtonElement).style, buttonStyle);
-          }}
-          onClick={handleClick}
-        >
-          {t("hostOurBees")}
-        </Button>
+        <BeeButton onClick={handleClick}>{t("contactOurBees")}</BeeButton>
       </Container>
     </Container>
   );
