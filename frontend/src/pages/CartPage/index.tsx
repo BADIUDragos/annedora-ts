@@ -18,6 +18,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, useAuth } from "../../store";
 import { useTranslation } from "react-i18next";
+import { FaTrash } from "react-icons/fa";
 
 const CartPage: React.FC = () => {
   const { t } = useTranslation("cart");
@@ -89,7 +90,7 @@ const CartPage: React.FC = () => {
                         variant="light"
                         onClick={() => removeFromCart(item.id)}
                       >
-                        <i className="fas fa-trash"></i>
+                        <FaTrash />
                       </Button>
                     </Col>
                   </Row>
