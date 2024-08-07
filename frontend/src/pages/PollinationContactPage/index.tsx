@@ -60,8 +60,8 @@ const PollinationContactPage: React.FC = () => {
         <Col>
           {isSuccess ? (
             <Container className="mx-5 mt-5 pt-5">
-              <h1>Thank you!</h1>
-              <p>We will be in touch with you shortly. You will be redirected to the home page in 5 seconds.</p>
+              <h1>{t("thankYou")}</h1>
+              <p>{t("redirectMessage")}</p>
             </Container>
           ) : (
             <FormContainer className="mx-5 mt5 pt-5">

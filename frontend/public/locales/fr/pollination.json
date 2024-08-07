@@ -14,5 +14,7 @@
   "surfaceArea": "La superficie de votre ferme:",
   "surfaceAreaPlaceholder": "Préferablement en acres",
   "produce": "Ce que vous produisez:",
-  "producePlaceholder": "Bluets, Tomates, Raisins, etc."
+  "producePlaceholder": "Bluets, Tomates, Raisins, etc.",
+  "thankYou": "Merci!",
+  "redirectMessage": "Nous allons vous contacter aussitôt que possible. Vous serez redirigés à la page principale dans 5 secondes."
 }

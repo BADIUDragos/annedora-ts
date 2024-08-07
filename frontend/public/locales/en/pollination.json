@@ -14,5 +14,7 @@
   "surfaceArea": "Your farm's surface area:",
   "surfaceAreaPlaceholder": "Preferably in acres",
   "produce": "What you grow:",
-  "producePlaceholder": "Blueberries, Tomatoes, Grapes, etc."
+  "producePlaceholder": "Blueberries, Tomatoes, Grapes, etc.",
+  "thankYou": "Thank you!",
+  "redirectMessage": "We will be in touch with you shortly. You will be redirected to the home page in 5 seconds."
 }
