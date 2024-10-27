@@ -15,6 +15,12 @@
   "admin": "Admin",
   "users": "Utilisateurs",
   "products": "Produits",
+  "All Products": "Tous les produits",
+  "Honey": "Miels",
+  "Candles": "Chandelles",
+  "Soaps": "Savons",
+  "Special": "Spécial",
+  "Materials": "Matériaux",
   "orders": "Commandes",
   "email": "Courriel",
   "emailPlaceholder": "Entrez le courriel",
@@ -24,5 +30,6 @@
   "register": "S'enregistrer",
   "forgotPassword": "Mot de passe oublié",
   "resetPassword": "Réinitialiser",
-  "signIn": "Se connecter"
+  "signIn": "Se connecter",
+  "review": "Commentaire(s)"
 }

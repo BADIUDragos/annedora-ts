@@ -15,6 +15,12 @@
     "admin": "Admin",
     "users": "Users",
     "products": "Products",
+    "All Products": "All Products",
+    "Honey": "Honey",
+    "Candles": "Candles",
+    "Soaps": "Soaps",
+    "Special": "Special",
+    "Materials": "Materials",
     "orders": "Orders",
     "email": "Email",
     "emailPlaceholder": "Enter Email",
@@ -24,5 +30,6 @@
     "register": "Register",
     "forgotPassword": "Forgot Password",
     "resetPassword": "Reset Password",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "review": "Review(s)"
   }

@@ -4,10 +4,12 @@ import { Container, Row, Col, Dropdown } from "react-bootstrap";
 import { useListProductsQuery } from "../../store/apis/productApi";
 import Product from "./Product";
 import Loader from "../../components/Loader";
+import { useTranslation } from "react-i18next";
 
 const categories = ["All Products", "Honey", "Candles", "Soaps", "Special"];
 
 const ProductsPage: React.FC = () => {
+  const { t } = useTranslation("home");
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
@@ -39,12 +41,12 @@ const ProductsPage: React.FC = () => {
     <Container>
       <Row>
         <Col>
-          <h1>Products</h1>
+          <h1>{t('products')}</h1>
         </Col>
         <Col md="auto">
           <Dropdown onSelect={(e) => handleSelect(e as string)}>
             <Dropdown.Toggle id="dropdown-basic" style={{ width: "200px" }}>
-              {selectedCategory}
+              {t(selectedCategory)}
             </Dropdown.Toggle>
 
             <Dropdown.Menu style={{ width: "200px" }}>
@@ -54,7 +56,7 @@ const ProductsPage: React.FC = () => {
                   eventKey={category}
                   active={category === selectedCategory}
                 >
-                  {category}
+                  {t(category)}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
