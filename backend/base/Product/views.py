@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from base.Product.models import Product, Review
 from base.Product.serializer import ProductSerializer
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import permissions
