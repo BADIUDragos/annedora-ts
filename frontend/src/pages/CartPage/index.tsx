@@ -42,7 +42,7 @@ const CartPage: React.FC = () => {
   };
 
   const checkoutHandler = () => {
-    navigate("/checkout");
+    navigate("/cart/address");
   };
 
   const cartItemsArray = Object.values(cartItems);

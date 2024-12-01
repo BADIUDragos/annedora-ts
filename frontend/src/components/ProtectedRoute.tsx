@@ -10,7 +10,7 @@ export interface IProtectedRoute extends IProtectedComponent {
 
 type ProtectedRouteProps = RequireAtLeastOne<
   IProtectedRoute,
-  "requiredPermissions" | "requiredStaff",
+  "requiredPermissions" | "requiredStaff"
 >;
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({

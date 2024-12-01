@@ -4,6 +4,7 @@ import adminRoutes from "./admin/routes";
 import profileRoutes from "./profile/routes";
 import productRoutes from "./products/routes";
 import pollinationContactRoutes from "./pollination/routes";
+import cartRoutes from "./cart/routes";
 
 export const routes = [
   {
@@ -14,7 +15,7 @@ export const routes = [
       ...profileRoutes,
       ...productRoutes,
       ...pollinationContactRoutes,
-      { path: "/cart", element: <CartPage/>},
+      ...cartRoutes,
       { path: "/login", element: <LoginPage/> },
       { path: "*", element: <NotFoundPage/> }
     ],

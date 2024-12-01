@@ -1,13 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CartItem } from '../interfaces/cartInterfaces';
 
-interface CartState {
-  cartItems: Record<number, CartItem>;
+interface ShippingAddress {
+  address: string;
+  city: string;
+  postalCode: string;
 }
 
-const loadCartFromLocalStorage = (): Record<number, CartItem> => {
-  const savedCart = localStorage.getItem('cart');
-  return savedCart ? JSON.parse(savedCart) : {};
+interface CartState {
+  cartItems: Record<number, CartItem>;
+  shippingAddress: ShippingAddress | null;
+}
+
+const loadStateFromLocalStorage = <T>(key: string): T | null => {
+  const savedState = localStorage.getItem(key);
+  return savedState ? JSON.parse(savedState) : null;
 };
 
 const saveCartToLocalStorage = (cartItems: Record<number, CartItem>) => {
@@ -15,7 +22,8 @@ const saveCartToLocalStorage = (cartItems: Record<number, CartItem>) => {
 };
 
 const initialState: CartState = {
-  cartItems: loadCartFromLocalStorage(),
+  cartItems: loadStateFromLocalStorage<Record<number, CartItem>>('cartItems') || {},
+  shippingAddress: loadStateFromLocalStorage<ShippingAddress>('shippingAddress'),
 };
 
 const cartSlice = createSlice({
@@ -47,9 +55,13 @@ const cartSlice = createSlice({
       state.cartItems = {};
       saveCartToLocalStorage(state.cartItems);
     },
+    saveShippingAddress: (state, action: PayloadAction<ShippingAddress>) => {
+      state.shippingAddress = action.payload;
+      localStorage.setItem('shippingAddress', JSON.stringify(action.payload));
+    },
   },
 });
 
-export const { addItemToCart, removeItemFromCart, updateItemQty, clearCart } = cartSlice.actions;
+export const { addItemToCart, removeItemFromCart, updateItemQty, clearCart, saveShippingAddress } = cartSlice.actions;
 
 export default cartSlice.reducer;
