@@ -8,5 +8,6 @@ import ProductsPage from './ProductsPage';
 import ProductPage from './ProductPage';
 import PollinationContactPage from './PollinationContactPage';
 import ShippingPage from './CartPage/ShippingPage';
+import PlaceOrderPage from './PlaceOrderPage'
 
-export { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage, CartPage, ProductsPage, PollinationContactPage, ShippingPage, ProductPage}
+export { HomePage, LoginPage, Layout, ErrorPage, NotFoundPage, CartPage, ProductsPage, PollinationContactPage, PlaceOrderPage, ShippingPage, ProductPage}

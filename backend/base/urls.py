@@ -5,4 +5,6 @@ urlpatterns = [
     path('product/', include('base.Product.urls')),
     path('users/', include('base.User.urls')),
     path('contact/', include('base.ContactForm.urls')),
+    path('orders/', include('base.Order.urls')),
+
 ]

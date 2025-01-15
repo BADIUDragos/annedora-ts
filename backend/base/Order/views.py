@@ -9,8 +9,10 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
 from rest_framework.response import Response
 
+from backend.settings import STRIPE_SECRET
 from base.Order.models import Order, ShippingAddress, OrderItem
-from base.Order.serializer import OrderSerializer, BillSerializer, StripeSerializer
+from base.Order.serializer import OrderSerializer, BillSerializer, StripeSerializer, \
+    StripePaymentIntentResponseSerializer
 from base.Product.models import Product
 from base.signals import order_created, order_shipped, order_delivered
 
@@ -50,7 +52,7 @@ def create_order(request):
         )
 
         for i in order_items:
-            product = Product.objects.get(id=i['product'])
+            product = Product.objects.get(id=i['productId'])
 
             item = OrderItem.objects.create(
                 product=product,
@@ -61,7 +63,7 @@ def create_order(request):
                 image=product.image.url
             )
 
-            product.countInStock -= int(item.qty)
+            product.count_in_stock -= int(item.qty)
             product.save()
 
             order_created.send(sender=Order, order=order)
@@ -108,7 +110,7 @@ def get_orders(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
-def updateOrderToShipped(request, pk):
+def update_order_to_shipped(request, pk):
     order = Order.objects.get(_id=pk)
 
     order.isShipped = True
@@ -136,7 +138,7 @@ def update_order_to_delivered(request, pk):
     return Response('Order was delivered')
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_prices(request):
     subtotal = 0
@@ -150,10 +152,10 @@ def get_prices(request):
         return Response({'detail': 'No Order Option in Request'}, status=status.HTTP_400_BAD_REQUEST)
 
     for item in items:
-        product = Product.objects.get(_id=item['id'])
+        product = Product.objects.get(id=item['id'])
         qty = item['qty']
-        if product.countInStock < qty:
-            return Response({'detail': 'Only %d %s are currently left in stock' % (product.countInStock, product.name)},
+        if product.count_in_stock < qty:
+            return Response({'detail': 'Only %d %s are currently left in stock' % (product.count_in_stock, product.name)},
                             status=status.HTTP_400_BAD_REQUEST)
         price = product.price * qty
         subtotal += price
