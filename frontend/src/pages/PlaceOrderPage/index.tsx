@@ -1,6 +1,5 @@
 import { Row, Col, ListGroup, Image, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
 import OrderSummary from './components/OrderSummary'
@@ -11,7 +10,7 @@ import { useOrder } from "../../store/hooks/orderHooks";
 
 const PlaceOrderScreen = () => {
   const cart = useCart()
-  const selectedOption = useOrder()
+  const { option } = useOrder()
 
   return (
     <div>
@@ -71,13 +70,13 @@ const PlaceOrderScreen = () => {
             firstOption="Shipping"
             secondOption="Pick-up"
           />
-          {selectedOption === "Shipping" && 
+          {option === "Shipping" && 
             <p>*A shipping fee of 15$ is applied for orders under 100$, we only ship within the Montreal metropolitan area.</p>
           }
-          {selectedOption === "Pick-up" && 
+          {option === "Pick-up" && 
             <p>*Pick-up is in the Chateauguay area, the exact address will be emailed upon purchase confirmation.</p>
           }
-          <OrderSummary cart={cart} orderOption={selectedOption} />
+          <OrderSummary />
         </Col>
       </Row>
     </div>

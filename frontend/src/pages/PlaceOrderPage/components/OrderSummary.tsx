@@ -1,16 +1,15 @@
 import { Row, Col, ListGroup, Card, Alert } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import Loader from "../../../components/Loader";
 
 import Payment from './Payment'
+import { useOrder } from "../../../store/hooks/orderHooks";
 
-const OrderSummary = (props) => {
+const OrderSummary = () => {
     
-    const { error, loading, prices } = useSelector((state) => state.orderTotal);
-    const { subtotal = 0, shipping = 0, tax = 0, total = 0 } = prices || {};
+    const { order } = useOrder();
+    const { subtotal = 0, shipping = 0, tax = 0, total = 0 } = order || {};
   
-    if (loading) return <Loader />;
-    if (error) return <Alert variant="danger">{error}</Alert>;
+    if (!order) return <Loader />;
   
     return (
       <>

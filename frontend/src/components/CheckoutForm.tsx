@@ -8,7 +8,7 @@ import { useCart } from "../store/hooks/cartHooks";
 import { useOrder } from "../store/hooks/orderHooks";
 import { OrderCreationRequest } from "../store/interfaces/orderInterfaces";
 
-function CheckoutForm() {
+const CheckoutForm = () => {
   const { cartItems, shippingAddress } = useCart();
   const { order, option: orderOption } = useOrder();
   const stripe = useStripe();
