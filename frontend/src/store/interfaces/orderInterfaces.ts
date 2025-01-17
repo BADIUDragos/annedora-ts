@@ -10,7 +10,7 @@ export interface Prices {
 export type DeliveryPickupInterface = "Shipping" | "Pick-up";
 
 export interface OrderState {
-  order: Prices
+  prices: Prices
   option: DeliveryPickupInterface
 }
 

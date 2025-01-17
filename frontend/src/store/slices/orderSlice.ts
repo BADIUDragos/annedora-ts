@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DeliveryPickupInterface, Prices } from "../interfaces/orderInterfaces";
-
-interface OrderState {
-  orderOption: DeliveryPickupInterface;
-  prices: Prices;
-}
+import { DeliveryPickupInterface, OrderState, Prices } from "../interfaces/orderInterfaces";
 
 const loadStateFromLocalStorage = <T>(key: string, defaultValue: T): T => {
   const savedState = localStorage.getItem(key);
@@ -16,7 +11,7 @@ const saveStateToLocalStorage = (key: string, value: any) => {
 };
 
 const initialState: OrderState = {
-  orderOption: loadStateFromLocalStorage<DeliveryPickupInterface>("orderOption", "Pick-up"),
+  option: loadStateFromLocalStorage<DeliveryPickupInterface>("option", "Pick-up"),
   prices: {
     subtotal: 0,
     tax: 0,
@@ -30,8 +25,8 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     setOrderOption: (state, action: PayloadAction<DeliveryPickupInterface>) => {
-      state.orderOption = action.payload;
-      saveStateToLocalStorage("orderOption", state.orderOption);
+      state.option = action.payload;
+      saveStateToLocalStorage("option", state.option);
     },
     setPrices: (state, action: PayloadAction<Prices>) => {
       state.prices = action.payload;

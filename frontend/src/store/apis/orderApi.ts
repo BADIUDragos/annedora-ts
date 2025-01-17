@@ -1,5 +1,6 @@
 import { CartItemMinimal } from "../interfaces/cartInterfaces";
 import { OrderCreationRequest, Prices } from "../interfaces/orderInterfaces";
+import { orderTag } from "./apiTagTypes";
 import { baseApi } from "./baseApi";
 
 interface TotalPricesRequest {
@@ -11,27 +12,28 @@ const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTotal: builder.mutation<Prices, TotalPricesRequest>({
       query: (data) => ({
-        url: "/orders/total/",
+        url: "base/orders/total/",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [orderTag],
     }),
     getStripePublicKey: builder.query<{ stripePublicKey: string }, void>({
       query: () => ({
-        url: "/orders/stripe/",
+        url: "base/orders/stripe/",
         method: "GET",
       }),
     }),
     createPaymentIntent: builder.mutation<{ client_secret: string }, { amount: number }>({
       query: (data) => ({
-        url: "/orders/payment-intent/",
+        url: "base/orders/payment-intent/",
         method: "POST",
         body: data,
       }),
     }),
     createOrder: builder.mutation<any, OrderCreationRequest>({
       query: (orderData) => ({
-        url: "/orders/",
+        url: "base/orders/",
         method: "POST",
         body: orderData,
       }),

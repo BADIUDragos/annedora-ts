@@ -1,4 +1,4 @@
-import { Row, Col, ListGroup, Image, Alert } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Alert, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
@@ -13,7 +13,7 @@ const PlaceOrderScreen = () => {
   const { option } = useOrder()
 
   return (
-    <div>
+    <Container>
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
         <Col md={8}>
@@ -79,7 +79,7 @@ const PlaceOrderScreen = () => {
           <OrderSummary />
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 }
 

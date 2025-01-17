@@ -138,13 +138,13 @@ def update_order_to_delivered(request, pk):
     return Response('Order was delivered')
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_prices(request):
     subtotal = 0
 
     items = request.data['items']
-    order_option = request.data.get('orderOption')
+    order_option = request.data.get('option')
 
     if not items:
         return Response({'detail': 'No Items in Request'}, status=status.HTTP_400_BAD_REQUEST)
