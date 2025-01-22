@@ -10,7 +10,7 @@ import { OrderCreationRequest } from "../store/interfaces/orderInterfaces";
 
 const CheckoutForm = () => {
   const { cartItems, shippingAddress } = useCart();
-  const { order, option: orderOption } = useOrder();
+  const order = useOrder();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -41,13 +41,9 @@ const CheckoutForm = () => {
     }
 
     const orderData: OrderCreationRequest = {
+      order: order,
       orderItems: cartItems,
       shippingAddress: shippingAddress,
-      itemsPrice: order.subtotal,
-      shippingPrice: order.shipping,
-      taxPrice: order.tax,
-      totalPrice: order.total,
-      orderOption
     };
 
     try {

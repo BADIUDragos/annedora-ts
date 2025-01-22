@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/Loader";
 import CheckoutForm from "../../../components/CheckoutForm";
 
@@ -7,45 +6,53 @@ import CheckoutForm from "../../../components/CheckoutForm";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
-import { useCreatePaymentIntentMutation, useGetStripePublicKeyQuery } from "../../../store/apis/orderApi";
+import { StripePublicKeyInterface, useCreatePaymentIntentMutation, useLazyGetStripePublicKeyQuery } from "../../../store/apis/orderApi";
+import { useDispatch } from "react-redux";
 
 interface PaymentInterface {
   amount: number;
 }
 
 const Payment: React.FC<PaymentInterface> = ({ amount }) => {
+
+  const dispatch = useDispatch()
+  const [stripeFetched, setStripeFetched] = useState(false)
+  const [publicKey, setPublicKey] = useState<StripePublicKeyInterface | null>(null);
   const [stripePromise, setStripePromise] = useState<Stripe | null>(null);
+
+
   const [clientSecret, setClientSecret] = useState("");
-  const { data: stripeData, isSuccess } = useGetStripePublicKeyQuery();
-  const [createPaymentIntent, { data: paymentIntentData }] = useCreatePaymentIntentMutation();
+  const [fetchStripeKey] = useLazyGetStripePublicKeyQuery();
+  const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
   useEffect(() => {
-    // Load Stripe as soon as the public key is successfully fetched
-    if (stripeData?.stripePublicKey && isSuccess && !stripePromise) {
-      const initializeStripe = async () => {
-        const stripe = await loadStripe(stripeData.stripePublicKey);
-        setStripePromise(stripe);
-      };
-
-      initializeStripe();
+    const fetchPublicKey = async () => {
+        const publicKey = await fetchStripeKey().unwrap()
+        setPublicKey(publicKey)
+        setStripeFetched(true)
     }
-  }, [stripeData, isSuccess, stripePromise]);
 
-  useEffect(() => {
-    // Create payment intent once Stripe is initialized
-    const initializePaymentIntent = async () => {
-      if (stripePromise) {
-        try {
-          const paymentIntentData = await createPaymentIntent({ amount }).unwrap();
-          setClientSecret(paymentIntentData.client_secret);
-        } catch (error) {
-          console.error('Failed to create payment intent:', error);
-        }
+    fetchPublicKey()
+
+    if (stripeFetched && publicKey && !stripePromise) {
+      const loadStripePromise = async () => {
+        console.log(publicKey)
+        const stripe = await loadStripe(publicKey.stripe_public)
+        setStripePromise(stripe)
       }
-    };
+      loadStripePromise()
+    }
 
-    initializePaymentIntent();
-  }, [createPaymentIntent, stripePromise, amount]);
+    const getClientSecret = async () => {
+      if(stripePromise){
+        const paymentIntentData = await createPaymentIntent({amount: amount}).unwrap();
+        setClientSecret(paymentIntentData.client_secret)
+      }
+    }
+
+    getClientSecret()
+
+  },[dispatch, amount, stripePromise, stripeFetched, publicKey])
 
   return (
     <>

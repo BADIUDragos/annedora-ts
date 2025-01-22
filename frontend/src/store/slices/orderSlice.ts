@@ -13,10 +13,10 @@ const saveStateToLocalStorage = (key: string, value: any) => {
 const initialState: OrderState = {
   option: loadStateFromLocalStorage<DeliveryPickupInterface>("option", "Pick-up"),
   prices: {
-    subtotal: 0,
-    tax: 0,
-    shipping: 0,
-    total: 0,
+    subtotal: undefined,
+    tax: undefined,
+    shipping: undefined,
+    total: undefined,
   },
 };
 

@@ -8,6 +8,14 @@ interface TotalPricesRequest {
   option: string;
 }
 
+export interface PaymentIntentAmountInterface {
+  amount : number
+}
+
+export interface StripePublicKeyInterface {
+  stripe_public: string
+}
+
 const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTotal: builder.mutation<Prices, TotalPricesRequest>({
@@ -18,13 +26,13 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [orderTag],
     }),
-    getStripePublicKey: builder.query<{ stripePublicKey: string }, void>({
+    getStripePublicKey: builder.query<StripePublicKeyInterface, void>({
       query: () => ({
         url: "base/orders/stripe/",
         method: "GET",
       }),
     }),
-    createPaymentIntent: builder.mutation<{ client_secret: string }, { amount: number }>({
+    createPaymentIntent: builder.mutation<{ client_secret: string }, PaymentIntentAmountInterface>({
       query: (data) => ({
         url: "base/orders/payment-intent/",
         method: "POST",
@@ -33,7 +41,7 @@ const orderApi = baseApi.injectEndpoints({
     }),
     createOrder: builder.mutation<any, OrderCreationRequest>({
       query: (orderData) => ({
-        url: "base/orders/",
+        url: "base/orders/add/",
         method: "POST",
         body: orderData,
       }),
@@ -41,4 +49,4 @@ const orderApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetTotalMutation, useGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation } = orderApi;
+export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation } = orderApi;

@@ -23,23 +23,23 @@ def create_order(request):
     user = request.user
     data = request.data
     order_items = data['orderItems']
-    order_option = data['orderOption']
+    order = data['order']
+    order_option = order['option']
+    prices = order['prices']
 
     if len(order_items) == 0:
         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
-    if order_option not in ['Shipping', 'Pick-up']:
-        return Response({'detail': 'Wrong order option'}, status=status.HTTP_400_BAD_REQUEST)
 
     else:
 
         order = Order.objects.create(
             user=user,
-            itemsPrice=data['itemsPrice'],
-            taxPrice=data['taxPrice'],
-            shippingPrice=data['shippingPrice'],
-            totalPrice=data['totalPrice'],
-            isPaid=True,
-            paidAt=datetime.now(),
+            subtotal=prices['subtotal'],
+            tax_price=prices['tax'],
+            shipping_price=prices['shipping'],
+            total_price=prices['total'],
+            is_paid=True,
+            paid_at=datetime.now(),
             order_option=order_option
         )
 
@@ -47,12 +47,12 @@ def create_order(request):
             order=order,
             address=data['shippingAddress']['address'],
             city=data['shippingAddress']['city'],
-            postalCode=data['shippingAddress']['postalCode'],
+            postal_code=data['shippingAddress']['postalCode'],
             country='Canada'
         )
 
         for i in order_items:
-            product = Product.objects.get(id=i['productId'])
+            product = Product.objects.get(id=i['id'])
 
             item = OrderItem.objects.create(
                 product=product,
@@ -176,7 +176,7 @@ def get_prices(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_stripe_info(request):
-    stripe_public = "pk_live_51MvqTOJMCbcrYDEx49WfKIyVOXRtgzYZPm6ppg4DMZGLV5QMSFOIKKY95QAFhdfp3RVT0ZLfkQbHtI9DU1O7z8tl00YNHHLrfV"
+    stripe_public = "pk_test_51MvqTOJMCbcrYDEx1I6IVgjw0Bfdu349ua1j2gA3vn3rErY1AYwSc7Pqdq7yVnlwbVhbZPEGlNherPKcEJW4JSvF00m1O9F2vT"
 
     serializer = StripeSerializer({'stripe_public': stripe_public})
     return Response(serializer.data)

@@ -17,8 +17,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    orderItems = serializers.SerializerMethodField(read_only=True)
-    shippingAddress = serializers.SerializerMethodField(read_only=True)
+    order_items = serializers.SerializerMethodField(read_only=True)
+    shipping_address = serializers.SerializerMethodField(read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
 
     class Meta:

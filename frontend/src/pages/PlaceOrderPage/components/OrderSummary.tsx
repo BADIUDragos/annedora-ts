@@ -15,21 +15,25 @@ const OrderSummary = () => {
   const cart = useCart();
   const { cartItems } = cart;
   const { prices, option } = useOrder();
-  const { subtotal = 0, shipping = 0, tax = 0, total = 0 } = prices || {};
+  const { subtotal, shipping, tax, total } = prices;
   const [getTotal, {isLoading}] = useGetTotalMutation();
 
   useEffect(() => {
-    const items = cartItems.map((item) => ({
-      id: item.id,
-      qty: item.qty,
-    }));
-
-    getTotal({ items, option })
-      .unwrap()
-      .then((fetchedPrices) => {
+    const fetchTotal = async () => {
+      const items = cartItems.map((item) => ({
+        id: item.id,
+        qty: item.qty,
+      }));
+  
+      try {
+        const fetchedPrices = await getTotal({ items, option }).unwrap();
         dispatch(setPrices(fetchedPrices));
-      })
-      .catch((error) => console.error("Failed to fetch prices:", error));
+      } catch (error) {
+        console.error("Failed to fetch prices:", error);
+      }
+    };
+  
+    fetchTotal();
   }, [option, cartItems, getTotal]);
 
   if (isLoading) return <Loader />;
@@ -71,7 +75,7 @@ const OrderSummary = () => {
           </ListGroup.Item>
         </ListGroup>
       </Card>
-      <Payment amount={total} />
+      {typeof total === 'number' ? <Payment amount={total} /> : <Loader />}
     </>
   );
 };
