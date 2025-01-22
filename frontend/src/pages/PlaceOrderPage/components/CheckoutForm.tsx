@@ -3,10 +3,13 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
-import { useCreateOrderMutation } from "../store/apis/orderApi";
-import { useCart } from "../store/hooks/cartHooks";
-import { useOrder } from "../store/hooks/orderHooks";
-import { OrderCreationRequest } from "../store/interfaces/orderInterfaces";
+import { useCreateOrderMutation } from "../../../store/apis/orderApi";
+import { useCart } from "../../../store/hooks/cartHooks";
+import { useOrder } from "../../../store/hooks/orderHooks";
+import { OrderCreationRequest } from "../../../store/interfaces/orderInterfaces";
+import { useDispatch } from "react-redux";
+import { resetOrder } from "../../../store/slices/orderSlice";
+import { clearCart } from "../../../store/slices/cartSlice";
 
 const CheckoutForm = () => {
   const { cartItems, shippingAddress } = useCart();
@@ -18,6 +21,8 @@ const CheckoutForm = () => {
 
   const [message, setMessage] = useState<string | null | undefined>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const dispatch = useDispatch()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,6 +53,8 @@ const CheckoutForm = () => {
 
     try {
       const result = await createOrder(orderData).unwrap();
+      dispatch(clearCart())
+      dispatch(resetOrder())
       navigate(`/order/${result._id}`);
     } catch (error: any) {
       setMessage(error.data ? error.data.message : error.message);

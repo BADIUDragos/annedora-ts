@@ -25,7 +25,7 @@ const ShippingPage = () => {
 
   return (
     <FormContainer xs={12} md={6} className="justify-content-md-center">
-      <CheckoutSteps step1 step2 />
+      <CheckoutSteps step1 />
       <h1>Billing / Shipping Address</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="address">

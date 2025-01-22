@@ -25,7 +25,7 @@ function saveToLocalStorage<T>(key: string, value: T): void {
 
 const initialState: CartState = {
   cartItems: loadFromLocalStorage<CartItem[]>('cartItems', []),
-  shippingAddress: loadFromLocalStorage<ShippingAddress>('shippingAddress', null),
+  shippingAddress: loadFromLocalStorage<ShippingAddress>('shippingAddress', {address: "", city: "", postalCode: ""}),
 };
 
 const cartSlice = createSlice({

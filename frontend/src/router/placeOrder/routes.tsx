@@ -1,3 +1,4 @@
+import ProtectedRoute from "../../components/ProtectedRoute";
 import { PlaceOrderPage } from "../../pages";
 
 const placeOrderRoutes = [
@@ -6,7 +7,11 @@ const placeOrderRoutes = [
     children: [
       {
         index: true,
-        element: <PlaceOrderPage />,
+        element: (
+          <ProtectedRoute requiredPermissions={[]}>
+            <PlaceOrderPage />
+          </ProtectedRoute>
+        ),
       }
     ],
   },
