@@ -30,10 +30,12 @@ const Payment: React.FC<PaymentInterface> = ({ amount }) => {
         const publicKey = await fetchStripeKey().unwrap()
         setPublicKey(publicKey)
         setStripeFetched(true)
+      }
+
+    if (!stripeFetched) {
+      fetchPublicKey()
     }
-
-    fetchPublicKey()
-
+    
     if (stripeFetched && publicKey && !stripePromise) {
       const loadStripePromise = async () => {
         console.log(publicKey)
@@ -52,7 +54,7 @@ const Payment: React.FC<PaymentInterface> = ({ amount }) => {
 
     getClientSecret()
 
-  },[dispatch, amount, stripePromise, stripeFetched, publicKey])
+  },[dispatch, amount, stripePromise, publicKey])
 
   return (
     <>
