@@ -33,6 +33,8 @@ const orderSlice = createSlice({
     },
     resetOrder: (state) => {
       state.prices = initialState.prices;
+      saveStateToLocalStorage("option", "Pick-up")
+      state.option = initialState.option
     },
   },
 });

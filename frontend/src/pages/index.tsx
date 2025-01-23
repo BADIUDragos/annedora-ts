@@ -11,6 +11,7 @@ import ShippingPage from "./CartPage/ShippingPage";
 import PlaceOrderPage from "./PlaceOrderPage";
 import MyOrdersPage from "./Profile/MyOrdersPage";
 import RegisterPage from "./Profile/RegisterPage";
+import OrderPage from "./OrderPage";
 
 export {
   HomePage,
@@ -26,4 +27,5 @@ export {
   ProductPage,
   MyOrdersPage,
   RegisterPage,
+  OrderPage
 };

@@ -11,8 +11,8 @@ export interface Prices {
 export type DeliveryPickupInterface = "Shipping" | "Pick-up";
 
 export interface OrderState {
-  prices: Prices 
-  option: DeliveryPickupInterface
+  prices: Prices;
+  option: DeliveryPickupInterface;
 }
 
 export interface OrderCreationRequest {
@@ -23,12 +23,11 @@ export interface OrderCreationRequest {
 
 export interface CreatedOrderItem {
   id: number;
-  product: {
-    id: number;
-    name: string;
-    image: string;
-    price: string;
-  };
+  image: string;
+  name: string;
+  order: number;
+  price: number;
+  product: number;
   qty: number;
 }
 
@@ -40,11 +39,11 @@ export interface CreatedOrder {
   shipping_price: string;
   total_price: string;
   is_paid: boolean;
-  paid_at: string | null;
+  paid_at: string;
   is_shipped: boolean;
   shipped_date: string | null;
   is_delivered: boolean;
   delivered_at: string | null;
   order_items: CreatedOrderItem[];
-  shipping_address: ShippingAddress | null;
+  shipping_address: ShippingAddress;
 }

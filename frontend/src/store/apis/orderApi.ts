@@ -51,8 +51,26 @@ const orderApi = baseApi.injectEndpoints({
         url: "base/orders/myorders/",
         method: "GET",
       }),
-    })
+    }),
+    getOrderById: builder.query<CreatedOrder, number>({
+      query: (id) => `base/orders/${id}/`,
+      providesTags: (result, error, id) => [{ type: orderTag, id }],
+    }),
+    markOrderAsShipped: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `base/orders/${id}/shipped/`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: orderTag, id }],
+    }),
+    markOrderAsDelivered: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `base/orders/${id}/delivered/`,
+        method: "PUT",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: orderTag, id }],
+    }),
   }),
 });
 
-export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation, useGetMyOrdersQuery } = orderApi;
+export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation, useGetMyOrdersQuery, useGetOrderByIdQuery, useMarkOrderAsShippedMutation, useMarkOrderAsDeliveredMutation } = orderApi;

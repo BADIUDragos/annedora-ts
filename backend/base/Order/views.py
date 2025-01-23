@@ -87,15 +87,15 @@ def get_my_orders(request):
 def get_order_by_id(request, pk):
     try:
         user = request.user
-        order = Order.objects.get(_id=pk)
+        order = Order.objects.get(id=pk)
         if user.is_staff or order.user == user:
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
         else:
-            return Response({'message': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
 
     except:
-        return Response({'message': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Admin views
@@ -111,10 +111,10 @@ def get_orders(request):
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
 def update_order_to_shipped(request, pk):
-    order = Order.objects.get(_id=pk)
+    order = Order.objects.get(id=pk)
 
-    order.isShipped = True
-    order.shippedAt = datetime.now()
+    order.is_shipped = True
+    order.shipped_date = datetime.now()
     order.save()
 
     order_shipped.send(sender=Order, order=order)
@@ -125,12 +125,12 @@ def update_order_to_shipped(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
 def update_order_to_delivered(request, pk):
-    order = Order.objects.get(_id=pk)
+    order = Order.objects.get(id=pk)
 
-    order.isShipped = True
-    order.shippedAt = datetime.now()
-    order.isDelivered = True
-    order.deliveredAt = datetime.now()
+    order.is_shipped = True
+    order.shipped_date = datetime.now()
+    order.is_delivered = True
+    order.delivered_at = datetime.now()
     order.save()
 
     order_delivered.send(sender=Order, order=order)

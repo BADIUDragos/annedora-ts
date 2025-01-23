@@ -1,5 +1,5 @@
 import { Row, Col, ListGroup, Image, Alert, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
 import OrderSummary from './components/OrderSummary'
@@ -12,6 +12,10 @@ const PlaceOrderScreen = () => {
 
   const cart = useCart()
   const { option } = useOrder()
+
+  if (cart.cartItems.length === 0) {
+    return <Navigate to={"/"} />
+  }
 
   return (
     <Container>

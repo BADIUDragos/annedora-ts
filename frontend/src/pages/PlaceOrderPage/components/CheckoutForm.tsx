@@ -55,7 +55,7 @@ const CheckoutForm = () => {
       const result = await createOrder(orderData).unwrap();
       dispatch(clearCart())
       dispatch(resetOrder())
-      navigate(`/order/${result._id}`);
+      navigate(`/orders/${result.id}`);
     } catch (error: any) {
       setMessage(error.data ? error.data.message : error.message);
       setIsProcessing(false);

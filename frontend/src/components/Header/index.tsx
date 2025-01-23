@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Navbar, Container, Nav, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CartMenu from './CartMenu';
 import UserMenu from './UserInfo';
@@ -23,7 +23,7 @@ const Header: React.FC<IHeader> = ({ className }) => {
       <Navbar bg="black" variant="dark" expand="lg" collapseOnSelect>
         <Container>
           <Navbar.Brand as={Link} to="/">
-            <img
+            <Image
               src="/images/logo_cut.png"
               style={{ width: 400, marginTop: -7 }}
               alt="Annedora"

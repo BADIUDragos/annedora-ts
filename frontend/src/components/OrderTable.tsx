@@ -109,7 +109,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ filteredOrders }) => {
                 )}
               </td>
               <td>
-                <LinkContainer to={`/order/${order.id}`}>
+                <LinkContainer to={`/orders/${order.id}`}>
                   <Button variant="light" className="btn-sm">
                     DETAILS
                   </Button>
