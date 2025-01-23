@@ -37,7 +37,7 @@ const UserMenu: React.FC = () => {
         <>
           <NavDropdown title={userInfo.first_name} id="username" className="me-3">
             <LinkContainer to={"/profile"}>
-              <NavDropdown.Item>{t('profile')}</NavDropdown.Item>
+              <NavDropdown.Item>{t('myOrders')}</NavDropdown.Item>
             </LinkContainer>
             <NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
           </NavDropdown>

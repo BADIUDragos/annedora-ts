@@ -34,8 +34,10 @@ const authApi = baseApi.injectEndpoints({
         try {
           await queryFulfilled;
           dispatch(logOut());
+          dispatch(baseApi.util.resetApiState())
         } catch (error) {
           dispatch(logOut());
+          dispatch(baseApi.util.resetApiState())
         }
       },
     }),

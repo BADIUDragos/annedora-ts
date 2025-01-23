@@ -1,6 +1,5 @@
 import { Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useAuth } from "../../store";
 
 interface CheckoutStepsProps {
   step1?: boolean;

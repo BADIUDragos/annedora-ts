@@ -7,10 +7,19 @@ from Auth.validators import validate_username
 
 class RegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(validators=[validate_username])
+    email = serializers.EmailField()
 
     class Meta:
         model = User
         fields = ['first_name', 'username', 'email', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('This email is already in use.')
+        return value
 
     def create(self, validated_data):
         user = User.objects.create(

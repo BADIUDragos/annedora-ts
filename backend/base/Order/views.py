@@ -28,7 +28,7 @@ def create_order(request):
     prices = order['prices']
 
     if len(order_items) == 0:
-        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
 
     else:
 
@@ -92,10 +92,10 @@ def get_order_by_id(request, pk):
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
         else:
-            return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
 
     except:
-        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Admin views
@@ -147,15 +147,15 @@ def get_prices(request):
     order_option = request.data.get('option')
 
     if not items:
-        return Response({'detail': 'No Items in Request'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'No Items in Request'}, status=status.HTTP_400_BAD_REQUEST)
     if not order_option:
-        return Response({'detail': 'No Order Option in Request'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'No Order Option in Request'}, status=status.HTTP_400_BAD_REQUEST)
 
     for item in items:
         product = Product.objects.get(id=item['id'])
         qty = item['qty']
         if product.count_in_stock < qty:
-            return Response({'detail': 'Only %d %s are currently left in stock' % (product.count_in_stock, product.name)},
+            return Response({'message': 'Only %d %s are currently left in stock' % (product.count_in_stock, product.name)},
                             status=status.HTTP_400_BAD_REQUEST)
         price = product.price * qty
         subtotal += price

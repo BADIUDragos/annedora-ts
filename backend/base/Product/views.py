@@ -44,7 +44,7 @@ def create_product_review(request):
     product_id = data.get('id')
 
     if not product_id:
-        content = {'detail': "Product ID is required"}
+        content = {'message': "Product ID is required"}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     product = Product.objects.get(id=product_id)
@@ -52,13 +52,13 @@ def create_product_review(request):
     already_exists = product.reviews.filter(user=user).exists()
 
     if already_exists:
-        content = {'detail': "You've already reviewed this product"}
+        content = {'message': "You've already reviewed this product"}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     # No rating ?
 
     elif data['rating'] == 0:
-        content = {'detail': "Please select a rating"}
+        content = {'message': "Please select a rating"}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     # Create review
@@ -80,4 +80,4 @@ def create_product_review(request):
         product.rating = total / len(reviews)
         product.save()
 
-        return Response({'detail': 'Review was created'})
+        return Response({'message': 'Review was created'})

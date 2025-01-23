@@ -1,14 +1,18 @@
-import ProfilePage from "../../pages/Profile/ProfilePage";
-import RegisterPage from "../../pages/Profile/RegisterPage";
+import ProtectedRoute from "../../components/ProtectedRoute";
+import { MyOrdersPage, RegisterPage } from "../../pages";
 
 const profileRoutes = [
   {
-      path: ":id",
-      element: <ProfilePage />,
+    path: ":id",
+    element: (
+      <ProtectedRoute requiredPermissions={[]}>
+        <MyOrdersPage />
+      </ProtectedRoute>
+    ),
   },
   {
-      path: "register",
-      element: <RegisterPage />,
+    path: "register",
+    element: <RegisterPage />,
   },
 ];
 

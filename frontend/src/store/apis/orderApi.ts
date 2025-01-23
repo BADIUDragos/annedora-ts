@@ -1,5 +1,5 @@
 import { CartItemMinimal } from "../interfaces/cartInterfaces";
-import { OrderCreationRequest, Prices } from "../interfaces/orderInterfaces";
+import { CreatedOrder, OrderCreationRequest, Prices } from "../interfaces/orderInterfaces";
 import { orderTag } from "./apiTagTypes";
 import { baseApi } from "./baseApi";
 
@@ -46,7 +46,13 @@ const orderApi = baseApi.injectEndpoints({
         body: orderData,
       }),
     }),
+    getMyOrders: builder.query<CreatedOrder[], void >({
+      query: () => ({
+        url: "base/orders/myorders/",
+        method: "GET",
+      }),
+    })
   }),
 });
 
-export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation } = orderApi;
+export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation, useGetMyOrdersQuery } = orderApi;
