@@ -2,8 +2,8 @@ import { Row, Col, ListGroup, Image, Alert, Container } from "react-bootstrap";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
-import OrderSummary from '../../components/OrderSummary'
-import ToggleChoice from '../../components/ToggleChoice'
+import OrderSummary from "../../components/OrderSummary";
+import ToggleChoice from "../../components/ToggleChoice";
 import { useCart } from "../../store/hooks/cartHooks";
 import { useOrder } from "../../store/hooks/orderHooks";
 import { useDispatch } from "react-redux";
@@ -12,21 +12,22 @@ import { useEffect } from "react";
 import { setPrices } from "../../store/slices/orderSlice";
 import Loader from "../../components/Loader";
 import Payment from "./components/Payment";
-
+import { useTranslation } from "react-i18next";
 
 const PlaceOrderScreen = () => {
+  const { t } = useTranslation("order");
 
-  const cart = useCart()
+  const cart = useCart();
   const { prices, option } = useOrder();
 
   if (cart.cartItems.length === 0) {
-    return <Navigate to={"/"} />
+    return <Navigate to={"/"} />;
   }
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { cartItems } = cart;
-  
-  const [getTotal, {isLoading}] = useGetTotalMutation();
+
+  const [getTotal, { isLoading }] = useGetTotalMutation();
 
   useEffect(() => {
     const fetchTotal = async () => {
@@ -34,7 +35,7 @@ const PlaceOrderScreen = () => {
         id: item.id,
         qty: item.qty,
       }));
-  
+
       try {
         const fetchedPrices = await getTotal({ items, option }).unwrap();
         dispatch(setPrices(fetchedPrices));
@@ -42,30 +43,26 @@ const PlaceOrderScreen = () => {
         console.error("Failed to fetch prices:", error);
       }
     };
-  
+
     fetchTotal();
   }, [option, cartItems, getTotal]);
 
-  
-
   return (
     <Container>
-      <CheckoutSteps step1 step2/>
+      <CheckoutSteps step1 step2 />
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2>Billing / Shipping</h2>
+              <h2>{t("details")}</h2>
               <p>
-                <strong>Address:</strong>
-                {cart.shippingAddress?.address}, {cart.shippingAddress?.city},
-                {"   "}
-                {cart.shippingAddress?.postalCode},{"   "}
-                {"Canada"}
+                <strong>{t("address")}:</strong> {cart.shippingAddress?.address}
+                , {cart.shippingAddress?.city},{" "}
+                {cart.shippingAddress?.postalCode}, {"Canada"}
               </p>
             </ListGroup.Item>
             <ListGroup.Item>
-              <h2>Order Items</h2>
+              <h2>{t("items")}</h2>
               {cart.cartItems.length === 0 ? (
                 <Alert variant="info">Your cart is empty</Alert>
               ) : (
@@ -83,9 +80,7 @@ const PlaceOrderScreen = () => {
                         </Col>
 
                         <Col>
-                          <Link to={`/product/${item.id}`}>
-                            {item.name}
-                          </Link>
+                          <Link to={`/product/${item.id}`}>{item.name}</Link>
                         </Col>
 
                         <Col md={4}>
@@ -102,22 +97,27 @@ const PlaceOrderScreen = () => {
         </Col>
 
         <Col md={4}>
-          <ToggleChoice
-            firstOption="Shipping"
-            secondOption="Pick-up"
-          />
-          {option === "Shipping" && 
-            <p>*A shipping fee of 15$ is applied for orders under 100$, we only ship within the Montreal metropolitan area.</p>
-          }
-          {option === "Pick-up" && 
-            <p>*Pick-up is in the Chateauguay area, the exact address will be emailed upon purchase confirmation.</p>
-          }
-          {isLoading ? <Loader /> : <OrderSummary {...prices}/>}
-          {typeof prices.total === 'number' ? <Payment amount={prices.total} /> : <Loader />}
+          <ToggleChoice firstOption="Shipping" secondOption="Pick-up" />
+          {option === "Shipping" && (
+            <p>
+              {t("shippingMessage")}
+            </p>
+          )}
+          {option === "Pick-up" && (
+            <p>
+              {t("pickUpMessage")}
+            </p>
+          )}
+          {isLoading ? <Loader /> : <OrderSummary {...prices} />}
+          {typeof prices.total === "number" ? (
+            <Payment amount={prices.total} />
+          ) : (
+            <Loader />
+          )}
         </Col>
       </Row>
     </Container>
   );
-}
+};
 
 export default PlaceOrderScreen;
