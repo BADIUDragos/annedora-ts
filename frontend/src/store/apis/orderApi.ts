@@ -61,20 +61,24 @@ const orderApi = baseApi.injectEndpoints({
         url: `base/orders/${id}/shipped/`,
         method: "PUT",
       }),
-      invalidatesTags: (result, error, id) => [{ type: orderTag, id }],
+      invalidatesTags: [{ type: orderTag, id: "LIST" }],
     }),
     markOrderAsDelivered: builder.mutation<void, number>({
       query: (id) => ({
         url: `base/orders/${id}/delivered/`,
         method: "PUT",
       }),
-      invalidatesTags: (result, error, id) => [{ type: orderTag, id }],
+      invalidatesTags: [{ type: orderTag, id: "LIST" }],
     }),
     getAllOrders: builder.query<CreatedOrder[], void >({
       query: () => ({
         url: "base/orders/",
         method: "GET",
       }),
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: "Order" as const, id })), { type: orderTag, id: "LIST" }]
+          : [{ type: orderTag, id: "LIST" }],
     }),
   }),
 });
