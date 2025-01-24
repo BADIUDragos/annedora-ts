@@ -40,7 +40,7 @@ const OrderPage = () => {
     tax: order.tax_price,
     shipping: order.shipping_price,
     total: order.total_price,
-  }<Prices>;
+  };
 
   return (
     <Container>

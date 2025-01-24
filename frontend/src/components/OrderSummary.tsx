@@ -1,15 +1,12 @@
-import { Row, Col, ListGroup, Card, Alert } from "react-bootstrap";
-import Loader from "./Loader";
+import { Row, Col, ListGroup, Card } from "react-bootstrap";
 
-import Payment from "../pages/PlaceOrderPage/components/Payment";
 import { Prices } from "../store/interfaces/orderInterfaces";
 import { useTranslation } from "react-i18next";
 
-const OrderSummary:React.FC<Prices> = (prices) => {
-  
-  const { subtotal, shipping, tax, total } = prices
+const OrderSummary: React.FC<Prices> = (prices) => {
+  const { subtotal, shipping, tax, total } = prices;
 
-  const { t } = useTranslation("order")
+  const { t } = useTranslation("order");
 
   return (
     <>
