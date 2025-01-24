@@ -9,7 +9,6 @@ import OrderStatus from "./OrderStatus";
 import OrderInfo from "./OrderInfo";
 import OrderItems from "./OrderItems";
 import OrderSummary from "../../components/OrderSummary";
-import { Prices } from "../../store/interfaces/orderInterfaces";
 import UpdateOrderStatus from "./UpdateOrderStatus";
 
 const OrderPage = () => {
