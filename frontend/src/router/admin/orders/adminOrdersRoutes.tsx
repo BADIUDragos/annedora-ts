@@ -1,5 +1,5 @@
 import ProtectedRoute from "../../../components/ProtectedRoute";
-import { AdminOrdersPage } from "../../../pages/Admin/Orders";
+import AdminOrdersPage from "../../../pages/Admin/Orders";
 
 
 const adminOrdersRoutes = {

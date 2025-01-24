@@ -17,6 +17,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    subtotal = serializers.DecimalField(max_digits=10, decimal_places=2, coerce_to_string=False)
+    tax_price = serializers.DecimalField(max_digits=10, decimal_places=2, coerce_to_string=False)
+    shipping_price = serializers.DecimalField(max_digits=10, decimal_places=2, coerce_to_string=False)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, coerce_to_string=False)
+
     order_items = serializers.SerializerMethodField(read_only=True)
     shipping_address = serializers.SerializerMethodField(read_only=True)
     user = serializers.SerializerMethodField(read_only=True)

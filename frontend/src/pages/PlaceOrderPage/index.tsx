@@ -2,20 +2,51 @@ import { Row, Col, ListGroup, Image, Alert, Container } from "react-bootstrap";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
-import OrderSummary from './components/OrderSummary'
+import OrderSummary from '../../components/OrderSummary'
 import ToggleChoice from '../../components/ToggleChoice'
 import { useCart } from "../../store/hooks/cartHooks";
 import { useOrder } from "../../store/hooks/orderHooks";
+import { useDispatch } from "react-redux";
+import { useGetTotalMutation } from "../../store/apis/orderApi";
+import { useEffect } from "react";
+import { setPrices } from "../../store/slices/orderSlice";
+import Loader from "../../components/Loader";
+import Payment from "./components/Payment";
 
 
 const PlaceOrderScreen = () => {
 
   const cart = useCart()
-  const { option } = useOrder()
+  const { prices, option } = useOrder();
 
   if (cart.cartItems.length === 0) {
     return <Navigate to={"/"} />
   }
+
+  const dispatch = useDispatch()
+  const { cartItems } = cart;
+  
+  const [getTotal, {isLoading}] = useGetTotalMutation();
+
+  useEffect(() => {
+    const fetchTotal = async () => {
+      const items = cartItems.map((item) => ({
+        id: item.id,
+        qty: item.qty,
+      }));
+  
+      try {
+        const fetchedPrices = await getTotal({ items, option }).unwrap();
+        dispatch(setPrices(fetchedPrices));
+      } catch (error) {
+        console.error("Failed to fetch prices:", error);
+      }
+    };
+  
+    fetchTotal();
+  }, [option, cartItems, getTotal]);
+
+  
 
   return (
     <Container>
@@ -81,7 +112,8 @@ const PlaceOrderScreen = () => {
           {option === "Pick-up" && 
             <p>*Pick-up is in the Chateauguay area, the exact address will be emailed upon purchase confirmation.</p>
           }
-          <OrderSummary />
+          {isLoading ? <Loader /> : <OrderSummary {...prices}/>}
+          {typeof prices.total === 'number' ? <Payment amount={prices.total} /> : <Loader />}
         </Col>
       </Row>
     </Container>

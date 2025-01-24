@@ -70,7 +70,13 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, id) => [{ type: orderTag, id }],
     }),
+    getAllOrders: builder.query<CreatedOrder[], void >({
+      query: () => ({
+        url: "base/orders/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation, useGetMyOrdersQuery, useGetOrderByIdQuery, useMarkOrderAsShippedMutation, useMarkOrderAsDeliveredMutation } = orderApi;
+export const { useGetTotalMutation, useLazyGetStripePublicKeyQuery, useCreatePaymentIntentMutation, useCreateOrderMutation, useGetMyOrdersQuery, useGetOrderByIdQuery, useMarkOrderAsShippedMutation, useMarkOrderAsDeliveredMutation, useGetAllOrdersQuery } = orderApi;

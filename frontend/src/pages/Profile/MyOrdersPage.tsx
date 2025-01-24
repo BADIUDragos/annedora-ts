@@ -1,4 +1,4 @@
-import { Alert, Col, Container } from "react-bootstrap";
+import { Alert, Container } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import { useGetMyOrdersQuery } from "../../store/apis/orderApi";
 import getErrorString from "../../store/errorHandling/getErrorString";
@@ -13,7 +13,6 @@ const MyOrdersPage: React.FC = () => {
 
   return (
     <Container>
-      <Col>
         <h2>{t("myOrders")}</h2>
         {isLoading ? (
           <Loader />
@@ -27,7 +26,6 @@ const MyOrdersPage: React.FC = () => {
             <Link to="/products">{t("browseOurProducts")}</Link>
           </Alert>
         )}
-      </Col>
     </Container>
   );
 };

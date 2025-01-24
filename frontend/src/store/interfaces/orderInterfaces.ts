@@ -34,10 +34,10 @@ export interface CreatedOrderItem {
 export interface CreatedOrder {
   id: number;
   user: UserInfoState;
-  subtotal: string;
-  tax_price: string;
-  shipping_price: string;
-  total_price: string;
+  subtotal: number;
+  tax_price: number;
+  shipping_price: number;
+  total_price: number;
   is_paid: boolean;
   paid_at: string;
   is_shipped: boolean;
@@ -46,4 +46,5 @@ export interface CreatedOrder {
   delivered_at: string | null;
   order_items: CreatedOrderItem[];
   shipping_address: ShippingAddress;
+  order_option: DeliveryPickupInterface;
 }
