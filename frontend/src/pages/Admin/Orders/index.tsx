@@ -91,11 +91,11 @@ const AdminOrdersPage = () => {
         </Tab>
         <Tab eventKey="allOrders" title="All Orders">
           <OrderTable
-            filteredOrders={[...(orders ?? [])].sort(
+            filteredOrders={filteredOrders([...(orders ?? [])].sort(
               (a, b) =>
                 new Date(b.paid_at as string).getTime() -
                 new Date(a.paid_at as string).getTime()
-            )}
+            ))}
           />
         </Tab>
       </Tabs>
