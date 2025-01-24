@@ -20,7 +20,7 @@ export const AdminEditProductPage = () => {
     { isLoading: isUpdating, isSuccess, error: updateError },
   ] = useUpdateProductMutation();
 
-  const [productData, setProductData] = useState<ProductState>({
+  const [productData, setProductData] = useState<Partial<ProductState>>({
     id: 0,
     name: "",
     image: "",
