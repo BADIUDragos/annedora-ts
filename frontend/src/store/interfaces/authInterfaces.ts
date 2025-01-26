@@ -32,3 +32,16 @@ export interface RefreshToken {
 }
 
 export type TokensState = AccessToken & RefreshToken;
+
+export interface EmailInterface {
+  email: string
+}
+
+export interface ValidateTokenParameters {
+  uid: string
+  token: string
+}
+
+export type UpdatePasswordInterface = ValidateTokenParameters & {
+  password: string;
+};

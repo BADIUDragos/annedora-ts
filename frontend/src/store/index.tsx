@@ -1,4 +1,4 @@
-import { configureStore, ThunkDispatch, AnyAction, PreloadedState } from '@reduxjs/toolkit';
+import { configureStore, ThunkDispatch, PreloadedState, UnknownAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { rootReducer, RootState } from './combinedReducer';
 import { useLogoutMutation, useLoginMutation } from './apis/authApi';
@@ -19,7 +19,7 @@ const setupStore = (preloadedState?: PreloadedState<RootState>) => {
 
 setupListeners(setupStore().dispatch);
 
-export type AppDispatch = ThunkDispatch<RootState, unknown, AnyAction>;
+export type AppDispatch = ThunkDispatch<RootState, unknown, UnknownAction>;
 export type { RootState }
 export type AppStore = ReturnType<typeof setupStore>
 

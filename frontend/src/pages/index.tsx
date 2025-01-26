@@ -12,6 +12,8 @@ import PlaceOrderPage from "./PlaceOrderPage";
 import MyOrdersPage from "./Profile/MyOrdersPage";
 import RegisterPage from "./Profile/RegisterPage";
 import OrderPage from "./OrderPage";
+import ResetPasswordPage from "./PasswordReset/ResetPasswordPage"
+import ChangePasswordPage from "./PasswordReset/ChangePasswordPage"
 
 export {
   HomePage,
@@ -27,5 +29,7 @@ export {
   ProductPage,
   MyOrdersPage,
   RegisterPage,
-  OrderPage
+  OrderPage,
+  ResetPasswordPage,
+  ChangePasswordPage
 };

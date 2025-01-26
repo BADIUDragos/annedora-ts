@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Loader from "../../../components/Loader";
 import CheckoutForm from "./CheckoutForm";
 
-
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 

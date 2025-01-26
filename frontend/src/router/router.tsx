@@ -5,6 +5,8 @@ import {
   ErrorPage,
   NotFoundPage,
   RegisterPage,
+  ResetPasswordPage,
+  ChangePasswordPage,
 } from "../pages";
 import { createBrowserRouter } from "react-router-dom";
 import adminRoutes from "./admin/routes";
@@ -29,6 +31,14 @@ export const routes = [
       {
         path: "/register",
         element: <RegisterPage />,
+      },
+      {
+        path: "/resetpassword",
+        element: <ResetPasswordPage />
+      },
+      {
+        path: "/changepassword",
+        element: <ChangePasswordPage />
       },
       { path: "*", element: <NotFoundPage /> },
     ],

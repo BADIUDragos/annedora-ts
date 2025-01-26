@@ -3,6 +3,9 @@ import {
   LoginCredentials,
   TokensState,
   RegisterCredentials,
+  EmailInterface,
+  ValidateTokenParameters,
+  UpdatePasswordInterface,
 } from "../interfaces/authInterfaces";
 import { logOut, setCredentials } from "../.";
 import { baseApi } from "./baseApi";
@@ -34,10 +37,10 @@ const authApi = baseApi.injectEndpoints({
         try {
           await queryFulfilled;
           dispatch(logOut());
-          dispatch(baseApi.util.resetApiState())
+          dispatch(baseApi.util.resetApiState());
         } catch (error) {
           dispatch(logOut());
-          dispatch(baseApi.util.resetApiState())
+          dispatch(baseApi.util.resetApiState());
         }
       },
     }),
@@ -56,8 +59,36 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    resetPassword: build.mutation<any, EmailInterface>({
+      query: (email) => ({
+        url: "base/users/password_reset/",
+        method: "POST",
+        body: email,
+      }),
+    }),
+    validateToken: build.query<any, ValidateTokenParameters>({
+      query: (validateTokenParams) => ({
+        url: `base/users/validate_token/`,
+        method: "GET",
+        params: validateTokenParams,
+      }),
+    }),
+    updatePassword: build.mutation<any, UpdatePasswordInterface>({
+      query: (passwordData) => ({
+        url: "base/users/update_password/",
+        method: "POST",
+        body: passwordData,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = authApi;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useResetPasswordMutation,
+  useValidateTokenQuery,
+  useUpdatePasswordMutation
+} = authApi;
 export { authApi };

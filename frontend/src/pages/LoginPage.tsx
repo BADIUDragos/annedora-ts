@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
         </Col>
         <Col>
         {t('forgotPassword')}?{" "}
-          <NavLink to={`/profile/resetpassword`}>
+          <NavLink to={`/resetpassword`}>
           {t('resetPassword')}
           </NavLink>
         </Col>
