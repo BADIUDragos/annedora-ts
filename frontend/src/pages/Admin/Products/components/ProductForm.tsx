@@ -52,6 +52,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <option value="candles">Candles</option>
                 <option value="soaps">Soaps</option>
                 <option value="other">Other</option>
+                <option value="materials">Materials</option>
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="productPrice" className="mt-3">

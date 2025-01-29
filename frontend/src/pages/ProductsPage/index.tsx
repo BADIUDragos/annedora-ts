@@ -6,7 +6,7 @@ import Product from "./Product";
 import Loader from "../../components/Loader";
 import { useTranslation } from "react-i18next";
 
-const categories = ["All Products", "Honey", "Candles", "Soaps", "Special"];
+const categories = ["All Products", "Honey", "Candles", "Soaps", "Special", "Materials"];
 
 const ProductsPage: React.FC = () => {
   const { t } = useTranslation("home");

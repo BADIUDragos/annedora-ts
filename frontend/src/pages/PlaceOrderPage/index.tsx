@@ -1,5 +1,5 @@
 import { Row, Col, ListGroup, Image, Alert, Container } from "react-bootstrap";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import CheckoutSteps from "../../components/CheckoutSteps";
 
 import OrderSummary from "../../components/OrderSummary";

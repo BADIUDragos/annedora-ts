@@ -1,4 +1,4 @@
-import { Alert, Card, Col, ListGroup, Row, Container } from "react-bootstrap";
+import { Alert, Col, ListGroup, Row, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Loader from "../../components/Loader";
 import { useGetOrderByIdQuery } from "../../store/apis/orderApi";

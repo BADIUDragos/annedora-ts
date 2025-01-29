@@ -28,6 +28,11 @@ const ProductCategories: React.FC = () => {
       link: "/products?category=special",
       image: "/images/specialCategory.jpeg",
     },
+    {
+      name: t('materials'),
+      link: "/products?category=materials",
+      image: "/images/materials.jpeg",
+    },
   ];
 
   return (
