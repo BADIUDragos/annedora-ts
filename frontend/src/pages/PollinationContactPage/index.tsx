@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import FormContainer from "../../components/FormContainer";
 import { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import { ContactState } from "../../store/interfaces/contactInterface";
 import Loader from "../../components/Loader";
 import BeeButton from "../../components/BeeButton";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const PollinationContactPage: React.FC = () => {
   const { t } = useTranslation("pollination");
@@ -23,6 +24,9 @@ const PollinationContactPage: React.FC = () => {
     produce: "",
   });
 
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -32,10 +36,18 @@ const PollinationContactPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!captchaValue) {
+      alert("Please complete the CAPTCHA verification.");
+      return;
+    }
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
     });
+
+    data.append("recaptcha_token", captchaValue);
 
     await makeContact(data);
   };
@@ -126,6 +138,13 @@ const PollinationContactPage: React.FC = () => {
                   ></Form.Control>
                 </Form.Group>
 
+                <Container className="d-flex justify-content-center mt-3">
+                  <ReCAPTCHA
+                    sitekey="6LdEMccqAAAAAHe-x4rL1qB2UKynRrM9e-5vZKnk"
+                    onChange={(value) => setCaptchaValue(value)}
+                  />
+                </Container>
+
                 {isLoading ? (
                   <Loader
                     testid="loader"
@@ -134,7 +153,9 @@ const PollinationContactPage: React.FC = () => {
                   />
                 ) : (
                   <Container className="d-flex justify-content-center">
-                    <BeeButton className='mt-4' type="submit">{t("contactOurBees")}</BeeButton>
+                    <BeeButton className="mt-4" type="submit">
+                      {t("contactOurBees")}
+                    </BeeButton>
                   </Container>
                 )}
               </Form>
