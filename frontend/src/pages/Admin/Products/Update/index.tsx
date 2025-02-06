@@ -23,9 +23,11 @@ export const AdminEditProductPage = () => {
   const [productData, setProductData] = useState<Partial<ProductState>>({
     id: 0,
     name: "",
+    french_name: "",
     image: "",
     category: "",
     description: "",
+    french_description: "",
     rating: 0,
     price: 0,
     count_in_stock: 0,

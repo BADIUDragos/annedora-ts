@@ -10,9 +10,11 @@ interface Review {
 export interface ProductState {
   id: number; 
   name: string;
+  french_name: string;
   image: string;
   category: string;
   description: string;
+  french_description: string;
   rating: number;
   price: number;
   count_in_stock: number;

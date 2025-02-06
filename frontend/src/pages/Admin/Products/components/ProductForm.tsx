@@ -40,6 +40,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onChange={handleInputChange}
               />
             </Form.Group>
+            <Form.Group controlId="frenchName" className="mt-3">
+              <Form.Label>French Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="french_name"
+                placeholder="Enter french name"
+                value={productData.french_name}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
             <Form.Group controlId="productCategory" className="mt-3">
               <Form.Label>Category</Form.Label>
               <Form.Control
@@ -82,6 +92,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 name="description"
                 placeholder="Enter product description"
                 value={productData.description}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="productDescription" className="mt-3">
+              <Form.Label>French Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="french_description"
+                placeholder="Enter french description"
+                value={productData.french_description}
                 onChange={handleInputChange}
               />
             </Form.Group>
