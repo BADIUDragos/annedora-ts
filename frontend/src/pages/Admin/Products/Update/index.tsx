@@ -25,7 +25,7 @@ export const AdminEditProductPage = () => {
     name: "",
     french_name: "",
     image: "",
-    category: "",
+    category: "honey",
     description: "",
     french_description: "",
     rating: 0,
