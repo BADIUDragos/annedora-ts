@@ -1,0 +1,11 @@
+{
+  "title": "Adresse de livraison",
+  "address": "Adresse",
+  "city": "Ville",
+  "postalCode": "Code postal",
+  "country": "Pays",
+  "continue": "Continuer",
+  "onlyCanada": "Nous livrons seulement dans la région métropolitaine de Montréal en ce moment",
+  "shipping": "Livraison",
+  "placeOrder": "Commander"
+}

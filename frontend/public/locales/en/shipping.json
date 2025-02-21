@@ -1,0 +1,11 @@
+{
+  "title": "billing / shipping address",
+  "address": "Address",
+  "city": "City",
+  "postalCode": "Postal code",
+  "country": "Country",
+  "continue": "Continue",
+  "onlyCanada": "We're only shipping within Montreal's area momentarily",
+  "shipping": "Shipping",
+  "placeOrder": "Place Order"
+}

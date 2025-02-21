@@ -25,6 +25,7 @@ export interface CreatedOrderItem {
   id: number;
   image: string;
   name: string;
+  french_name: string;
   order: number;
   price: number;
   product: number;

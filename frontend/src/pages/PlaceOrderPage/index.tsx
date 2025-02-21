@@ -15,7 +15,7 @@ import Payment from "./components/Payment";
 import { useTranslation } from "react-i18next";
 
 const PlaceOrderScreen = () => {
-  const { t } = useTranslation("order");
+  const { t, i18n } = useTranslation("order");
 
   const cart = useCart();
   const { prices, option } = useOrder();
@@ -80,7 +80,7 @@ const PlaceOrderScreen = () => {
                         </Col>
 
                         <Col>
-                          <Link to={`/products/${item.id}`}>{item.name}</Link>
+                          <Link to={`/products/${item.id}`}>{i18n.language === "en" ? item.name : item.french_name}</Link>
                         </Col>
 
                         <Col md={4}>
