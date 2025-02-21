@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import { FaTrash } from "react-icons/fa";
 
 const CartPage: React.FC = () => {
-  const { t } = useTranslation("cart");
+  const { t, i18n } = useTranslation("cart");
 
   const { userInfo } = useAuth();
 
@@ -66,7 +66,7 @@ const CartPage: React.FC = () => {
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col md={3}>
-                      <NavLink to={`/products/${item.id}`}>{item.name}</NavLink>
+                      <NavLink to={`/products/${item.id}`}>{i18n.language === "en" ? item.name : item.french_name}</NavLink>
                     </Col>
                     <Col md={2}>${item.price}</Col>
                     <Col md={3}>

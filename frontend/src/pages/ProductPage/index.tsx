@@ -84,6 +84,7 @@ const ProductPage = () => {
     const cartItem: CartItem = {
       id: productData.id,
       name: productData.name,
+      french_name: productData.french_name,
       image: productData.image,
       price: productData.price,
       count_in_stock: productData.count_in_stock,
