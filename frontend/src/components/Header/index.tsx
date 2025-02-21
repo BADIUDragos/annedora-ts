@@ -31,7 +31,7 @@ const Header: React.FC<IHeader> = ({ className }) => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
+            <Nav className="ms-auto" style={{marginLeft: "auto"}}>
               <CartMenu />
               <UserMenu />
               <Nav.Link onClick={() => changeLanguage(currentLanguage === 'en' ? 'fr' : 'en')}>

@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import { Card, Container } from "react-bootstrap";
 import Rating from '../../components/Rating'
 import { Link } from 'react-router-dom'
 import { ProductState } from "../../store/interfaces/productInterfaces";

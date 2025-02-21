@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
     <footer>
       <Container>
         <Row>
-          <Col md={6}>
+          <Col xs={12} md={6} className="mb-4">
             <span style={{ fontWeight: "bold" }}>{t('aboutUs')}:</span>
             <br />
             <br />
@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
             <br />
           </Col>
 
-          <Col md={3}>
+          <Col xs={12} md={3} className="mb-4">
             <ListGroup variant="flush">
               <span style={{ fontWeight: "bold" }}>{t("contactInfo")}:</span>
               <ListGroup.Item className="mt-3">
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             </ListGroup>
           </Col>
 
-          <Col md={3}>
+          <Col xs={12} md={3} className="mb-4">
             <ListGroup variant="flush">
               <span style={{ fontWeight: "bold" }}>
                 {t("socialMedia")}

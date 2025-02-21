@@ -68,7 +68,8 @@ const ProductsPage: React.FC = () => {
         {filteredProducts && filteredProducts.map((product) => (
           <Col
             key={product.id}
-            sm={12}
+            xs={6}
+            sm={3}
             md={6}
             lg={4}
             xl={3}

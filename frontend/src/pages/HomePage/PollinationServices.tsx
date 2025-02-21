@@ -13,13 +13,13 @@ const PollinationServices: React.FC = () => {
   };
 
   return (
-    <Container>
-      <h1 className="mx-5 mb-5">{t("pollinationTitle")}</h1>
+    <Container fluid>
+      <h1 className="mx-1 pb-2">{t("pollinationTitle")}</h1>
 
-      <h2 className="mx-5" style={{ color: "#ffc600" }}>
+      <h3 className="mx-3 pb-2" style={{ color: "#ffc600" }}>
         {t("increaseYourYield")}
-      </h2>
-      <p className="mx-5">{t("weOfferPollinationServices")}</p>
+      </h3>
+      <p className="mx-3 pb-3">{t("weOfferPollinationServices")}</p>
 
       <Container className="d-flex justify-content-center">
         <BeeButton onClick={handleClick}>{t("contactOurBees")}</BeeButton>

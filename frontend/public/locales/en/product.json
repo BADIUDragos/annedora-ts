@@ -1,0 +1,28 @@
+{
+  "goToProducts": "Go to products",
+  "price": "Price",
+  "description": "Description",
+  "status": "Status",
+  "inStock": "In Stock",
+  "outOfStock": "Out of Stock",
+  "quantity": "Quantity",
+  "addToCart": "Add to cart",
+  "reviews": "Reviews",
+  "review": "Review",
+  "addReview": "Add a review",
+  "rating": "Rating",
+  "submit": "Submit",
+  "itemHasBeenAdded": "Items added to cart !",
+  "noReviewsYet": "No reviews yet, be our first!",
+  "reviewAdded": "Review submitted",  
+  "select": "Select...",
+  "poor": "1 - Bad",
+  "fair": "2 - Fair",
+  "good": "3 - Good",
+  "vGood": "4 - Very good",
+  "excellent": "5 - Excellent",
+  "please": "Please",
+  "login": "login",
+  "toWrite": "to write a review"
+}
+  

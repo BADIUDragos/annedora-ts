@@ -8,19 +8,20 @@ const HomePage: React.FC = () => {
   const { t } = useTranslation("home");
 
   return (
-    <Container>
-      <Container>
+    <Container >
+      <Container >
         <Row>
           <Col className="pr-5">
             <AnnedoraCarousel />
           </Col>
           <Col>
-            <PollinationServices  />
+            <PollinationServices />
           </Col>
         </Row>
       </Container>
-      <h1>{t("categoriesTitle")}</h1>
-      <ProductCategories />
+      <Container >
+        <ProductCategories />
+      </Container>
     </Container>
   );
 };

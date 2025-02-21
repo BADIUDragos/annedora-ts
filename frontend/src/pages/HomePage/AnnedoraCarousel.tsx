@@ -7,7 +7,7 @@ const AnnedoraCarousel:React.FC = () => {
 
   return (
     <Container>
-      <h1 className="mx-5 mb-5">{t("carouselTitle")}</h1>
+      <h1 className="mx-1 mb-5">{t("carouselTitle")}</h1>
 
       <Carousel pause='hover' variant='dark' fade className='mt-3'>
         

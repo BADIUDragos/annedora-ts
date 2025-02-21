@@ -24,11 +24,14 @@ import getErrorString from "../../store/errorHandling/getErrorString";
 import { addItemToCart } from "../../store/slices/cartSlice";
 import { useDispatch } from "react-redux";
 import { CartItem } from "../../store/interfaces/cartInterfaces";
+import { useTranslation } from "react-i18next";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
   const dispatch = useDispatch();
+
+  const { t, i18n } = useTranslation("product");
 
   const {
     data: product,
@@ -54,9 +57,11 @@ const ProductPage = () => {
   const [productData, setProductData] = useState<ProductState>({
     id: 0,
     name: "",
+    french_name: "",
     image: "",
     category: "",
     description: "",
+    french_description: "",
     rating: 0,
     price: 0,
     count_in_stock: 0,
@@ -99,28 +104,35 @@ const ProductPage = () => {
   return (
     <Container>
       <Link to="/products" className="btn btn-light my-3">
-        Go Back
+        {t("goToProducts")}
       </Link>
 
       <Row>
-        <Col md={6}>
-          <Image src={productData.image} alt={productData.name} fluid />
-        </Col>
         <Col md={3}>
+          <Image
+            src={productData.image}
+            alt={productData.name}
+            fluid
+            
+          />
+        </Col>
+        <Col md={6}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h3>{productData.name}</h3>
+              <h3>
+              {i18n.language === "en" ? product?.name : product?.french_name}
+              </h3>
             </ListGroup.Item>
             <ListGroup.Item>
               <Rating
                 value={productData.rating}
-                text={`${productData.num_reviews} reviews`}
+                text={`${productData.num_reviews} ${t("reviews")}`}
                 color={"#f8e825"}
               />
             </ListGroup.Item>
-            <ListGroup.Item>Price: ${productData.price}</ListGroup.Item>
+            <ListGroup.Item>{t("price")}: ${productData.price}</ListGroup.Item>
             <ListGroup.Item>
-              Description: {productData.description}
+              {t("description")}: {i18n.language === "en" ? product?.description : product?.french_description}
             </ListGroup.Item>
           </ListGroup>
         </Col>
@@ -129,21 +141,19 @@ const ProductPage = () => {
             <ListGroup>
               <ListGroup.Item>
                 <Row>
-                  <Col>Price:</Col>
+                  <Col>{t("price")}:</Col>
                   <Col>
                     <strong>${productData.price}</strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
-            </ListGroup>
-            <ListGroup>
               <ListGroup.Item>
                 <Row>
-                  <Col>Status:</Col>
+                  <Col>{t("status")}:</Col>
                   <Col>
                     {productData.count_in_stock > 0
-                      ? "In Stock"
-                      : "Out of Stock"}
+                      ? t("inStock")
+                      : t("outOfStock")}
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -151,7 +161,7 @@ const ProductPage = () => {
               {productData.count_in_stock > 0 && (
                 <ListGroup.Item>
                   <Row>
-                    <Col>Qty</Col>
+                    <Col>{t("quantity")}</Col>
                     <Col xs="auto" className="my-1">
                       <Form.Control
                         as="select"
@@ -179,7 +189,7 @@ const ProductPage = () => {
                   type="button"
                   style={{ marginBottom: "0.5rem" }}
                 >
-                  ADD TO CART
+                  {t("addToCart")}
                 </Button>
               </ListGroup.Item>
             </ListGroup>
@@ -190,7 +200,7 @@ const ProductPage = () => {
               className="mt-3"
               style={{ textAlign: "center" }}
             >
-              Items added to cart!
+              {t("itemHasBeenAdded")}
             </Alert>
           ) : null}
         </Col>
@@ -199,9 +209,9 @@ const ProductPage = () => {
         <Col md={6}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h4 className="mt-5">Reviews</h4>
+              <h4 className="mt-5">{t("reviews")}</h4>
               {productData.num_reviews === 0 && (
-                <Alert variant="info">No reviews yet, be our first!</Alert>
+                <Alert variant="info">{t("noReviewsYet")}</Alert>
               )}
             </ListGroup.Item>
 
@@ -216,10 +226,10 @@ const ProductPage = () => {
               ))}
 
             <ListGroup.Item>
-              <h4 className="mt-5">Add a review</h4>
+              <h4 className="mt-5">{t("addReview")}</h4>
               {loadingProductReview && <Loader />}
               {successProductReview && (
-                <Alert variant="success">Review submitted!</Alert>
+                <Alert variant="success">{t("reviewAdded")}</Alert>
               )}
               {errorProductReview && (
                 <Alert variant="danger">
@@ -230,22 +240,22 @@ const ProductPage = () => {
               {userInfo ? (
                 <Form onSubmit={submitHandler}>
                   <Form.Group controlId="rating">
-                    <Form.Label>Rating</Form.Label>
+                    <Form.Label>{t("rating")}</Form.Label>
                     <Form.Control
                       as="select"
                       value={rating}
                       onChange={(e) => setRating(Number(e.target.value))}
                     >
-                      <option value="">Select...</option>
-                      <option value="1">1 - Poor</option>
-                      <option value="2">2 - Fair</option>
-                      <option value="3">3 - Good</option>
-                      <option value="4">4 - Very good</option>
-                      <option value="5">5 - Excellent</option>
+                      <option value="">{t("select")}</option>
+                      <option value="1">{t("poor")}</option>
+                      <option value="2">{t("fair")}</option>
+                      <option value="3">{t("good")}</option>
+                      <option value="4">{t("vGood")}</option>
+                      <option value="5">{t("excellent")}</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group controlId="comment">
-                    <Form.Label className="mt-2">Review</Form.Label>
+                    <Form.Label className="mt-2">{t("review")}</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={5}
@@ -260,12 +270,12 @@ const ProductPage = () => {
                     variant="primary"
                     className="mt-3"
                   >
-                    Submit
+                    {t("submit")}
                   </Button>
                 </Form>
               ) : (
                 <Alert variant="info">
-                  Please <NavLink to="/login">login</NavLink> to write a review
+                  {t("please")} <NavLink to="/login">{t("login")}</NavLink> {t("toWrite")}
                 </Alert>
               )}
             </ListGroup.Item>

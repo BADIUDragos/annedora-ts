@@ -16,6 +16,6 @@ export interface CartItemMinimal {
   qty: number;
 }
 
-export interface CartItem extends Omit<ProductState, 'category' | 'description' | 'rating' | 'num_reviews' | 'reviews'> {
+export interface CartItem extends Omit<ProductState, 'category' | 'description' | 'rating' | 'num_reviews' | 'reviews' | "french_name" | "french_description"> {
   qty: number;
 }
