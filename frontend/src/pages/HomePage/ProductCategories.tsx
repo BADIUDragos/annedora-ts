@@ -31,7 +31,7 @@ const ProductCategories: React.FC = () => {
     {
       name: t("materials"),
       link: "/products?category=materials",
-      image: "/images/materials.jpeg",
+      image: "/images/materialsCategory.png",
     },
   ];
 
