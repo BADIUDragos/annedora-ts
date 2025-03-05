@@ -3,6 +3,7 @@ import { ToggleButtonGroup, ToggleButton } from "react-bootstrap";
 import { setOrderOption } from "../store/slices/orderSlice";
 import { DeliveryPickupInterface } from "../store/interfaces/orderInterfaces";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 interface ToggleChoiceInterface {
   firstOption: string;
@@ -13,6 +14,7 @@ const ToggleChoice: React.FC<ToggleChoiceInterface> = ({
   firstOption,
   secondOption,
 }) => {
+  const { t } = useTranslation("order")
   const options = [firstOption, secondOption];
   const dispatch = useDispatch();
 
@@ -41,7 +43,7 @@ const ToggleChoice: React.FC<ToggleChoiceInterface> = ({
           id={`tbg-radio-${index}`}
           value={option}
         >
-          {option}
+          {t(option)}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>

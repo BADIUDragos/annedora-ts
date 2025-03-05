@@ -45,7 +45,7 @@ const ProductsPage: React.FC = () => {
         </Col>
         <Col md="auto">
           <Dropdown onSelect={(e) => handleSelect(e as string)}>
-            <Dropdown.Toggle id="dropdown-basic" style={{ width: "200px" }}>
+            <Dropdown.Toggle id="dropdown-basic" style={{ width: "auto" }}>
               {t(selectedCategory)}
             </Dropdown.Toggle>
 

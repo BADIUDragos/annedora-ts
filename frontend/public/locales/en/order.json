@@ -29,6 +29,8 @@
   "markFulfilled": "Fulfill order",
   "pickUpMessage": "*Pick-up is in the Chateauguay area, the exact address will be emailed upon purchase confirmation.",
   "shippingMessage": "*A shipping fee of 15$ is applied for orders under 100$, we only ship within the Montreal metropolitan area.",
-  "pickUp": "Ramassage",
-  "payment": "Payment"
+  "Pick-up": "Pick-up",
+  "payment": "Payment",
+  "processing": "Processing ...",
+  "payNow": "Pay now"
 }

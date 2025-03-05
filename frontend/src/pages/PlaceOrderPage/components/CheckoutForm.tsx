@@ -10,8 +10,12 @@ import { OrderCreationRequest } from "../../../store/interfaces/orderInterfaces"
 import { useDispatch } from "react-redux";
 import { resetOrder } from "../../../store/slices/orderSlice";
 import { clearCart } from "../../../store/slices/cartSlice";
+import { useTranslation } from "react-i18next";
 
 const CheckoutForm = () => {
+
+  const { t } = useTranslation("order")
+
   const { cartItems, shippingAddress } = useCart();
   const order = useOrder();
   const stripe = useStripe();
@@ -66,7 +70,7 @@ const CheckoutForm = () => {
     <Form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
       <Button disabled={isProcessing || !stripe || !elements} id="submit" className="mt-3 w-100" type="submit">
-        {isProcessing ? "Processing ..." : "Pay now"}
+        {isProcessing ? t("processing") : t("payNow")}
       </Button>
       {message && <Alert className="mt-3" variant="info">{message}</Alert>}
     </Form>
