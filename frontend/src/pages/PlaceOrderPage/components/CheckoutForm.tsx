@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PaymentElement } from "@stripe/react-stripe-js";
+import { PaymentElement, AddressElement } from "@stripe/react-stripe-js";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,7 @@ import { clearCart } from "../../../store/slices/cartSlice";
 import { useTranslation } from "react-i18next";
 
 const CheckoutForm = () => {
-
-  const { t } = useTranslation("order")
+  const { t } = useTranslation("order");
 
   const { cartItems, shippingAddress } = useCart();
   const order = useOrder();
@@ -26,7 +25,7 @@ const CheckoutForm = () => {
   const [message, setMessage] = useState<string | null | undefined>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,7 +39,7 @@ const CheckoutForm = () => {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {},
-      redirect: 'if_required'
+      redirect: "if_required",
     });
 
     if (error) {
@@ -57,8 +56,8 @@ const CheckoutForm = () => {
 
     try {
       const result = await createOrder(orderData).unwrap();
-      dispatch(clearCart())
-      dispatch(resetOrder())
+      dispatch(clearCart());
+      dispatch(resetOrder());
       navigate(`/orders/${result.id}`);
     } catch (error: any) {
       setMessage(error.data ? error.data.message : error.message);
@@ -68,13 +67,30 @@ const CheckoutForm = () => {
 
   return (
     <Form id="payment-form" onSubmit={handleSubmit}>
+      <AddressElement
+        options={{
+          mode: "shipping",
+          fields: {
+            phone: "always",
+          },
+        }}
+      />
       <PaymentElement id="payment-element" />
-      <Button disabled={isProcessing || !stripe || !elements} id="submit" className="mt-3 w-100" type="submit">
+      <Button
+        disabled={isProcessing || !stripe || !elements}
+        id="submit"
+        className="mt-3 w-100"
+        type="submit"
+      >
         {isProcessing ? t("processing") : t("payNow")}
       </Button>
-      {message && <Alert className="mt-3" variant="info">{message}</Alert>}
+      {message && (
+        <Alert className="mt-3" variant="info">
+          {message}
+        </Alert>
+      )}
     </Form>
   );
-}
+};
 
 export default CheckoutForm;
