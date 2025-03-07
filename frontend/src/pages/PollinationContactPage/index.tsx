@@ -13,7 +13,7 @@ const PollinationContactPage: React.FC = () => {
   const { t } = useTranslation("pollination");
   const navigate = useNavigate();
 
-  const [makeContact, { isLoading, isSuccess, error }] =
+  const [makeContact, { isLoading, isSuccess }] =
     useMakeContactMutation();
 
   const [formData, setFormData] = useState<ContactState>({

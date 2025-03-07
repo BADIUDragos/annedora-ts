@@ -23,7 +23,7 @@ export const AdminViewUserPage = () => {
 
   const [
     updateUser,
-    { isLoading: updateLoading, error, isSuccess: updateUserSuccess },
+    { isLoading: updateLoading, isSuccess: updateUserSuccess },
   ] = useUpdateUserMutation();
 
   const [username, setName] = useState("");

@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../store";
 import isAuthorized from "./utils/isAuthorized";
 import RequireAtLeastOne from "../interfaces/requireAtLeastOne";

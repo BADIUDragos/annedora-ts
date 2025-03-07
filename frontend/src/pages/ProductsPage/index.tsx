@@ -16,7 +16,7 @@ const ProductsPage: React.FC = () => {
   const categoryFromUrl = searchParams.get("category") || "All Products";
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
 
-  const { data: products, error, isLoading } = useListProductsQuery();
+  const { data: products, isLoading } = useListProductsQuery();
 
   useEffect(() => {
     if (categoryFromUrl !== selectedCategory) {

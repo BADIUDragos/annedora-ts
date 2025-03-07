@@ -13,7 +13,7 @@ const RegisterPage: React.FC = () => {
 
   const {userInfo} = useAuth()
 
-  const [register, { isLoading, isSuccess, isError, error }] =
+  const [register, { isLoading, error }] =
     useRegisterMutation();
   const [formState, setFormState] = useState({
     name: "",

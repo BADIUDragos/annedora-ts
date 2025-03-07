@@ -35,8 +35,6 @@ const ProductPage = () => {
 
   const {
     data: product,
-    error,
-    isLoading,
     isSuccess,
   } = useGetProductByIdQuery(Number(id));
   const [
@@ -67,6 +65,7 @@ const ProductPage = () => {
     count_in_stock: 0,
     num_reviews: 0,
     reviews: [],
+    collects_tax: false,
   });
 
   useEffect(() => {
