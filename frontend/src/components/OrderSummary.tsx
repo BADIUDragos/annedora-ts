@@ -19,28 +19,28 @@ const OrderSummary: React.FC<Prices> = (prices) => {
           <ListGroup.Item>
             <Row>
               <Col>{t("subtotal")}:</Col>
-              <Col>${subtotal}</Col>
+              <Col>${Number(subtotal).toFixed(2)}</Col>
             </Row>
           </ListGroup.Item>
 
           <ListGroup.Item>
             <Row>
               <Col>{t("shipping")}:</Col>
-              <Col>${shipping}</Col>
+              <Col>${Number(shipping).toFixed(2)}</Col>
             </Row>
           </ListGroup.Item>
 
           <ListGroup.Item>
             <Row>
               <Col>{t("taxes")}:</Col>
-              <Col>${tax}</Col>
+              <Col>${Number(tax).toFixed(2)}</Col>
             </Row>
           </ListGroup.Item>
 
           <ListGroup.Item>
             <Row>
               <Col>{t("total")}:</Col>
-              <Col>${total}</Col>
+              <Col>${Number(total).toFixed(2)}</Col>
             </Row>
           </ListGroup.Item>
         </ListGroup>

@@ -142,6 +142,8 @@ def update_order_to_delivered(request, pk):
 @permission_classes([IsAuthenticated])
 def get_prices(request):
     subtotal = 0
+    tax = 0
+    tax_rate = decimal.Decimal('0.14975')
 
     items = request.data['items']
     order_option = request.data.get('option')
@@ -158,14 +160,16 @@ def get_prices(request):
             return Response({'message': 'Only %d %s are currently left in stock' % (product.count_in_stock, product.name)},
                             status=status.HTTP_400_BAD_REQUEST)
         price = product.price * qty
+        tax_price = (0 if not product.collects_tax else product.price * tax_rate)
         subtotal += price
+        tax += tax_price
 
     shipping = 0
     if order_option == 'Shipping':
         if subtotal < 100.00:
             shipping = 15
-    tax_rate = decimal.Decimal('0.14975')
-    tax = (subtotal + shipping) * tax_rate
+
+    tax += (shipping * tax_rate)
 
     total = subtotal + tax + shipping
 

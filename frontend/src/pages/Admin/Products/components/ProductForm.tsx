@@ -95,7 +95,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onChange={handleInputChange}
               />
             </Form.Group>
-            <Form.Group controlId="productDescription" className="mt-3">
+            <Form.Group controlId="productDescriptionFr" className="mt-3">
               <Form.Label>French Description</Form.Label>
               <Form.Control
                 as="textarea"
@@ -105,12 +105,25 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onChange={handleInputChange}
               />
             </Form.Group>
+            <Form.Group controlId="collectsTax" className="mt-3">
+              <Form.Label>Collect Tax?</Form.Label>
+              <Form.Check
+                type="checkbox"
+                name="collects_tax"
+                label="Yes"
+                checked={productData.collects_tax || false}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
             <Form.Group controlId="productImage" className="mt-3">
               <Form.Label>Image</Form.Label>
               <Form.Control type="file" onChange={handleFileChange} />
             </Form.Group>
             {isLoading ? (
-              <Loader style={{ height: '40px', width: '40px' }} className="mt-3"/>
+              <Loader
+                style={{ height: "40px", width: "40px" }}
+                className="mt-3"
+              />
             ) : (
               <Button
                 type="submit"

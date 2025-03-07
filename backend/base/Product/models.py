@@ -24,6 +24,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     count_in_stock = models.IntegerField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    collects_tax = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

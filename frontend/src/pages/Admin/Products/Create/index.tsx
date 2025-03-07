@@ -18,6 +18,7 @@ export const AdminCreateProductPage: React.FC = () => {
     rating: 0,
     price: 0,
     count_in_stock: 0,
+    collects_tax: false,
   });
   
   const [image, setImage] = useState<File | null>(null);
@@ -34,7 +35,12 @@ export const AdminCreateProductPage: React.FC = () => {
     const { name, value } = e.target;
     setProductData((prevState) => ({
       ...prevState,
-      [name]: name === "price" || name === "countInStock" ? parseFloat(value) : value,
+      [name]:
+        name === "price" || name === "count_in_stock" // Changed countInStock to count_in_stock
+          ? parseFloat(value)
+          : name === "collects_tax"
+          ? e.target.checked // Use checked for checkbox boolean value
+          : value,
     }));
   };
 

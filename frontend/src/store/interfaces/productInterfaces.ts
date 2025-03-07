@@ -20,4 +20,5 @@ export interface ProductState {
   count_in_stock: number;
   num_reviews: number;
   reviews: Review[];
+  collects_tax: boolean;
 }
