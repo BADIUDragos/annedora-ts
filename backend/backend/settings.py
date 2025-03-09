@@ -48,7 +48,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "RAILWAY_ENVIRONMENT" not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "*" ]
 
 # Application definition
 
@@ -176,6 +176,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 STRIPE_SECRET = os.getenv("STRIPE_SECRET")
