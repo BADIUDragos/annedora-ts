@@ -69,6 +69,9 @@ INSTALLED_APPS = [
 
     'cloudinary_storage',
     'cloudinary',
+
+    "base.apps.BaseConfig",
+    "Auth.apps.AuthConfig",
 ]
 
 REST_FRAMEWORK = {

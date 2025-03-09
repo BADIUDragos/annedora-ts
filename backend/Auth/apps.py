@@ -5,8 +5,3 @@ class AuthConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'Auth'
 
-
-class BaseConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'base'
-
