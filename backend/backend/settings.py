@@ -20,11 +20,11 @@ load_dotenv()
 
 # Read environment variables
 SIGNING_KEY = os.getenv('SIGNING_KEY')
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
+PGNAME = os.getenv('DB_NAME')
+PGUSER = os.getenv('DB_USER')
+PGPASSWORD = os.getenv('DB_PASSWORD')
+PGHOST = os.getenv('DB_HOST')
+PGPORT = os.getenv('DB_PORT')
 TIME_ZONE = os.getenv('TIME_ZONE')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -127,11 +127,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
+        'NAME': PGNAME,
+        'USER': PGUSER,
+        'PASSWORD': PGPASSWORD,
+        'HOST': PGHOST,
+        'PORT': PGPORT,
     }
 }
 
