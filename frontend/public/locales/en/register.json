@@ -7,6 +7,14 @@
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "alreadyRegistered" : "Already have an account ?",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "resetPassword": "Reset password",
+    "enterEmail": "Please enter your email address:",
+    "enterEmailPlaceholder" : "Enter Email",
+    "checkYourEmail": "Please check your email to reset your password.",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "changeSuccess": "Password was changed successfully.",
+    "enterPassword": "Enter a new password"
   }
     

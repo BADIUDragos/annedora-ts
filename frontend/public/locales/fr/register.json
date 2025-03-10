@@ -7,5 +7,14 @@
     "password": "Mot de passe",
     "confirmPassword": "Confirmer mot de passe",
     "alreadyRegistered" : "Avez-vous déjà un compte ?",
-    "signIn": "Connextion"
+    "signIn": "Connextion",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "enterEmail": "Entrez votre courriel",
+    "enterEmailPlaceholder" : "Courriel",
+    "checkYourEmail": "SVP Vérifiez votre courriel pour réinitialiser le mot de passe",
+    "changePassword": "Changer le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "changeSuccess": "Le mot de passe a été changé.",
+    "enterPassword": "Entrez un nouveau mot de passe"
+    
   }

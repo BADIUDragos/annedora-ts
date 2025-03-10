@@ -4,29 +4,33 @@ import { Form, Alert, Button } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import { useResetPasswordMutation } from "../../store/apis/authApi";
 import getErrorString from "../../store/errorHandling/getErrorString";
+import { useTranslation } from "react-i18next";
 
 const ResetPasswordPage = () => {
+  const { t } = useTranslation("register");
+
   const [email, setEmail] = useState("");
 
-  const [ resetPasswordRequest, { isSuccess, error, isLoading }] = useResetPasswordMutation()
+  const [resetPasswordRequest, { isSuccess, error, isLoading }] =
+    useResetPasswordMutation();
 
-  const submitHandler = async (e:React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await resetPasswordRequest({"email":email});
-    } catch (error:any) {
+      await resetPasswordRequest({ email: email });
+    } catch (error: any) {
       console.error("Failed to reset password:", getErrorString(error));
     }
   };
 
   return (
     <FormContainer xs={12} md={6} className="justify-content-md-center">
-      <h1>Reset Password</h1>
+      <h1>{t("resetPassword")}</h1>
 
       {!isSuccess && (
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="email">
-            <Form.Label>Please enter your email address:</Form.Label>
+            <Form.Label>{t("enterEmail")}</Form.Label>
             <Form.Control
               required
               type="email"
@@ -37,7 +41,7 @@ const ResetPasswordPage = () => {
           </Form.Group>
 
           <Button type="submit" variant="primary" className="w-100 mt-3 mb-3">
-            Reset Password
+          {t("resetPassword")}
           </Button>
         </Form>
       )}
@@ -45,7 +49,7 @@ const ResetPasswordPage = () => {
       {error && <Alert variant="danger">{getErrorString(error)}</Alert>}
       {isSuccess && (
         <Alert variant="success">
-          Please check your email to reset your password.
+          {t("checkYourEmail")}
         </Alert>
       )}
       {isLoading && <Loader />}

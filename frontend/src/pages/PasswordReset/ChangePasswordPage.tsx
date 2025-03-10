@@ -9,8 +9,12 @@ import {
 } from "../../store/apis/authApi";
 import { UpdatePasswordInterface } from "../../store/interfaces/authInterfaces";
 import getErrorString from "../../store/errorHandling/getErrorString";
+import { useTranslation } from "react-i18next";
 
 const ChangePasswordScreen = () => {
+
+  const { t } = useTranslation("register")
+
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const uid = searchParams.get("uid") ?? "";
@@ -55,29 +59,29 @@ const ChangePasswordScreen = () => {
 
   return (
     <FormContainer xs={12} md={6} className="justify-content-md-center">
-      <h1>Change Password</h1>
+      <h1>changePassword</h1>
 
       {validateLoading && <Loader />}
 
       {!updateLoading && !validateError && !validateLoading && !updateSuccess && (
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="password">
-            <Form.Label>New Password:</Form.Label>
+            <Form.Label>{t("newPassword")}:</Form.Label>
             <Form.Control
               required
               type="password"
-              placeholder="Enter a new password"
+              placeholder={t("enterPassword")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></Form.Control>
           </Form.Group>
 
           <Form.Group controlId="confirm-password" className="mt-3">
-            <Form.Label>Confirm Password:</Form.Label>
+            <Form.Label>{t("confirmPassword")}:</Form.Label>
             <Form.Control
               required
               type="password"
-              placeholder="Confirm Password"
+              placeholder={t("confirmPassword")}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             ></Form.Control>
@@ -88,7 +92,7 @@ const ChangePasswordScreen = () => {
             variant="primary"
             className="btn-block w-100 mt-3 mb-3"
           >
-            Reset Password
+            {t("changePassword")}
           </Button>
 
           {message && <Alert variant="danger">{message}</Alert>}
@@ -106,7 +110,7 @@ const ChangePasswordScreen = () => {
         <Alert variant="danger">{getErrorString(updateError)}</Alert>
       )}
       {updateSuccess && (
-        <Alert variant="success">Password was changed successfully.</Alert>
+        <Alert variant="success">{t("changeSuccess")}</Alert>
       )}
       {updateLoading && <Loader />}
     </FormContainer>
