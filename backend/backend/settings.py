@@ -15,16 +15,18 @@ from dotenv import load_dotenv
 import cloudinary
 import os
 
+import dj_database_url
+
 # Load environment variables from .env file
 load_dotenv()
 
 # Read environment variables
 SIGNING_KEY = os.getenv('SIGNING_KEY')
-PGNAME = os.getenv('PGNAME')
-PGUSER = os.getenv('PGUSER')
-PGPASSWORD = os.getenv('PGPASSWORD')
-PGHOST = os.getenv('PGHOST')
-PGPORT = os.getenv('PGPORT')
+# PGNAME = os.getenv('PGNAME')
+# PGUSER = os.getenv('PGUSER')
+# PGPASSWORD = os.getenv('PGPASSWORD')
+# PGHOST = os.getenv('PGHOST')
+# PGPORT = os.getenv('PGPORT')
 TIME_ZONE = os.getenv('TIME_ZONE')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -124,16 +126,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': PGNAME,
-        'USER': PGUSER,
-        'PASSWORD': PGPASSWORD,
-        'HOST': PGHOST,
-        'PORT': PGPORT,
-    }
+    "default": dj_database_url.config(default=DATABASE_URL),
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': PGNAME,
+#         'USER': PGUSER,
+#         'PASSWORD': PGPASSWORD,
+#         'HOST': PGHOST,
+#         'PORT': PGPORT,
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
