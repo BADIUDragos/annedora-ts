@@ -1,0 +1,12 @@
+{
+    "register": "Register",
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "email": "Email Address",
+    "emailPlaceholder": "john@doe.ca",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "alreadyRegistered" : "Already have an account ?",
+    "signIn": "Sign In"
+  }
+    

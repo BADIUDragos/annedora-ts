@@ -6,8 +6,11 @@ import { useRegisterMutation } from "../../store/apis/authApi";
 import Loader from "../../components/Loader";
 import getErrorString from "../../store/errorHandling/getErrorString";
 import { useAuth } from "../../store";
+import { useTranslation } from "react-i18next";
 
 const RegisterPage: React.FC = () => {
+
+  const { t } = useTranslation("register")
 
   const navigate = useNavigate();
 
@@ -53,52 +56,52 @@ const RegisterPage: React.FC = () => {
 
   return (
     <FormContainer xs={12} md={6} className="justify-content-md-center">
-      <h1>Register</h1>
+      <h1>{t("namePlaceholder")}</h1>
 
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="name">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>{t("name")}</Form.Label>
           <Form.Control
             required
             type="text"
             name="name"
-            placeholder="John Doe"
+            placeholder={t("namePlaceholder")}
             value={formState.name}
             onChange={handleChange}
           ></Form.Control>
         </Form.Group>
 
         <Form.Group controlId="email" className="mt-3">
-          <Form.Label>Email Address</Form.Label>
+          <Form.Label>{t("email")}</Form.Label>
           <Form.Control
             required
             type="email"
             name="email"
-            placeholder="john@doe.com"
+            placeholder={t("emailPlaceholder")}
             value={formState.email}
             onChange={handleChange}
           ></Form.Control>
         </Form.Group>
 
         <Form.Group controlId="password" className="mt-3">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>{t("password")}</Form.Label>
           <Form.Control
             required
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder={t("password")}
             value={formState.password}
             onChange={handleChange}
           ></Form.Control>
         </Form.Group>
 
         <Form.Group controlId="confirmPassword" className="mt-3">
-          <Form.Label>Confirm Password</Form.Label>
+          <Form.Label>{t("confirmPassword")}</Form.Label>
           <Form.Control
             required
             type="password"
             name="confirmPassword"
-            placeholder="Confirm Password"
+            placeholder={t("confirmPassword")}
             value={formState.confirmPassword}
             onChange={handleChange}
           ></Form.Control>
@@ -116,14 +119,14 @@ const RegisterPage: React.FC = () => {
             variant="primary"
             className="btn-block w-100 mt-4"
           >
-            Register
+            {t("register")}
           </Button>
         )}
       </Form>
 
       <Row className="py-3">
         <Col>
-          Already have an account? <Link to={"/login"}>Sign In</Link>
+        {t("alreadyRegistered")} <Link to={"/login"}>{t("signIn")}</Link>
         </Col>
       </Row>
 

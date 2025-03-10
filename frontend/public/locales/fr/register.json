@@ -1,0 +1,11 @@
+{
+    "register": "S'enregistrer",
+    "name": "Nom",
+    "namePlaceholder": "Jacques Tremblay",
+    "email": "Courriel",
+    "emailPlaceholder": "jacques@tremblay.ca",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer mot de passe",
+    "alreadyRegistered" : "Avez-vous déjà un compte ?",
+    "signIn": "Connextion"
+  }
