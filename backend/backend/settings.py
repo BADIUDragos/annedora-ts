@@ -20,11 +20,11 @@ load_dotenv()
 
 # Read environment variables
 SIGNING_KEY = os.getenv('SIGNING_KEY')
-PGNAME = os.getenv('DB_NAME')
-PGUSER = os.getenv('DB_USER')
-PGPASSWORD = os.getenv('DB_PASSWORD')
-PGHOST = os.getenv('DB_HOST')
-PGPORT = os.getenv('DB_PORT')
+PGNAME = os.getenv('PGNAME')
+PGUSER = os.getenv('PGUSER')
+PGPASSWORD = os.getenv('PGPASSWORD')
+PGHOST = os.getenv('PGHOST')
+PGPORT = os.getenv('PGPORT')
 TIME_ZONE = os.getenv('TIME_ZONE')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 SECRET_KEY = os.getenv('SECRET_KEY')
