@@ -50,7 +50,7 @@ class ContactFormView(APIView):
             Produce: {produce}
             """
             from_email = settings.EMAIL_HOST_USER
-            recipient_list = ['dragos.badiu.a@hotmail.com']
+            recipient_list = ['valentin.prunoiu@annedora.ca']
 
             # Send email
             send_mail(subject, message, from_email, recipient_list)
