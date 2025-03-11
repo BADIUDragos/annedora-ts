@@ -34,7 +34,7 @@ const ResetPasswordPage = () => {
             <Form.Control
               required
               type="email"
-              placeholder="Enter Email"
+              placeholder={t("enterEmail")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

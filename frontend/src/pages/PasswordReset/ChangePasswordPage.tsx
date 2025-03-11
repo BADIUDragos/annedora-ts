@@ -59,7 +59,7 @@ const ChangePasswordScreen = () => {
 
   return (
     <FormContainer xs={12} md={6} className="justify-content-md-center">
-      <h1>changePassword</h1>
+      <h1>{t("changePassword")}</h1>
 
       {validateLoading && <Loader />}
 
