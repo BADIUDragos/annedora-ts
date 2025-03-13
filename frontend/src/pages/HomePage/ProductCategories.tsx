@@ -24,8 +24,8 @@ const ProductCategories: React.FC = () => {
       image: "/images/soapsCategory.jpeg",
     },
     {
-      name: t("special"),
-      link: "/products?category=special",
+      name: t("other"),
+      link: "/products?category=other",
       image: "/images/specialCategory.jpeg",
     },
     {
