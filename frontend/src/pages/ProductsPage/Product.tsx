@@ -5,7 +5,7 @@ import { ProductState } from "../../store/interfaces/productInterfaces";
 import { useTranslation } from "react-i18next";
 
 const Product = (product: ProductState) => {
-  const { t } = useTranslation("home");
+  const { t, i18n } = useTranslation("home");
   return (
     <Card className="my-3 p-3 rounded" style={{ display: 'flex', flexDirection: 'column' }}>
       <Link to={`/products/${product.id}`}>
@@ -14,7 +14,7 @@ const Product = (product: ProductState) => {
       <Card.Body style={{ marginTop: 'auto', flex: 0 }}>
         <Link to={`/products/${product.id}`}>
           <Card.Title as="div">
-            <strong>{product.name}</strong>
+            <strong>{i18n.language === "en" ? product?.name : product?.french_name}</strong>
           </Card.Title>
         </Link>
         <Card.Text as="div">
