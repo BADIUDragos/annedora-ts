@@ -30,6 +30,7 @@
   "pickUpMessage": "*Le ramassage de la commande se fait dans la région de Chateauguay, l'addresse exacte vous sera envoyée par courriel après la confirmation de la commande.",
   "shippingMessage": "*Une charge de 15$ est appliquée pour les commandes en bas de 100$, nous livrons seulement dans la région métropolitaine de Montreal",
   "Pick-up": "Ramassage",
+  "Shipping": "Livraison",
   "payment": "Paiement",
   "processing": "En traitement ...",
   "payNow": "Payer maintenant"
