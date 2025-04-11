@@ -6,7 +6,8 @@ CATEGORY_CHOICES = [
     ('candles', 'Candles'),
     ('soaps', 'Soaps'),
     ('other', 'Other'),
-    ('materials', 'Materials')
+    ('materials', 'Materials'),
+    ('events', "Events"),
 ]
 
 
