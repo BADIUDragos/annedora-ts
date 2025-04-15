@@ -1,1 +1,1 @@
-export const API_URL = process.env.BACKEND_API as string
+export const API_URL = import.meta.env.VITE_BACKEND_API as string;
