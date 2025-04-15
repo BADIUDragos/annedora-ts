@@ -1,4 +1,5 @@
 import decimal
+import os
 from datetime import datetime
 
 import stripe
@@ -180,7 +181,7 @@ def get_prices(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_stripe_info(request):
-    stripe_public = "pk_live_51MvqTOJMCbcrYDEx49WfKIyVOXRtgzYZPm6ppg4DMZGLV5QMSFOIKKY95QAFhdfp3RVT0ZLfkQbHtI9DU1O7z8tl00YNHHLrfV"
+    stripe_public = os.getenv("STRIPE_PUBLIC")
 
     serializer = StripeSerializer({'stripe_public': stripe_public})
     return Response(serializer.data)

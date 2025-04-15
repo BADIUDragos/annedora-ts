@@ -1,0 +1,16 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - dev
+      - prod
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: simple
+          changelog-path: CHANGELOG.md
