@@ -1,5 +1,8 @@
+import logging
 import os
+import socket
 from email.mime.image import MIMEImage
+from smtplib import SMTPException
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
@@ -16,6 +19,8 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from ..permission_classes import IsSelfOrAdmin
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 @permission_classes([IsAuthenticated, IsAdminUser])
@@ -81,7 +86,15 @@ def forgot_password(request):
     logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
     email.attach(logo)
 
-    email.send(fail_silently=False)
+    try:
+        email.send(fail_silently=False)
+    except (SMTPException, socket.timeout, socket.gaierror, ConnectionError, OSError) as exc:
+        logger.exception("Failed to send password reset email to %s: %s", user.email, exc)
+        return Response(
+            {"detail": "Unable to send the password reset email right now. Please try again later."},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
     return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
 
 
