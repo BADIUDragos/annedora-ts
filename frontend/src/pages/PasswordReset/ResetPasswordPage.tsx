@@ -3,23 +3,22 @@ import FormContainer from "../../components/FormContainer";
 import { Form, Alert, Button } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import { useResetPasswordMutation } from "../../store/apis/authApi";
-import getErrorString from "../../store/errorHandling/getErrorString";
 import { useTranslation } from "react-i18next";
 
 const ResetPasswordPage = () => {
   const { t } = useTranslation("register");
 
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-  const [resetPasswordRequest, { isSuccess, error, isLoading }] =
-    useResetPasswordMutation();
+  const [resetPasswordRequest, { isLoading }] = useResetPasswordMutation();
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await resetPasswordRequest({ email: email });
-    } catch (error: any) {
-      console.error("Failed to reset password:", getErrorString(error));
+    } finally {
+      setSubmitted(true);
     }
   };
 
@@ -27,7 +26,7 @@ const ResetPasswordPage = () => {
     <FormContainer xs={12} md={6} className="justify-content-md-center">
       <h1>{t("resetPassword")}</h1>
 
-      {!isSuccess && (
+      {!submitted && (
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="email">
             <Form.Label>{t("enterEmail")}</Form.Label>
@@ -46,8 +45,7 @@ const ResetPasswordPage = () => {
         </Form>
       )}
 
-      {error && <Alert variant="danger">{getErrorString(error)}</Alert>}
-      {isSuccess && (
+      {submitted && (
         <Alert variant="success">
           {t("checkYourEmail")}
         </Alert>

@@ -11,7 +11,7 @@
     "resetPassword": "Réinitialiser le mot de passe",
     "enterEmail": "Entrez votre courriel",
     "enterEmailPlaceholder" : "Courriel",
-    "checkYourEmail": "SVP Vérifiez votre courriel pour réinitialiser le mot de passe",
+    "checkYourEmail": "Si un compte existe pour ce courriel, un lien de réinitialisation a été envoyé.",
     "changePassword": "Changer le mot de passe",
     "newPassword": "Nouveau mot de passe",
     "changeSuccess": "Le mot de passe a été changé.",

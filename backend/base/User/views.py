@@ -1,12 +1,9 @@
 import logging
 import os
-import socket
 from email.mime.image import MIMEImage
-from smtplib import SMTPException
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -44,16 +41,23 @@ class UserUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
 
+RESET_EMAIL_SENT_DETAIL = (
+    "If an account exists for this email, a reset link has been sent."
+)
+
+
 @api_view(['POST'])
 def forgot_password(request):
 
     email = request.data.get('email')
+    response = Response({"detail": RESET_EMAIL_SENT_DETAIL}, status=status.HTTP_200_OK)
 
-    try:
-        user = User.objects.get(email=email)
-    except ObjectDoesNotExist:
-        return Response({"detail": "No user associated with this email account was found."},
-                        status=status.HTTP_400_BAD_REQUEST)
+    if not email:
+        return response
+
+    user = User.objects.filter(email__iexact=email).first()
+    if user is None:
+        return response
 
     token = default_token_generator.make_token(user)
     uid = int_to_base36(user.pk)
@@ -69,14 +73,14 @@ def forgot_password(request):
     email_html_body = render_to_string('PasswordResetEmail.html', context)
     email_text_body = strip_tags(email_html_body)
 
-    email = EmailMultiAlternatives(
+    message = EmailMultiAlternatives(
         email_subject,
         email_text_body,
         settings.EMAIL_HOST_USER,
         [user.email],
     )
 
-    email.attach_alternative(email_html_body, "text/html")
+    message.attach_alternative(email_html_body, "text/html")
 
     image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_cut.png')
     with open(image_path, "rb") as f:
@@ -84,18 +88,16 @@ def forgot_password(request):
     logo = MIMEImage(logo_data)
     logo.add_header('Content-ID', '<logo_cut>')
     logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
-    email.attach(logo)
+    message.attach(logo)
 
     try:
-        email.send(fail_silently=False)
-    except (SMTPException, socket.timeout, socket.gaierror, ConnectionError, OSError) as exc:
+        message.send(fail_silently=False)
+    except Exception as exc:
+        # Resend/Anymail raises API errors, not SMTPException — those used to
+        # become an unhandled 500 after the SMTP-to-Resend switch.
         logger.exception("Failed to send password reset email to %s: %s", user.email, exc)
-        return Response(
-            {"detail": "Unable to send the password reset email right now. Please try again later."},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-        )
 
-    return Response({"detail": "Password reset email sent."}, status=status.HTTP_200_OK)
+    return response
 
 
 @api_view(['GET'])
