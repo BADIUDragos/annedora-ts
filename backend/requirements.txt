@@ -5,6 +5,7 @@ cloudinary==1.40.0
 dj-config-url==0.1.1
 dj-database-url==2.3.0
 Django==4.2.5
+django-anymail==13.0.1
 django-cloudinary-storage==0.3.0
 django-cors-headers==4.2.0
 djangorestframework==3.14.0

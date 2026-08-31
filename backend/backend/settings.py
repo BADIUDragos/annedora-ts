@@ -39,16 +39,27 @@ def _env_bool(name, default=False):
     return value.strip().lower() in ("1", "true", "yes", "on")
 
 
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
-EMAIL_USE_TLS = _env_bool("EMAIL_USE_TLS", default=True)
-EMAIL_USE_SSL = _env_bool("EMAIL_USE_SSL", default=False)
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# Hard timeout for SMTP connect/read so requests fail fast instead of being
-# killed by the gunicorn worker timeout.
-EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+
+# Prefer Resend's HTTPS API when an API key is present. Railway Hobby blocks
+# outbound SMTP (25/465/587), so IONOS SMTP will time out there.
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+if RESEND_API_KEY:
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    ANYMAIL = {
+        "RESEND_API_KEY": RESEND_API_KEY,
+    }
+else:
+    EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+    EMAIL_HOST = os.getenv("EMAIL_HOST")
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_USE_TLS = _env_bool("EMAIL_USE_TLS", default=True)
+    EMAIL_USE_SSL = _env_bool("EMAIL_USE_SSL", default=False)
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+    # Hard timeout for SMTP connect/read so requests fail fast instead of being
+    # killed by the gunicorn worker timeout.
+    EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,6 +90,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'anymail',
 
     'cloudinary_storage',
     'cloudinary',
