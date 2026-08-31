@@ -1,5 +1,3 @@
-import os
-
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 from django.dispatch import Signal
@@ -10,8 +8,6 @@ from base.models import Order
 
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
-
-from email.mime.image import MIMEImage
 
 
 def update_user(sender, instance, **kwargs):
@@ -72,18 +68,7 @@ def send_order_confirmation_email(sender, order, **kwargs):
         [user.email],
     )
 
-    # Attach the HTML version of the email
     email.attach_alternative(email_html_body, "text/html")
-
-    # Attach the company logo
-    image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_cut.png')
-    with open(image_path, "rb") as f:
-        logo_data = f.read()
-    logo = MIMEImage(logo_data)
-    logo.add_header('Content-ID', '<logo_cut>')
-    logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
-    email.attach(logo)
-
     email.send(fail_silently=False)
 
     send_order_confirmation_update_to_owner(order)
@@ -114,18 +99,7 @@ def send_order_confirmation_email_shipped(sender, order, **kwargs):
         [user.email],
     )
 
-    # Attach the HTML version of the email
     email.attach_alternative(email_html_body, "text/html")
-
-    # Attach the company logo
-    image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_cut.png')
-    with open(image_path, "rb") as f:
-        logo_data = f.read()
-    logo = MIMEImage(logo_data)
-    logo.add_header('Content-ID', '<logo_cut>')
-    logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
-    email.attach(logo)
-
     email.send(fail_silently=False)
 
 
@@ -155,18 +129,7 @@ def send_order_confirmation_email_delivered(sender, order, **kwargs):
         [user.email],
     )
 
-    # Attach the HTML version of the email
     email.attach_alternative(email_html_body, "text/html")
-
-    # Attach the company logo
-    image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_cut.png')
-    with open(image_path, "rb") as f:
-        logo_data = f.read()
-    logo = MIMEImage(logo_data)
-    logo.add_header('Content-ID', '<logo_cut>')
-    logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
-    email.attach(logo)
-
     email.send(fail_silently=False)
 
 
