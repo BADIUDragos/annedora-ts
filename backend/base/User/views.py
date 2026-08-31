@@ -1,6 +1,4 @@
 import logging
-import os
-from email.mime.image import MIMEImage
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
@@ -81,14 +79,6 @@ def forgot_password(request):
     )
 
     message.attach_alternative(email_html_body, "text/html")
-
-    image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'logo_cut.png')
-    with open(image_path, "rb") as f:
-        logo_data = f.read()
-    logo = MIMEImage(logo_data)
-    logo.add_header('Content-ID', '<logo_cut>')
-    logo.add_header('Content-Disposition', 'inline', filename="logo_cut.png")
-    message.attach(logo)
 
     try:
         message.send(fail_silently=False)
