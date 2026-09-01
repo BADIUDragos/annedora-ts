@@ -74,7 +74,7 @@ def forgot_password(request):
     message = EmailMultiAlternatives(
         email_subject,
         email_text_body,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [user.email],
     )
 

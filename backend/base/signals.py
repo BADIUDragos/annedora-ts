@@ -36,7 +36,7 @@ def send_order_confirmation_update_to_owner(order):
     email = EmailMultiAlternatives(
         email_subject,
         email_text_body,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         ['valentin.prunoiu@annedora.ca'],
     )
 
@@ -64,7 +64,7 @@ def send_order_confirmation_email(sender, order, **kwargs):
     email = EmailMultiAlternatives(
         email_subject,
         email_text_body,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [user.email],
     )
 
@@ -95,7 +95,7 @@ def send_order_confirmation_email_shipped(sender, order, **kwargs):
     email = EmailMultiAlternatives(
         email_subject,
         email_text_body,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [user.email],
     )
 
@@ -125,7 +125,7 @@ def send_order_confirmation_email_delivered(sender, order, **kwargs):
     email = EmailMultiAlternatives(
         email_subject,
         email_text_body,
-        settings.EMAIL_HOST_USER,
+        settings.DEFAULT_FROM_EMAIL,
         [user.email],
     )
 
