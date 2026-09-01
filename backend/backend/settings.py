@@ -40,7 +40,15 @@ def _env_bool(name, default=False):
 
 
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+_default_from = os.getenv("DEFAULT_FROM_EMAIL")
+if _default_from:
+    DEFAULT_FROM_EMAIL = _default_from
+elif EMAIL_HOST_USER and "<" in EMAIL_HOST_USER:
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+elif EMAIL_HOST_USER:
+    DEFAULT_FROM_EMAIL = f"Annedora <{EMAIL_HOST_USER}>"
+else:
+    DEFAULT_FROM_EMAIL = "Annedora <info@annedora.ca>"
 
 # Prefer Resend's HTTPS API when an API key is present. Railway Hobby blocks
 # outbound SMTP (25/465/587), so IONOS SMTP will time out there.

@@ -5,7 +5,6 @@ from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
 
-from backend.settings import EMAIL_HOST_USER
 from base.ContactForm.serializer import ContactFormSerializer
 
 
@@ -49,7 +48,7 @@ class ContactFormView(APIView):
             Surface Area: {surface_area}
             Produce: {produce}
             """
-            from_email = settings.EMAIL_HOST_USER
+            from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = ['valentin.prunoiu@annedora.ca']
 
             # Send email
