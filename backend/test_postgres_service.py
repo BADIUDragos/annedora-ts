@@ -4,4 +4,4 @@ from django.test import TestCase
 
 class PostgresServiceTests(TestCase):
     def test_ci_database_is_postgresql(self):
-        self.fail("deliberate CI failure")
+        self.assertEqual(connection.vendor, "postgresql")
