@@ -12,6 +12,20 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: annedora
+          POSTGRES_PASSWORD: annedora
+          POSTGRES_DB: annedora
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U annedora -d annedora"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -24,6 +38,8 @@ jobs:
       - name: Run Django tests
         env:
           SECRET_KEY: dummy
+          TIME_ZONE: UTC
+          DATABASE_URL: postgres://annedora:annedora@localhost:5432/annedora
         run: python manage.py test
 
   test-frontend:
