@@ -122,10 +122,15 @@ def _parse_direction(raw):
 def _positive_int(value):
     text = str(value).strip()
     # ``isdigit`` is true for characters such as ``²``, and ``int('²')`` raises.
-    # ``isdecimal`` is only the digits ``int`` accepts, so ``int`` cannot fail.
+    # ``isdecimal`` rejects those, but Python 3.11+ still raises ValueError
+    # when the digit string is longer than ``sys.get_int_max_str_digits()``
+    # (4300 by default). That has to be a 400, not a 500.
     if not text.isdecimal():
         return None
-    number = int(text)
+    try:
+        number = int(text)
+    except ValueError:
+        return None
     if number < 1:
         return None
     return number

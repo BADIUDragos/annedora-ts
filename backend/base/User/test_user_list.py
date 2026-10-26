@@ -215,6 +215,8 @@ class UserListTests(APITestCase):
             {'page_size': '²'},
             {'page-size': '²'},
             {'page': '2²'},
+            {'page': '1' * 5000},
+            {'page_size': '1' * 5000},
         ]
         for params in cases:
             with self.subTest(params=params):
