@@ -20,7 +20,8 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["@testing-library/jest-dom/vitest"]
+    /* Listing types replaces the default @types set. Nothing in src uses extra globals, so the list stays empty. */
+    "types": []
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
