@@ -61,12 +61,6 @@ class StripeSerializer(serializers.Serializer):
     stripe_public = serializers.CharField()
 
 
-class StripePaymentIntentSerializer(serializers.Serializer):
-    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
-    currency = serializers.CharField(max_length=3)
-    description = serializers.CharField(max_length=255, allow_blank=True, default='')
-
-
 class StripePaymentIntentResponseSerializer(serializers.Serializer):
     id = serializers.CharField()
     client_secret = serializers.CharField()
