@@ -144,9 +144,10 @@ EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 STRIPE_SECRET=''
 STRIPE_PUBLIC=''
-CLOUDINARY_CLOUD_NAME=''
-CLOUDINARY_API_KEY=''
-CLOUDINARY_API_SECRET=''
+CLOUDINARY_URL=''
+CLOUDINARY_CLOUD_NAME='verify-annedora-placeholder'
+CLOUDINARY_API_KEY='verify-annedora-placeholder'
+CLOUDINARY_API_SECRET='verify-annedora-placeholder'
 VERIFY_ADMIN_EMAIL='$ADMIN_EMAIL'
 VERIFY_ADMIN_PASSWORD='$ADMIN_PASSWORD'
 VERIFY_ADMIN_NAME='$ADMIN_NAME'
@@ -303,6 +304,97 @@ if [[ "$ready" -ne 1 ]]; then
   cat "$STATE_DIR/backend.log" >&2 || true
   verify_die "backend did not accept the seeded admin login"
 fi
+
+echo "checking the product list"
+# The shop's product list is /api/base/product/. Serialization builds image URLs locally.
+BACKEND_PID="$BACKEND_PID" BACKEND_URL="$BACKEND_URL" EVIDENCE_DIR="$EVIDENCE_DIR" python3 - <<'PY'
+import json, os, threading, time, urllib.error, urllib.request
+from pathlib import Path
+
+pid = os.environ["BACKEND_PID"]
+base = os.environ["BACKEND_URL"]
+evidence = Path(os.environ["EVIDENCE_DIR"])
+
+def peers():
+    found = set()
+    inodes = set()
+    fd_dir = Path(f"/proc/{pid}/fd")
+    try:
+        names = list(fd_dir.iterdir())
+    except OSError:
+        return found
+    for fd in names:
+        try:
+            target = os.readlink(fd)
+        except OSError:
+            continue
+        if target.startswith("socket:[") and target.endswith("]"):
+            inodes.add(target[8:-1])
+    if not inodes:
+        return found
+    for path in ("/proc/net/tcp", "/proc/net/tcp6"):
+        try:
+            lines = Path(path).read_text(encoding="utf-8").splitlines()[1:]
+        except OSError:
+            continue
+        for line in lines:
+            parts = line.split()
+            if len(parts) < 10 or parts[9] not in inodes:
+                continue
+            remote = parts[2]
+            host, _, port_hex = remote.rpartition(":")
+            if not port_hex:
+                continue
+            try:
+                port = int(port_hex, 16)
+            except ValueError:
+                continue
+            if host in ("0100007F", "0000000000000000000000000100007F") or port == 0:
+                continue
+            found.add(f"{host}:{port}")
+    return found
+
+before = peers()
+seen = set()
+stop = False
+
+def watch():
+    while not stop:
+        seen.update(peers())
+        time.sleep(0.01)
+
+watcher = threading.Thread(target=watch)
+watcher.start()
+status = {}
+try:
+    for path in ("/api/base/product/", "/api/products/"):
+        url = base + path
+        try:
+            with urllib.request.urlopen(url, timeout=10) as response:
+                body = response.read()
+                code = response.status
+        except urllib.error.HTTPError as exc:
+            body = exc.read()
+            code = exc.code
+        status[path] = code
+        if path == "/api/base/product/":
+            (evidence / "products.response.json").write_bytes(body)
+finally:
+    stop = True
+    watcher.join()
+new_peers = sorted(seen - before)
+report = {
+    "status": status,
+    "new_remote_peers": new_peers,
+}
+text = json.dumps(report, indent=2) + "\n"
+(evidence / "products-api.txt").write_text(text, encoding="utf-8")
+print(text, end="")
+if status.get("/api/base/product/") != 200:
+    raise SystemExit("product list did not return 200")
+if new_peers:
+    raise SystemExit("product list opened a remote connection")
+PY
 
 if [[ ! -x "$APP_ROOT/frontend/node_modules/.bin/vite" ]]; then
   echo "installing frontend dependencies"

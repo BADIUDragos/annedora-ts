@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fail if the verification process still has live mail, Stripe, or Cloudinary settings.
 
-Launch exports blank credentials before Django starts. python-dotenv's
-load_dotenv() does not override variables that are already set, including
-blanks. This reads the settings Django actually loaded.
+Launch exports blank credentials and fixed Cloudinary placeholders before
+Django starts. python-dotenv's load_dotenv() does not override variables that
+are already set, including blanks. This reads the settings Django actually loaded.
 """
 
 import os
@@ -19,19 +19,24 @@ import django
 django.setup()
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.core.files.storage import default_storage
 import cloudinary
 
 LOCMEM = "django.core.mail.backends.locmem.EmailBackend"
+PLACEHOLDER = "verify-annedora-placeholder"
 BLANK_NAMES = (
     "STRIPE_SECRET",
     "STRIPE_PUBLIC",
-    "CLOUDINARY_CLOUD_NAME",
-    "CLOUDINARY_API_KEY",
-    "CLOUDINARY_API_SECRET",
     "EMAIL_HOST",
     "EMAIL_HOST_USER",
     "EMAIL_HOST_PASSWORD",
 )
+CLOUDINARY_FIELDS = {
+    "CLOUDINARY_CLOUD_NAME": "cloud_name",
+    "CLOUDINARY_API_KEY": "api_key",
+    "CLOUDINARY_API_SECRET": "api_secret",
+}
 REAL_MARKERS = (
     "sk_live_",
     "sk_test_",
@@ -39,7 +44,6 @@ REAL_MARKERS = (
     "rk_test_",
     "pk_live_",
     "pk_test_",
-    "smtp.",
 )
 
 
@@ -62,8 +66,6 @@ def main():
     lines.append(f"EMAIL_BACKEND={backend}")
     if backend != LOCMEM:
         problems.append("EMAIL_BACKEND is not the locmem backend")
-    if marker(backend):
-        problems.append("EMAIL_BACKEND looks like a live transport")
 
     env_values = {name: os.environ.get(name) for name in BLANK_NAMES}
     env_values["STRIPE_SECRET"] = settings.STRIPE_SECRET
@@ -72,9 +74,54 @@ def main():
     env_values["EMAIL_HOST_PASSWORD"] = settings.EMAIL_HOST_PASSWORD
 
     config = cloudinary.config()
-    env_values["CLOUDINARY_CLOUD_NAME"] = getattr(config, "cloud_name", None)
-    env_values["CLOUDINARY_API_KEY"] = getattr(config, "api_key", None)
-    env_values["CLOUDINARY_API_SECRET"] = getattr(config, "api_secret", None)
+    for name, attr in CLOUDINARY_FIELDS.items():
+        configured = getattr(config, attr, None)
+        from_env = os.environ.get(name)
+        if configured == PLACEHOLDER and from_env == PLACEHOLDER:
+            lines.append(f"{name}=placeholder")
+        else:
+            problems.append(f"{name} is not the verification placeholder")
+            lines.append(f"{name}=mismatch")
+        found = marker(configured) or marker(from_env)
+        if found:
+            problems.append(f"{name} matches {found}")
+
+    cloudinary_url = os.environ.get("CLOUDINARY_URL")
+    if cloudinary_url is None:
+        problems.append("CLOUDINARY_URL is unset")
+        lines.append("CLOUDINARY_URL=unset")
+    elif str(cloudinary_url).strip() != "":
+        problems.append(f"CLOUDINARY_URL is set (length {len(str(cloudinary_url).strip())})")
+        lines.append("CLOUDINARY_URL=set")
+    else:
+        lines.append("CLOUDINARY_URL=blank")
+
+    import socket
+
+    connects = []
+    original_connect = socket.socket.connect
+
+    def record_connect(self, address):
+        connects.append(address)
+        raise RuntimeError("outbound socket")
+
+    socket.socket.connect = record_connect
+    image_url = ""
+    try:
+        image_url = default_storage.url("/placeholder.png")
+    except ImproperlyConfigured:
+        problems.append("default storage is not configured")
+    except RuntimeError:
+        problems.append("storage url opened a socket")
+    finally:
+        socket.socket.connect = original_connect
+    lines.append(f"STORAGE_URL={image_url}")
+    if connects:
+        problems.append(f"storage url attempted {len(connects)} connections")
+    if image_url and PLACEHOLDER not in image_url:
+        problems.append("storage url does not use the placeholder cloud")
+    if "api.cloudinary.com" in image_url:
+        problems.append("storage url points at the Cloudinary API host")
 
     for name in BLANK_NAMES:
         value = env_values[name]

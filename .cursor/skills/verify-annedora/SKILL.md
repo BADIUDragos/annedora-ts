@@ -32,7 +32,7 @@ Optional overrides: `VERIFY_RUN_ID`, `VERIFY_EVIDENCE_DIR`, and `VERIFY_DATABASE
 
 Launch does all of the following in a new state directory under `/tmp`:
 
-1. Writes a process-local env file and exports it before Django starts. `SECRET_KEY` and `SIGNING_KEY` are the fixed dev values `verify-annedora-dev-secret` and `verify-annedora-dev-signing-key`. `TIME_ZONE=UTC`. `DATABASE_URL` is the new SQLite file, unless `VERIFY_DATABASE_URL` is a throwaway local Postgres URL. An inherited `DATABASE_URL` is not used. `EMAIL_BACKEND` is `django.core.mail.backends.locmem.EmailBackend`. `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `STRIPE_SECRET`, `STRIPE_PUBLIC`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` are set to empty strings. `load_dotenv()` does not override variables that are already set, so a developer's `backend/backend/.env` cannot replace these. Launch then imports Django and refuses to continue unless those effective settings are still the locmem backend, blank credentials, and the verification database.
+1. Writes a process-local env file and exports it before Django starts. `SECRET_KEY` and `SIGNING_KEY` are the fixed dev values `verify-annedora-dev-secret` and `verify-annedora-dev-signing-key`. `TIME_ZONE=UTC`. `DATABASE_URL` is the new SQLite file, unless `VERIFY_DATABASE_URL` is a throwaway local Postgres URL. An inherited `DATABASE_URL` is not used. `EMAIL_BACKEND` is `django.core.mail.backends.locmem.EmailBackend`. `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `STRIPE_SECRET`, `STRIPE_PUBLIC`, and `CLOUDINARY_URL` are set to empty strings. `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` are the fixed non-secret value `verify-annedora-placeholder`. Blank Cloudinary settings make `django-cloudinary-storage` raise `ImproperlyConfigured` when a product image URL is built, so the placeholders keep `/api/base/product/` from returning 500. `load_dotenv()` does not override variables that are already set, so a developer's `backend/backend/.env` cannot replace these. Launch then imports Django and refuses to continue unless those effective settings are still the locmem backend, blank Stripe and mail credentials, the placeholder Cloudinary values, an empty `CLOUDINARY_URL`, and the verification database. After the server accepts a login, launch requests the product list and records the status.
 2. Creates a virtualenv in the state directory and installs `backend/requirements.txt`. The SQLite default skips `psycopg2-binary`, because the dev pin has no Python 3.12 wheel. `VERIFY_DATABASE_URL` keeps that dependency.
 3. If `backend/base` has no numbered migrations, runs `manage.py makemigrations base --name verify_scaffold` and marks those files as verification scaffold.
 4. Runs `manage.py migrate`.
@@ -82,7 +82,7 @@ Doctor fails unless all of the following are true:
 - `git rev-parse HEAD` in the app checkout still equals the SHA recorded at launch.
 - The SQLite file exists.
 - The shop HTML contains `Annedora - Honey House`.
-- The effective settings are still the locmem email backend, blank Stripe and Cloudinary credentials, and the verification database.
+- The effective settings are still the locmem email backend, blank Stripe and mail credentials, the placeholder Cloudinary values, an empty `CLOUDINARY_URL`, and the verification database.
 - The admin row is staff, named `Verify Admin`, and the dev password checks out.
 - There are 27 users.
 - `GET /api/auth/login` returns 405, 401, or 400, which shows the Django process is the one on that port.
@@ -139,7 +139,7 @@ Capture the action and the resulting state. `results.json` is the pass/fail reco
 
 The default database is a new SQLite file. The admin list orders names and emails with `Lower()` so SQLite and Postgres agree, and the drive asserts that case-insensitive order (`aaron lower` before `Bob Mixed`). This skill does not otherwise verify Postgres collation, the `psycopg2` install, or SQL that SQLite accepts and Postgres rejects. Set `VERIFY_DATABASE_URL` to opt into a throwaway Postgres database instead of SQLite. The URL must use `postgres://` or `postgresql://`, the host must be `localhost`, `127.0.0.1`, or `::1`, and the database name must contain `verify`. Launch keeps `psycopg2-binary` only in that case, and it refuses any other URL. It does not fall back to an inherited `DATABASE_URL`. The recorded browser proof uses SQLite unless that override is set.
 
-Cloudinary uploads are not part of launch. The shop home still requests public image URLs that are hardcoded in the carousel. Assert names and prices, not image bytes. Mail from order creation or mark-shipped stays in locmem and is not delivered.
+Cloudinary uploads and the Cloudinary Admin API are not part of launch. Image URLs are built locally from the placeholder cloud name, so product images are broken links. The shop home still requests public image URLs that are hardcoded in the carousel. Assert names and prices, not image bytes. Mail from order creation or mark-shipped stays in locmem and is not delivered.
 
 ## Cleanup
 
