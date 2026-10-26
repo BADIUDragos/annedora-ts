@@ -35,12 +35,35 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Apply migrations
+        env:
+          SECRET_KEY: dummy
+          TIME_ZONE: UTC
+          DATABASE_URL: postgres://annedora:annedora@localhost:5432/annedora
+        run: |
+          # base has models and no committed migrations (backend/.gitignore
+          # ignores base/migrations/; Railway generates them at startup).
+          # Pass the app label. A bare `makemigrations` reports "No changes
+          # detected" for an app that has never had a migrations package.
+          # The test runner would then sync base before auth_user exists, and
+          # Postgres rejects that foreign key.
+          python manage.py makemigrations base --noinput
+          test -f base/migrations/0001_initial.py
+          python manage.py migrate --noinput
       - name: Run Django tests
         env:
           SECRET_KEY: dummy
           TIME_ZONE: UTC
           DATABASE_URL: postgres://annedora:annedora@localhost:5432/annedora
-        run: python manage.py test
+        run: |
+          # working-directory is ./backend. The default label "." loads
+          # test*.py under that tree. App label is base; the user-list module
+          # is base/User/test_user_list.py when that file is on the branch.
+          python manage.py test --noinput --verbosity 1 | tee test-output.txt
+          if grep -q "NO TESTS RAN" test-output.txt; then
+            echo "Django discovered zero tests. Refusing to pass an empty suite."
+            exit 1
+          fi
 
   test-frontend:
     runs-on: ubuntu-latest

@@ -14,7 +14,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import cloudinary
 import os
-import sys
 
 import dj_database_url
 
@@ -28,10 +27,7 @@ SIGNING_KEY = os.getenv('SIGNING_KEY')
 # PGPASSWORD = os.getenv('PGPASSWORD')
 # PGHOST = os.getenv('PGHOST')
 # PGPORT = os.getenv('PGPORT')
-# Datetime fields cannot be serialized when TIME_ZONE is missing. CI and local
-# test runs often set only SECRET_KEY, so fall back to UTC in that case.
-# A deploy that sets TIME_ZONE keeps that zone; this does not override it.
-TIME_ZONE = os.getenv('TIME_ZONE') or 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 SECRET_KEY = os.getenv('SECRET_KEY')
 RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY')
@@ -141,20 +137,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Local runs and CI need DATABASE_URL pointed at Postgres. There is no SQLite fallback.
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 DATABASES = {
     "default": dj_database_url.config(default=DATABASE_URL),
 }
-
-# GitHub Actions sets DATABASE_URL to the Postgres service, so `manage.py test`
-# there does not use this branch. A local test run with only SECRET_KEY still
-# needs a database; sqlite is that fallback and is not the CI engine.
-if not DATABASES["default"] and "test" in sys.argv:
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
-    }
 
 # DATABASES = {
 #     'default': {
