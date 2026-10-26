@@ -51,17 +51,15 @@ jobs:
           test -f base/migrations/0001_initial.py
           python manage.py migrate --noinput
       - name: Run Django tests
+        shell: bash
         env:
           SECRET_KEY: dummy
           TIME_ZONE: UTC
           DATABASE_URL: postgres://annedora:annedora@localhost:5432/annedora
         run: |
-          # working-directory is ./backend. The default label "." loads
-          # test*.py under that tree. App label is base; the user-list module
-          # is base/User/test_user_list.py when that file is on the branch.
-          python manage.py test --noinput --verbosity 1 | tee test-output.txt
-          if grep -q "NO TESTS RAN" test-output.txt; then
-            echo "Django discovered zero tests. Refusing to pass an empty suite."
+          python manage.py test --noinput --verbosity 1 2>&1 | tee test-output.txt
+          if ! grep -Eq 'Ran [1-9][0-9]* tests?' test-output.txt; then
+            echo "Django did not run any tests."
             exit 1
           fi
 

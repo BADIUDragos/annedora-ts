@@ -137,7 +137,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# Local runs and CI need DATABASE_URL pointed at Postgres. There is no SQLite fallback.
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 DATABASES = {
