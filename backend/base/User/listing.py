@@ -122,14 +122,10 @@ def _parse_direction(raw):
 def _positive_int(value):
     text = str(value).strip()
     # ``isdigit`` is true for characters such as ``²``, and ``int('²')`` raises.
-    # ``isdecimal`` is only the digits ``int`` accepts. The try/except is a
-    # backstop so a bad value is a 400, never a 500.
+    # ``isdecimal`` is only the digits ``int`` accepts, so ``int`` cannot fail.
     if not text.isdecimal():
         return None
-    try:
-        number = int(text)
-    except ValueError:
-        return None
+    number = int(text)
     if number < 1:
         return None
     return number
