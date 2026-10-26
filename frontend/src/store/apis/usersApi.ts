@@ -2,12 +2,36 @@ import { UserInfoState } from "../interfaces/authInterfaces";
 import { userTag } from "./apiTagTypes";
 import { baseApi } from "./baseApi";
 
+export type UserSortField = "created_at" | "first_name" | "email" | "is_staff";
+export type SortDirection = "asc" | "desc";
+export type UserPageSize = 10 | 25 | 50 | 100;
+
+export interface UserListArgs {
+  page: number;
+  pageSize: UserPageSize;
+  sort: UserSortField;
+  direction: SortDirection;
+}
+
+export interface PaginatedUsers {
+  count: number;
+  page: number;
+  page_size: number;
+  results: UserInfoState[];
+}
+
 const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-      listUsers: builder.query<UserInfoState[], void>({
-        query: () => ({
+      listUsers: builder.query<PaginatedUsers, UserListArgs>({
+        query: ({ page, pageSize, sort, direction }) => ({
           url: 'base/users/',
           method: 'GET',
+          params: {
+            page,
+            page_size: pageSize,
+            sort,
+            direction,
+          },
           headers: {
             Accept: 'application/json',
           },
@@ -15,7 +39,7 @@ const userApi = baseApi.injectEndpoints({
         providesTags: (result) =>
           result
             ? [
-                ...result.map(({ id }) => ({ type: userTag, id } as const)),
+                ...result.results.map(({ id }) => ({ type: userTag, id } as const)),
                 { type: userTag, id: 'LIST' },
               ]
             : [{ type: userTag, id: 'LIST' }],
