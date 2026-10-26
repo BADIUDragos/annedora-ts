@@ -7,3 +7,12 @@ backend/.idea/backend.iml
 backend/.idea/backend.iml
 backend/.idea/misc.xml
 /backend/backend/.env
+
+# Verification runs. Cleanup deletes the instance, not these proof files.
+/artifacts/
+.verify-annedora.lock
+
+# Playwright installed for .cursor/skills/verify-annedora.
+.cursor/skills/verify-annedora/scripts/node_modules/
+__pycache__/
+*.pyc

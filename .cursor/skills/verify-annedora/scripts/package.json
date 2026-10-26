@@ -1,0 +1,8 @@
+{
+  "name": "verify-annedora",
+  "private": true,
+  "description": "Playwright harness for the Annedora verification skill. Not part of the shop frontend.",
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}
