@@ -1,6 +1,6 @@
 # Product catalog
 
-The catalog lets anyone browse the shop's products, narrow them by category, and open one product. The seeded catalog has Clover Honey and a Beeswax Candle.
+The catalog lets anyone browse the shop's products, narrow them by category, and open one product. The seeded catalog has Clover Honey and a Beeswax Candle. This journey is manual: no script drives it, and a passing admin user list does not pass these steps.
 
 ## Sub-features
 
@@ -21,7 +21,7 @@ Preconditions:
 - Doctor has passed.
 - `seed-manifest.json` has `products_seeded` true and `product_names` containing `Clover Honey` and `Beeswax Candle`. If `products_seeded` is false, stop and report that the product tables were not seeded.
 
-No one-shot script is shipped for this feature. Use the skill's browser settings.
+Manual, not scripted. There is no command that runs the bullets below. Use the skill's browser settings if you drive it by hand. Do not report this feature as passed from `drive-admin-users.mjs`.
 
 - **Open the catalog.** Open `/products`. Run `page.goto(frontendUrl + "/products")` and `page.getByRole("heading", { name: "Products" }).waitFor()`. Both `Clover Honey` and `Beeswax Candle` are visible. The category control's button reads `All Products`.
 - **Filter to honey.** Open that button and choose `Honey`. Run `page.getByRole("button", { name: "All Products" }).click()` and then activate the menu item named `Honey`. The URL contains `category=honey`. `Clover Honey` is visible and `Beeswax Candle` is not.

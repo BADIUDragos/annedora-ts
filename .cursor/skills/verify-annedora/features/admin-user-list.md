@@ -30,12 +30,14 @@ The command that runs every bullet below, records screenshots, and writes `resul
 `node .cursor/skills/verify-annedora/scripts/drive-admin-users.mjs`
 
 - **Sign in and open the list.** Fill the textbox named `Email` and the textbox named `Password`, then choose the button named `Sign In`. Open `#adminmenu` and choose the link named `Users`. The heading reads `Users List`.
-- **Default page.** Read the combobox named `Users per page` and the text `Showing 1-25 of 27`. The first row is `Seeded User 26`, `seeded-user-26@example.test`, `October 26th, 2026`. The 25th row is `Seeded User 02`, `October 2nd, 2026`. The column header named `Created` has `aria-sort` `descending`. Screenshot `list-loaded.png`.
+- **Default page.** Read the combobox named `Users per page` and the text `Showing 1-25 of 27`. The first row is `Seeded User 26`, `seeded-user-26@example.test`, `October 26th, 2026`. The 25th row is `Bob Mixed`, `October 2nd, 2026`. The column header named `Created` has `aria-sort` `descending`. Screenshot `list-loaded.png`.
 - **Created column.** On that same page, screenshot the table as `created-date-column.png`. The header reads `Created` and the first and last dates are the ones above.
-- **Next page.** In the list named `User list pages`, choose the page whose text is `2`. The summary reads `Showing 26-27 of 27`. The rows are `Seeded User 01` / `October 1st, 2026` and `Verify Admin` / `January 1st, 2024`. Screenshot `page-change.png`.
+- **Next page.** In the list named `User list pages`, choose the page whose text is `2`. The summary reads `Showing 26-27 of 27`. The rows are `aaron lower` / `October 1st, 2026` and `Verify Admin` / `January 1st, 2024`. Screenshot `page-change.png`.
 - **Page size.** Choose `10` in the combobox named `Users per page`. The summary reads `Showing 1-10 of 27`, the first row is still `Seeded User 26`, and the pager offers `3`. Screenshot `per-page.png`. Choose `50`, then `100`. Each summary reads `Showing 1-27 of 27` and the pager does not offer `2`. Choose `10` again.
-- **Sort toggle.** Choose the button named `Created`. The Created header's `aria-sort` becomes `ascending`, the descending caret is gone, and the first row is `Verify Admin`, `January 1st, 2024`, followed by `Seeded User 01`. Screenshot `sort-toggle.png`. Choose `Created` again. `aria-sort` returns to `descending` and the first row is `Seeded User 26`.
-- **Another header.** Choose the button named `Name`. That header's `aria-sort` is `ascending`, Created's `aria-sort` is `none`, and the first row is `Seeded User 01`.
+- **Sort toggle.** Choose the button named `Created`. The Created header's `aria-sort` becomes `ascending`, the descending caret is gone, and the first row is `Verify Admin`, `January 1st, 2024`, followed by `aaron lower`. Screenshot `sort-toggle.png`. Choose `Created` again. `aria-sort` returns to `descending` and the first row is `Seeded User 26`.
+- **Name header.** Choose the button named `Name`. That header's `aria-sort` is `ascending`, Created's `aria-sort` is `none`, the first row is `aaron lower`, and the second is `Bob Mixed`. A binary sort would put `Bob Mixed` first. Screenshot is not required beyond the row text; the script records the check in `results.json`.
+- **Email header.** Choose the button named `Email`. `aria-sort` is `ascending`. The first address is `aaron.lower@example.test` and the second is `Bob.Mixed@example.test`. Screenshot `sort-email.png`.
+- **Admin header.** Choose the button named `Admin` in the table header, not the Admin menu. Ascending puts non-staff rows first, so row 1 is `aaron lower` and the API `isStaff` values on that page are false. Choose `Admin` again. `aria-sort` is `descending`, the down caret is present, and row 1 is `Verify Admin` with `isStaff` true. Screenshot `sort-admin.png`.
 - **Proof.** `results.json` records each check. The saved `GET /api/base/users/` bodies match the rows on screen. The request carries `sort=created_at` and `direction=desc` on the first load.
 
 ## Gotchas
@@ -48,5 +50,6 @@ The command that runs every bullet below, records screenshots, and writes `resul
 - Page numbers are anchors without an `href`, so they are not links. Choose them as text inside the list named `User list pages`. The current page's accessible name also includes `(current)`.
 - The account menu shows the first name. Compare it case-insensitively; the header can render it in capitals.
 - The id is not a column. Edit and delete are the buttons named `Edit <first name>` and `Delete <first name>`. Do not delete seeded users during this journey. Delete asks `window.confirm` before it removes the row.
-- Email and Admin use the same header button as Name and Created. A run that does not click them has not verified those two headers.
+- Email and Admin use the same header button as Name and Created. The scripted journey clicks both. The Admin menu is also named Admin, so the header click has to be inside the table.
+- `aaron lower` and `Bob Mixed` exist so a case-sensitive name or email sort fails this journey. Do not rename them to title case.
 - A shop build whose table is only Id, Name, Email, and Admin, with no pager, fails this journey.

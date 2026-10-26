@@ -28,17 +28,17 @@ export VERIFY_STATE_FILE="<path printed by launch>"
 
 To drive a different checkout (for example a worktree of another branch), set `VERIFY_APP_ROOT` to that checkout before launching. The evidence directory still defaults to this skill's repo, under `artifacts/verify-annedora/<run-id>/`.
 
-Optional overrides: `VERIFY_RUN_ID`, `VERIFY_STATE_DIR`, `VERIFY_EVIDENCE_DIR`.
+Optional overrides: `VERIFY_RUN_ID`, `VERIFY_EVIDENCE_DIR`, and `VERIFY_DATABASE_URL`. `VERIFY_STATE_DIR` may name a new disposable directory whose leaf is `verify-annedora-*` and whose parent is `/tmp` or `/var/tmp`. Launch refuses any other path, and it refuses a directory that already contains files. Cleanup deletes a state directory only when that path check passes and the directory contains a `.verify-annedora-state` marker written by launch.
 
 Launch does all of the following in a new state directory under `/tmp`:
 
-1. Writes a process-local env file. `SECRET_KEY` and `SIGNING_KEY` are the fixed dev values `verify-annedora-dev-secret` and `verify-annedora-dev-signing-key`. `TIME_ZONE=UTC`. `DATABASE_URL` points at a new SQLite file in the state directory.
-2. Creates a virtualenv in the state directory and installs `backend/requirements.txt`, skipping `psycopg2-binary`. Verification uses SQLite, and the dev pin of that driver has no Python 3.12 wheel.
+1. Writes a process-local env file and exports it before Django starts. `SECRET_KEY` and `SIGNING_KEY` are the fixed dev values `verify-annedora-dev-secret` and `verify-annedora-dev-signing-key`. `TIME_ZONE=UTC`. `DATABASE_URL` is the new SQLite file, unless `VERIFY_DATABASE_URL` is a throwaway local Postgres URL. An inherited `DATABASE_URL` is not used. `EMAIL_BACKEND` is `django.core.mail.backends.locmem.EmailBackend`. `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `STRIPE_SECRET`, `STRIPE_PUBLIC`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` are set to empty strings. `load_dotenv()` does not override variables that are already set, so a developer's `backend/backend/.env` cannot replace these. Launch then imports Django and refuses to continue unless those effective settings are still the locmem backend, blank credentials, and the verification database.
+2. Creates a virtualenv in the state directory and installs `backend/requirements.txt`. The SQLite default skips `psycopg2-binary`, because the dev pin has no Python 3.12 wheel. `VERIFY_DATABASE_URL` keeps that dependency.
 3. If `backend/base` has no numbered migrations, runs `manage.py makemigrations base --name verify_scaffold` and marks those files as verification scaffold.
 4. Runs `manage.py migrate`.
 5. Seeds 27 users, two products, and one unshipped order. See the seed contract below.
 6. Starts `manage.py runserver --noreload` on a free localhost port. `--noreload` keeps the recorded pid as the process that owns the port.
-7. Installs frontend dependencies with `npm ci` when `frontend/node_modules/.bin/vite` is missing, and installs Playwright Chromium for this skill when it is missing.
+7. Installs frontend dependencies with `npm ci` when `frontend/node_modules/.bin/vite` is missing. Installs the Playwright package when `node_modules/playwright` is missing, and runs `npx playwright install chromium` only when that package's Chromium executable is not already on disk.
 8. Starts Vite with `VITE_BACKEND_API=http://127.0.0.1:<backend-port>/api`.
 
 Ready means both of these, not merely an open socket:
@@ -55,13 +55,15 @@ Dates are fixed instants at 12:00 UTC so the Created column does not depend on t
 | Account | Email | Password | Created | Staff |
 | --- | --- | --- | --- | --- |
 | Verify Admin | verify-admin@example.test | DevOnly-Verify-1842 | January 1st, 2024 | yes |
-| Seeded User 01 … Seeded User 26 | seeded-user-01@example.test … seeded-user-26@example.test | seeded-user-dev-only | October 1st, 2026 … October 26th, 2026 | no |
+| aaron lower | aaron.lower@example.test | seeded-user-dev-only | October 1st, 2026 | no |
+| Bob Mixed | Bob.Mixed@example.test | seeded-user-dev-only | October 2nd, 2026 | no |
+| Seeded User 03 … Seeded User 26 | seeded-user-03@example.test … seeded-user-26@example.test | seeded-user-dev-only | October 3rd, 2026 … October 26th, 2026 | no |
 
-Seeded User 26 is the newest account. The admin is the oldest. Default page size is 25, so the list is two pages: users 26 down through 02, then Seeded User 01 and Verify Admin.
+Seeded User 26 is the newest account. The admin is the oldest. Default page size is 25, so the list is two pages: users 26 down through Bob Mixed, then aaron lower and Verify Admin. `aaron lower` / `aaron.lower@example.test` sorts first only with case-insensitive ordering. On a binary collation, `Bob Mixed` / `Bob.Mixed@example.test` sorts first.
 
 Products, when the product tables exist: `Clover Honey` (category honey, price 12.00) and `Beeswax Candle` (category candles, price 8.50).
 
-Orders, when the order tables exist: one paid, unshipped shipping order for Seeded User 01, total 27.00, one line for Clover Honey, address `1 Verification Lane`, Montreal, `H0H 0H0`, Canada. Paid on 20 October 2026.
+Orders, when the order tables exist: one paid, unshipped shipping order for aaron lower, total 27.00, one line for Clover Honey, address `1 Verification Lane`, Montreal, `H0H 0H0`, Canada. Paid on 20 October 2026.
 
 The login username stored on each account is the email. The sign-in form's accessible name is `Email`; its DOM id is `username`.
 
@@ -80,6 +82,7 @@ Doctor fails unless all of the following are true:
 - `git rev-parse HEAD` in the app checkout still equals the SHA recorded at launch.
 - The SQLite file exists.
 - The shop HTML contains `Annedora - Honey House`.
+- The effective settings are still the locmem email backend, blank Stripe and Cloudinary credentials, and the verification database.
 - The admin row is staff, named `Verify Admin`, and the dev password checks out.
 - There are 27 users.
 - `GET /api/auth/login` returns 405, 401, or 400, which shows the Django process is the one on that port.
@@ -100,13 +103,13 @@ It runs doctor, then does the following against `frontend_url` from the state fi
 2. After submit, the URL is the site root, the document title is `Annedora - Honey House`, the account menu `#username` reads `Verify Admin`, and `#adminmenu` reads `Admin`.
 3. Open `#adminmenu` and choose the link named `Users`. The heading is `Users List`.
 4. The combobox named `Users per page` offers `10`, `25`, `50`, and `100`, and starts at `25`. The summary reads `Showing 1-25 of 27`. The first row is Seeded User 26, `seeded-user-26@example.test`, created `October 26th, 2026`. The last row on that page is Seeded User 02, created `October 2nd, 2026`. The Created header's `aria-sort` is `descending`.
-5. In the list named `User list pages`, choose the page text `2` (it is not a link). The summary reads `Showing 26-27 of 27`. The rows are Seeded User 01 (`October 1st, 2026`) and Verify Admin (`January 1st, 2024`).
+5. In the list named `User list pages`, choose the page text `2` (it is not a link). The summary reads `Showing 26-27 of 27`. The rows are aaron lower (`October 1st, 2026`) and Verify Admin (`January 1st, 2024`).
 6. Choose `10` in `Users per page`. The summary reads `Showing 1-10 of 27`, the first row is still Seeded User 26, and page `3` is offered. Then choose `50` and `100`; each shows `Showing 1-27 of 27` and does not offer page `2`.
-7. Return to `10` per page and choose the button named `Created`. That toggles the active column from descending to ascending: `aria-sort` becomes `ascending`, the up caret is present, and the first row is Verify Admin, `January 1st, 2024`, followed by Seeded User 01. Choose `Created` again to toggle back to newest first. Choose the button named `Name` to sort by first name ascending; the first row is Seeded User 01 and the Created header's `aria-sort` is `none`.
+7. Return to `10` per page and choose the button named `Created`. That toggles the active column from descending to ascending: `aria-sort` becomes `ascending`, the up caret is present, and the first row is Verify Admin, `January 1st, 2024`, followed by aaron lower. Choose `Created` again to toggle back to newest first. Choose the button named `Name`. The first row is aaron lower and the second is Bob Mixed, which is the case-insensitive order. Choose the button named `Email`. The first address is `aaron.lower@example.test` and the second is `Bob.Mixed@example.test`. Choose the button named `Admin` inside the table header (the account menu is also named Admin). Ascending lists non-staff accounts first, with aaron lower on row 1. Choose it again. Descending puts Verify Admin first and shows the down caret.
 
 The list request is `GET /api/base/users/` with `page`, `page_size`, `sort`, and `direction`. The script waits for those responses. It does not call a test-only endpoint and it does not write the list through an internal setter.
 
-Login, products, and orders are driven with the same browser settings. Their steps are in `features/`. A journey whose seed flag is false (`products_seeded` or `orders_seeded` in `seed-manifest.json`) fails and reports that precondition. Do not point the browser at a mocked API to make it pass.
+Login is part of the admin-list script. Products and orders are mapped in `features/` and are manual: no script drives them, and a passing admin-list run does not pass them. A journey whose seed flag is false (`products_seeded` or `orders_seeded` in `seed-manifest.json`) is not ready to run. Do not point the browser at a mocked API to make it pass.
 
 ## Evidence
 
@@ -125,6 +128,8 @@ For the admin list, a passing run leaves:
 - `page-change.png` — page 2
 - `per-page.png` — 10 users per page
 - `sort-toggle.png` — Created sorted ascending, with the up caret
+- `sort-email.png` — Email sorted ascending, `aaron.lower@example.test` first
+- `sort-admin.png` — Admin sorted descending, Verify Admin first, with the down caret
 - `admin-user-list.webm` — the same journey in one recording
 - `list-loaded.aria.txt`, `sort-toggle.aria.txt` — table snapshots
 - `list-loaded.response.json`, `page-change.response.json`, `sort-toggle.response.json` — the API bodies the screen rendered
@@ -132,11 +137,13 @@ For the admin list, a passing run leaves:
 
 Capture the action and the resulting state. `results.json` is the pass/fail record. The response JSON is the side-effect check that the table came from the API, and the row text is the user-visible result. Doctor's user count is a second, read-only view of the same rows.
 
-SQLite is the disposable database. PostgreSQL-only behavior is not what this skill drives. Cloudinary uploads are not part of launch; product images may 404. Assert names and prices, not image bytes.
+The default database is a new SQLite file. The admin list orders names and emails with `Lower()` so SQLite and Postgres agree, and the drive asserts that case-insensitive order (`aaron lower` before `Bob Mixed`). This skill does not otherwise verify Postgres collation, the `psycopg2` install, or SQL that SQLite accepts and Postgres rejects. Set `VERIFY_DATABASE_URL` to opt into a throwaway Postgres database instead of SQLite. The URL must use `postgres://` or `postgresql://`, the host must be `localhost`, `127.0.0.1`, or `::1`, and the database name must contain `verify`. Launch keeps `psycopg2-binary` only in that case, and it refuses any other URL. It does not fall back to an inherited `DATABASE_URL`. The recorded browser proof uses SQLite unless that override is set.
+
+Cloudinary uploads are not part of launch. The shop home still requests public image URLs that are hardcoded in the carousel. Assert names and prices, not image bytes. Mail from order creation or mark-shipped stays in locmem and is not delivered.
 
 ## Cleanup
 
-Stop only the pids in the state file, delete the scaffold migrations this run created, delete the state directory (virtualenv, SQLite, logs), and remove the checkout lock when it points at this state file.
+Stop a recorded pid only when `/proc/<pid>/cmdline` contains `runserver` or `vite` and the recorded port, then signal that process group. Do not signal the pid by number if the cmdline does not match. Delete the scaffold migrations this run created. Delete the state directory only when it is a disposable `verify-annedora-*` directory under `/tmp` or `/var/tmp` and it contains the `.verify-annedora-state` marker. Remove the checkout lock only after parsing its `state_file=` and `pid=` lines and seeing that it points at this state file. Do not source the lock file.
 
 ```bash
 .cursor/skills/verify-annedora/scripts/cleanup.sh
@@ -156,10 +163,11 @@ All of these live in `.cursor/skills/verify-annedora/scripts/`. Run them from th
 | `doctor.sh` | `.cursor/skills/verify-annedora/scripts/doctor.sh` |
 | `drive-admin-users.mjs` | `node .cursor/skills/verify-annedora/scripts/drive-admin-users.mjs` |
 | `cleanup.sh` | `.cursor/skills/verify-annedora/scripts/cleanup.sh` |
-| `seed_verify_data.py` | Called by launch, with the state env file sourced and the working directory `backend/`: `"$STATE_DIR/venv/bin/python" .cursor/skills/verify-annedora/scripts/seed_verify_data.py` |
+| `seed_verify_data.py` | Called by `launch.sh` only. Launch exports `VERIFY_MANIFEST` (the state directory's `seed-manifest.json`) and runs `"$SCRIPT_DIR/seed_verify_data.py"` with the working directory set to `backend/`. |
+| `assert_safe_settings.py` | Called by `launch.sh` and `doctor.sh`. Reads the Django settings that were actually loaded and exits non-zero if mail, Stripe, or Cloudinary credentials are live. |
 | `lib.sh` | Sourced by the shell helpers. Do not execute it. |
 
-`package.json` in that directory is the Playwright install for the harness. Launch runs `npm install` and `npx playwright install chromium` there when Chromium is missing. Cleanup does not remove it.
+`package.json` in that directory is the Playwright install for the harness. Launch runs `npm install` there when the package is missing, and `npx playwright install chromium` only when the Chromium executable is missing. Cleanup does not remove it.
 
 ## Maintenance
 

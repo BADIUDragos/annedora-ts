@@ -8,7 +8,7 @@ source "$SCRIPT_DIR/lib.sh"
 
 APP_ROOT="${VERIFY_APP_ROOT:-$VERIFY_SKILL_REPO}"
 RUN_ID="${VERIFY_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
-STATE_DIR="${VERIFY_STATE_DIR:-/tmp/verify-annedora-$RUN_ID}"
+STATE_DIR="$(realpath -m "${VERIFY_STATE_DIR:-/tmp/verify-annedora-$RUN_ID}")"
 EVIDENCE_DIR="${VERIFY_EVIDENCE_DIR:-$VERIFY_SKILL_REPO/artifacts/verify-annedora/$RUN_ID}"
 LOCK_FILE="$APP_ROOT/.verify-annedora.lock"
 
@@ -22,9 +22,26 @@ if [[ ! -f "$APP_ROOT/backend/manage.py" || ! -f "$APP_ROOT/frontend/package.jso
   verify_die "VERIFY_APP_ROOT does not look like the Annedora repo: $APP_ROOT"
 fi
 
+if ! verify_state_dir_disposable "$STATE_DIR"; then
+  verify_die "refusing VERIFY_STATE_DIR $STATE_DIR. Use a new directory named verify-annedora-* directly under /tmp or /var/tmp."
+fi
+if [[ -e "$STATE_DIR" ]]; then
+  if [[ ! -d "$STATE_DIR" ]]; then
+    verify_die "VERIFY_STATE_DIR exists and is not a directory: $STATE_DIR"
+  fi
+  if [[ -n "$(find "$STATE_DIR" -mindepth 1 -print -quit)" ]]; then
+    verify_die "refusing non-empty VERIFY_STATE_DIR: $STATE_DIR"
+  fi
+fi
+
 mkdir -p "$STATE_DIR" "$EVIDENCE_DIR"
 VERIFY_STATE_FILE="$STATE_DIR/state.json"
 export VERIFY_STATE_FILE
+cat >"$STATE_DIR/.verify-annedora-state" <<EOF
+created_by=verify-annedora
+run_id=$RUN_ID
+state_file=$VERIFY_STATE_FILE
+EOF
 # Written first so a failed launch can still find this run and stop it.
 printf '%s\n' '{"backend_pid": null, "frontend_pid": null, "scaffold_files": [], "evidence_dir": "'"$EVIDENCE_DIR"'", "state_dir": "'"$STATE_DIR"'", "app_root": "'"$APP_ROOT"'", "lock_file": "'"$LOCK_FILE"'"}' >"$VERIFY_STATE_FILE"
 
@@ -38,14 +55,17 @@ cleanup_on_fail() {
 trap cleanup_on_fail EXIT
 
 if [[ -f "$LOCK_FILE" ]]; then
-  # shellcheck disable=SC1090
-  source "$LOCK_FILE"
-  if [[ -n "${pid:-}" ]] && kill -0 "$pid" 2>/dev/null; then
-    verify_die "another verification run holds $LOCK_FILE (pid $pid). Refusing to drive the same checkout twice."
+  if ! lock_output="$(verify_parse_lock "$LOCK_FILE")"; then
+    verify_die "lock file $LOCK_FILE is not a verification lock. Refusing to source it."
+  fi
+  lock_state_file="${lock_output%%$'\n'*}"
+  lock_pid="${lock_output#*$'\n'}"
+  if [[ -n "$lock_pid" ]] && kill -0 "$lock_pid" 2>/dev/null; then
+    verify_die "another verification run holds $LOCK_FILE (pid $lock_pid). Refusing to drive the same checkout twice."
   fi
   echo "removing stale verification lock" >&2
-  if [[ -n "${state_file:-}" && -f "${state_file:-}" ]]; then
-    VERIFY_STATE_FILE="$state_file" "$SCRIPT_DIR/cleanup.sh" || true
+  if [[ -n "$lock_state_file" && -f "$lock_state_file" ]]; then
+    VERIFY_STATE_FILE="$lock_state_file" "$SCRIPT_DIR/cleanup.sh" || true
   fi
   rm -f "$LOCK_FILE"
 fi
@@ -77,11 +97,56 @@ BACKEND_URL="http://127.0.0.1:$BACKEND_PORT"
 FRONTEND_URL="http://127.0.0.1:$FRONTEND_PORT"
 APP_SHA="$(git -C "$APP_ROOT" rev-parse HEAD)"
 
+# Never keep an inherited DATABASE_URL. SQLite is the default. VERIFY_DATABASE_URL
+# is an explicit throwaway Postgres URL, checked before it is written.
+if [[ -n "${VERIFY_DATABASE_URL:-}" ]]; then
+  if [[ "$VERIFY_DATABASE_URL" == *"'"* ]]; then
+    verify_die "VERIFY_DATABASE_URL contains a single quote"
+  fi
+  DATABASE_URL="$(VERIFY_DATABASE_URL="$VERIFY_DATABASE_URL" python3 - <<'PY'
+import os, sys
+from urllib.parse import urlparse
+url = os.environ["VERIFY_DATABASE_URL"]
+parsed = urlparse(url)
+if parsed.scheme not in ("postgres", "postgresql"):
+    sys.exit("VERIFY_DATABASE_URL must start with postgres:// or postgresql://")
+host = (parsed.hostname or "").lower()
+if host not in ("localhost", "127.0.0.1", "::1"):
+    sys.exit("VERIFY_DATABASE_URL host must be localhost, 127.0.0.1, or ::1")
+name = parsed.path.lstrip("/")
+if "verify" not in name.lower():
+    sys.exit("VERIFY_DATABASE_URL database name must contain 'verify'")
+print(url)
+PY
+)" || verify_die "refusing VERIFY_DATABASE_URL"
+  EXPECT_DB_ENGINE="django.db.backends.postgresql"
+  EXPECT_DB_NAME="${DATABASE_URL##*/}"
+  EXPECT_DB_NAME="${EXPECT_DB_NAME%%\?*}"
+  KEEP_PSYCOPG=1
+else
+  unset VERIFY_DATABASE_URL || true
+  DATABASE_URL="sqlite:///$DB_PATH"
+  EXPECT_DB_ENGINE="django.db.backends.sqlite3"
+  EXPECT_DB_NAME="$DB_PATH"
+  KEEP_PSYCOPG=0
+fi
+
 cat >"$STATE_DIR/app.env" <<EOF
 SECRET_KEY='$SECRET_KEY'
 SIGNING_KEY='$SIGNING_KEY'
 TIME_ZONE='UTC'
-DATABASE_URL='sqlite:///$DB_PATH'
+DATABASE_URL='$DATABASE_URL'
+VERIFY_EXPECT_DB_ENGINE='$EXPECT_DB_ENGINE'
+VERIFY_EXPECT_DB_NAME='$EXPECT_DB_NAME'
+EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend'
+EMAIL_HOST=''
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
+STRIPE_SECRET=''
+STRIPE_PUBLIC=''
+CLOUDINARY_CLOUD_NAME=''
+CLOUDINARY_API_KEY=''
+CLOUDINARY_API_SECRET=''
 VERIFY_ADMIN_EMAIL='$ADMIN_EMAIL'
 VERIFY_ADMIN_PASSWORD='$ADMIN_PASSWORD'
 VERIFY_ADMIN_NAME='$ADMIN_NAME'
@@ -143,11 +208,24 @@ PY
 echo "creating virtualenv and installing backend requirements"
 python3 -m venv "$STATE_DIR/venv"
 # SQLite verification does not import psycopg2. The dev pin has no Python 3.12 wheel.
-grep -v -E '^[[:space:]]*psycopg2-binary([=<>]|$)' "$APP_ROOT/backend/requirements.txt" \
-  >"$STATE_DIR/requirements.verify.txt"
+# A throwaway VERIFY_DATABASE_URL keeps the driver.
+if [[ "$KEEP_PSYCOPG" -eq 1 ]]; then
+  cp "$APP_ROOT/backend/requirements.txt" "$STATE_DIR/requirements.verify.txt"
+else
+  grep -v -E '^[[:space:]]*psycopg2-binary([=<>]|$)' "$APP_ROOT/backend/requirements.txt" \
+    >"$STATE_DIR/requirements.verify.txt"
+fi
 "$STATE_DIR/venv/bin/python" -m pip install --disable-pip-version-check -r "$STATE_DIR/requirements.verify.txt"
 
 verify_app_env "$STATE_DIR"
+
+echo "checking effective Django settings"
+(
+  cd "$APP_ROOT/backend"
+  VERIFY_BACKEND_DIR="$APP_ROOT/backend" \
+    VERIFY_SAFE_SETTINGS_REPORT="$EVIDENCE_DIR/safe-settings.txt" \
+    "$STATE_DIR/venv/bin/python" "$SCRIPT_DIR/assert_safe_settings.py"
+)
 
 SCAFFOLD_LIST="$STATE_DIR/scaffold-files.txt"
 : >"$SCAFFOLD_LIST"
@@ -235,10 +313,21 @@ if [[ ! -d "$VERIFY_SCRIPT_DIR/node_modules/playwright" ]]; then
   echo "installing the verification Playwright harness"
   (cd "$VERIFY_SCRIPT_DIR" && npm install --no-audit --no-fund)
 fi
-(
+if (
   cd "$VERIFY_SCRIPT_DIR"
-  npx playwright install chromium
-)
+  node --input-type=module <<'JS'
+import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
+if (!existsSync(chromium.executablePath())) process.exit(1);
+JS
+); then
+  echo "Playwright Chromium already installed"
+else
+  echo "installing Playwright Chromium"
+  (cd "$VERIFY_SCRIPT_DIR" && npx playwright install chromium)
+fi
 
 echo "starting Vite on $FRONTEND_URL"
 (

@@ -14,5 +14,3 @@ backend/.idea/misc.xml
 
 # Playwright installed for .cursor/skills/verify-annedora.
 .cursor/skills/verify-annedora/scripts/node_modules/
-__pycache__/
-*.pyc

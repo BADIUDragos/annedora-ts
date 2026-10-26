@@ -5,7 +5,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 ## Baseline preconditions
 
 - Launch with `.cursor/skills/verify-annedora/scripts/launch.sh` and export the `VERIFY_STATE_FILE` it prints.
-- The state directory holds a new SQLite database, the dev-only admin `verify-admin@example.test`, and 26 seeded customers. Seeded User 26 is the newest. Verify Admin is the oldest.
+- The state directory holds a new SQLite database unless `VERIFY_DATABASE_URL` selects a throwaway local Postgres database. The dev-only admin is `verify-admin@example.test`. Seeded User 26 is the newest. Verify Admin is the oldest. `aaron lower` and `Bob Mixed` are the case-insensitive sort fixtures.
 - Set `VERIFY_APP_ROOT` only when the checkout to drive is not the repo that contains this skill. Do not point two live runs at the same checkout.
 - Run `.cursor/skills/verify-annedora/scripts/doctor.sh` and require `doctor: ok` plus the launched app SHA.
 - Never drive an instance that was not started by this verification run.
@@ -17,7 +17,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 - Prefer ARIA roles and accessible names. The admin user list also uses `aria-sort` and the caret test ids `sort-asc` and `sort-desc`.
 - Treat every command as literal. Keep quoted names unchanged.
 - The scripted admin-list proof is `node .cursor/skills/verify-annedora/scripts/drive-admin-users.mjs`.
-- Other features use the same Playwright settings and the locators in their file.
+- Products and orders are manual. Their feature files describe the journey, and no script runs it. Do not mark them passed because the admin list passed.
 - Restore nothing by deleting proof files. Cleanup removes the instance and leaves `artifacts/verify-annedora/<run-id>/` in place.
 
 ## Proof and skip reporting
@@ -45,5 +45,5 @@ Keep implementation details out of the map. Name only user paths, stable handles
 
 - [Sign in](./login.md) covers the login form, a successful staff sign-in, and a rejected password.
 - [Admin user list](./admin-user-list.md) covers paging, the 10/25/50/100 page-size control, header sorting, the Created column, and the default newest-first sort.
-- [Product catalog](./products.md) covers the public catalog, category filtering, and opening a product.
-- [Orders](./orders.md) covers a customer's own orders and the staff order list.
+- [Product catalog](./products.md) is manual. It covers the public catalog, category filtering, and opening a product.
+- [Orders](./orders.md) is manual. It covers a customer's own orders and the staff order list.

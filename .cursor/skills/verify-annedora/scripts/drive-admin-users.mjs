@@ -52,14 +52,18 @@ const contract = {
   newestName: "Seeded User 26",
   newestEmail: "seeded-user-26@example.test",
   newestCreated: "October 26th, 2026",
-  page1LastName: "Seeded User 02",
+  page1LastName: "Bob Mixed",
   page1LastCreated: "October 2nd, 2026",
-  page2Names: ["Seeded User 01", "Verify Admin"],
-  page2Emails: ["seeded-user-01@example.test", "verify-admin@example.test"],
+  page2Names: ["aaron lower", "Verify Admin"],
+  page2Emails: ["aaron.lower@example.test", "verify-admin@example.test"],
   page2Created: ["October 1st, 2026", "January 1st, 2024"],
   oldestName: "Verify Admin",
   oldestEmail: "verify-admin@example.test",
   oldestCreated: "January 1st, 2024",
+  nameAscFirst: "aaron lower",
+  nameAscFirstEmail: "aaron.lower@example.test",
+  nameAscSecond: "Bob Mixed",
+  emailAscSecond: "Bob.Mixed@example.test",
 };
 
 const checks = [];
@@ -74,34 +78,6 @@ function record(id, pass, detail) {
   notes.push(line);
   console.log(line);
   if (!pass) failed = true;
-}
-
-function assertContract() {
-  const mismatches = [];
-  for (const [key, value] of Object.entries({
-    count: contract.count,
-    newest_name: contract.newestName,
-    newest_email: contract.newestEmail,
-    newest_created: contract.newestCreated,
-    page1_last_name: contract.page1LastName,
-    page1_last_created: contract.page1LastCreated,
-    oldest_name: contract.oldestName,
-    oldest_email: contract.oldestEmail,
-    oldest_created: contract.oldestCreated,
-  })) {
-    const actual = JSON.stringify(manifest[key]);
-    const expected = JSON.stringify(value);
-    if (actual !== expected) mismatches.push(`${key} manifest=${actual} contract=${expected}`);
-  }
-  if (JSON.stringify(manifest.page2_names) !== JSON.stringify(contract.page2Names)) {
-    mismatches.push(`page2_names manifest=${JSON.stringify(manifest.page2_names)}`);
-  }
-  if (JSON.stringify(manifest.page2_created) !== JSON.stringify(contract.page2Created)) {
-    mismatches.push(`page2_created manifest=${JSON.stringify(manifest.page2_created)}`);
-  }
-  if (mismatches.length) {
-    throw new Error(`seed manifest does not match the drive contract: ${mismatches.join("; ")}`);
-  }
 }
 
 async function ariaOf(page) {
@@ -173,7 +149,9 @@ async function shot(page, name) {
 }
 
 async function main() {
-  assertContract();
+  if (manifest.count !== contract.count) {
+    throw new Error(`seed manifest count is ${manifest.count}, expected ${contract.count}`);
+  }
 
   browser = await chromium.launch({
     headless: true,
@@ -438,7 +416,7 @@ async function main() {
     name: oldestName === contract.oldestName,
     email: oldestEmail === contract.oldestEmail,
     created: oldestCreated === contract.oldestCreated,
-    second: secondName === "Seeded User 01",
+    second: secondName === contract.page2Names[0],
   };
   const sortOk = Object.values(sortClauses).every(Boolean);
   record(
@@ -480,22 +458,129 @@ async function main() {
   await waitForTable(page, {
     summary: "Showing 1-10 of 27",
     rowCount: 10,
-    firstName: "Seeded User 01",
-    firstEmail: "seeded-user-01@example.test",
+    firstName: contract.nameAscFirst,
+    firstEmail: contract.nameAscFirstEmail,
     ariaSort: { column: "Name", value: "ascending" },
   });
   const nameHeader = page.getByRole("columnheader", { name: "Name", exact: true });
   const nameSort = await nameHeader.getAttribute("aria-sort");
   const createdIdle = await createdHeader.getAttribute("aria-sort");
   const nameFirst = await cell(page, 0, 0);
+  const nameSecond = await cell(page, 1, 0);
+  const nameBody = await (await byName).json();
   record(
     "sort-name",
     nameSort === "ascending" &&
       createdIdle === "none" &&
-      nameFirst === "Seeded User 01" &&
+      nameFirst === contract.nameAscFirst &&
+      nameSecond === contract.nameAscSecond &&
+      nameBody.results[0].first_name === contract.nameAscFirst &&
+      nameBody.results[1].first_name === contract.nameAscSecond &&
       (await page.getByTestId("sort-asc").count()) === 1,
-    `name-aria=${nameSort} created-aria=${createdIdle} first=${nameFirst}`
+    `name-aria=${nameSort} created-aria=${createdIdle} first=${nameFirst} second=${nameSecond}`
   );
+
+  const byEmail = page.waitForResponse(
+    listResponse({
+      page: "1",
+      page_size: "10",
+      sort: "email",
+      direction: "asc",
+    })
+  );
+  await page.getByRole("button", { name: "Email", exact: true }).click();
+  const emailResponse = await byEmail;
+  const emailBody = await emailResponse.json();
+  writeFileSync(join(evidenceDir, "sort-email.response.json"), JSON.stringify(emailBody, null, 2));
+  await waitForTable(page, {
+    summary: "Showing 1-10 of 27",
+    rowCount: 10,
+    firstName: contract.nameAscFirst,
+    firstEmail: contract.nameAscFirstEmail,
+    ariaSort: { column: "Email", value: "ascending" },
+  });
+  const emailHeader = page.getByRole("columnheader", { name: "Email", exact: true });
+  const emailSort = await emailHeader.getAttribute("aria-sort");
+  const emailFirst = await cell(page, 0, 1);
+  const emailSecond = await cell(page, 1, 1);
+  record(
+    "sort-email",
+    emailSort === "ascending" &&
+      emailFirst === contract.nameAscFirstEmail &&
+      emailSecond === contract.emailAscSecond &&
+      emailBody.results[0].email === contract.nameAscFirstEmail &&
+      emailBody.results[1].email === contract.emailAscSecond &&
+      (await page.getByTestId("sort-asc").count()) === 1,
+    `email-aria=${emailSort} first=${emailFirst} second=${emailSecond}`
+  );
+  await shot(page, "sort-email.png");
+
+  const byAdmin = page.waitForResponse(
+    listResponse({
+      page: "1",
+      page_size: "10",
+      sort: "is_staff",
+      direction: "asc",
+    })
+  );
+  await page.locator("thead").getByRole("button", { name: "Admin", exact: true }).click();
+  const adminResponse = await byAdmin;
+  const adminBody = await adminResponse.json();
+  await waitForTable(page, {
+    summary: "Showing 1-10 of 27",
+    rowCount: 10,
+    firstName: contract.nameAscFirst,
+    firstEmail: contract.nameAscFirstEmail,
+    ariaSort: { column: "Admin", value: "ascending" },
+  });
+  const adminHeader = page.getByRole("columnheader", { name: "Admin", exact: true });
+  const adminAsc = await adminHeader.getAttribute("aria-sort");
+  const adminAscFirst = await cell(page, 0, 0);
+  const adminAscOk =
+    adminAsc === "ascending" &&
+    adminAscFirst === contract.nameAscFirst &&
+    adminBody.results[0].isStaff === false &&
+    adminBody.results.every((user) => user.isStaff === false);
+  record(
+    "sort-admin-asc",
+    adminAscOk,
+    `aria-sort=${adminAsc} first=${adminAscFirst} staff=${adminBody.results[0].isStaff}`
+  );
+
+  const byAdminDesc = page.waitForResponse(
+    listResponse({
+      page: "1",
+      page_size: "10",
+      sort: "is_staff",
+      direction: "desc",
+    })
+  );
+  await page.locator("thead").getByRole("button", { name: "Admin", exact: true }).click();
+  const adminDescResponse = await byAdminDesc;
+  const adminDescBody = await adminDescResponse.json();
+  writeFileSync(
+    join(evidenceDir, "sort-admin.response.json"),
+    JSON.stringify(adminDescBody, null, 2)
+  );
+  await waitForTable(page, {
+    summary: "Showing 1-10 of 27",
+    rowCount: 10,
+    firstName: contract.oldestName,
+    firstEmail: contract.oldestEmail,
+    ariaSort: { column: "Admin", value: "descending" },
+  });
+  const adminDesc = await adminHeader.getAttribute("aria-sort");
+  const adminDescFirst = await cell(page, 0, 0);
+  record(
+    "sort-admin",
+    adminDesc === "descending" &&
+      adminDescFirst === contract.oldestName &&
+      adminDescBody.results[0].isStaff === true &&
+      adminDescBody.results[0].first_name === contract.oldestName &&
+      (await page.getByTestId("sort-desc").count()) === 1,
+    `aria-sort=${adminDesc} first=${adminDescFirst} staff=${adminDescBody.results[0].isStaff}`
+  );
+  await shot(page, "sort-admin.png");
 
   if (apiErrors.length) {
     record("api-errors", false, apiErrors.join(" | "));

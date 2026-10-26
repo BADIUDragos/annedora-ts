@@ -14,18 +14,35 @@ APP_ROOT="$(verify_state_get app_root)"
 LOCK_FILE="$(verify_state_get lock_file)"
 BACKEND_PID="$(verify_state_get backend_pid)"
 FRONTEND_PID="$(verify_state_get frontend_pid)"
+BACKEND_PORT="$(verify_state_get backend_port)"
+FRONTEND_PORT="$(verify_state_get frontend_port)"
 
-stop_pid() {
+cmdline() {
+  tr '\0' ' ' <"/proc/$1/cmdline" 2>/dev/null || true
+}
+
+stop_recorded_pid() {
   local pid="$1"
   local label="$2"
+  local needle="$3"
+  local port="$4"
+  local cmd
   if [[ -z "$pid" || "$pid" == "None" ]]; then
     return 0
   fi
   if ! kill -0 "$pid" 2>/dev/null; then
     return 0
   fi
-  # Kill the session we started with setsid. Never match by process name.
-  kill -TERM -"$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true
+  cmd="$(cmdline "$pid")"
+  if [[ "$cmd" != *"$needle"* || -z "$port" || "$cmd" != *"$port"* ]]; then
+    echo "refusing to signal $label pid $pid; cmdline does not match $needle on port ${port:-missing}" >&2
+    return 0
+  fi
+  # setsid makes this pid the group leader. Do not signal a reused pid by number.
+  if ! kill -TERM -"$pid" 2>/dev/null; then
+    echo "refusing to signal $label pid $pid; it is not the process group launch started" >&2
+    return 0
+  fi
   for _ in $(seq 1 20); do
     if ! kill -0 "$pid" 2>/dev/null; then
       echo "stopped $label pid $pid"
@@ -33,12 +50,12 @@ stop_pid() {
     fi
     sleep 0.2
   done
-  kill -KILL -"$pid" 2>/dev/null || kill -KILL "$pid" 2>/dev/null || true
+  kill -KILL -"$pid" 2>/dev/null || true
   echo "killed $label pid $pid"
 }
 
-stop_pid "$FRONTEND_PID" frontend
-stop_pid "$BACKEND_PID" backend
+stop_recorded_pid "$FRONTEND_PID" frontend vite "$FRONTEND_PORT"
+stop_recorded_pid "$BACKEND_PID" backend runserver "$BACKEND_PORT"
 
 SCAFFOLD_LIST="$STATE_DIR/scaffold-files.txt"
 if [[ -f "$SCAFFOLD_LIST" && -n "$APP_ROOT" ]]; then
@@ -71,17 +88,24 @@ if [[ -f "$SCAFFOLD_LIST" && -n "$APP_ROOT" ]]; then
 fi
 
 if [[ -n "$LOCK_FILE" && -f "$LOCK_FILE" ]]; then
-  # shellcheck disable=SC1090
-  source "$LOCK_FILE"
-  if [[ "${state_file:-}" == "$VERIFY_STATE_FILE" ]]; then
-    rm -f "$LOCK_FILE"
-    echo "removed lock $LOCK_FILE"
+  if lock_output="$(verify_parse_lock "$LOCK_FILE")"; then
+    lock_state_file="${lock_output%%$'\n'*}"
+    if [[ "$lock_state_file" == "$VERIFY_STATE_FILE" ]]; then
+      rm -f "$LOCK_FILE"
+      echo "removed lock $LOCK_FILE"
+    fi
+  else
+    echo "refusing to read $LOCK_FILE as a shell script" >&2
   fi
 fi
 
 if [[ -n "$STATE_DIR" && -d "$STATE_DIR" ]]; then
-  rm -rf "$STATE_DIR"
-  echo "removed state $STATE_DIR"
+  if verify_state_dir_owned "$STATE_DIR"; then
+    rm -rf "$STATE_DIR"
+    echo "removed state $STATE_DIR"
+  else
+    echo "refusing to delete $STATE_DIR (missing marker or path is not a disposable verify-annedora directory)" >&2
+  fi
 fi
 
 if [[ -n "$EVIDENCE_DIR" && -d "$EVIDENCE_DIR" ]]; then

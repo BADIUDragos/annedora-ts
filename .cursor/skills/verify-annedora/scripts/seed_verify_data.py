@@ -84,19 +84,27 @@ def main():
         first_name=admin_name,
     )
     admin.date_joined = ADMIN_JOINED
-    admin.is_staff = True
-    admin.is_superuser = True
-    admin.save()
+    admin.save(update_fields=["date_joined"])
+
+    # User 01 sorts first only when name and email use case-insensitive order.
+    # User 02 sorts first on SQLite's binary collation, which puts uppercase first.
+    special_accounts = {
+        1: ("aaron lower", "aaron.lower@example.test"),
+        2: ("Bob Mixed", "Bob.Mixed@example.test"),
+    }
 
     seeded = []
     for index in range(1, SEEDED_USER_COUNT + 1):
         joined = ANCHOR - timedelta(days=SEEDED_USER_COUNT - index)
-        email = f"seeded-user-{index:02d}@example.test"
+        first_name, email = special_accounts.get(
+            index,
+            (f"Seeded User {index:02d}", f"seeded-user-{index:02d}@example.test"),
+        )
         user = User.objects.create_user(
             username=email,
             email=email,
             password="seeded-user-dev-only",
-            first_name=f"Seeded User {index:02d}",
+            first_name=first_name,
         )
         user.date_joined = joined
         user.is_staff = False
@@ -105,7 +113,6 @@ def main():
 
     newest_first = list(reversed(seeded))
     page_size = 25
-    page1 = newest_first[:page_size]
     page2 = newest_first[page_size:]
     # Admin joined in 2024, so newest-first puts them after every seeded user.
     page2_with_admin = page2 + [admin]
@@ -184,25 +191,21 @@ def main():
         "admin_email": admin_email,
         "admin_name": admin_name,
         "count": User.objects.count(),
-        "default_page_size": page_size,
         "newest_name": "Seeded User 26",
         "newest_email": "seeded-user-26@example.test",
         "newest_created": "October 26th, 2026",
-        "page1_last_name": "Seeded User 02",
+        "page1_last_name": "Bob Mixed",
         "page1_last_created": "October 2nd, 2026",
-        "page2_names": ["Seeded User 01", admin_name],
-        "page2_emails": ["seeded-user-01@example.test", admin_email],
+        "page2_names": ["aaron lower", admin_name],
+        "page2_emails": ["aaron.lower@example.test", admin_email],
         "page2_created": ["October 1st, 2026", "January 1st, 2024"],
         "oldest_name": admin_name,
         "oldest_email": admin_email,
         "oldest_created": "January 1st, 2024",
-        "page_sizes": [10, 25, 50, 100],
         "products_seeded": products_seeded,
         "product_names": product_names,
         "orders_seeded": orders_seeded,
-        "order_customer": "Seeded User 01",
-        "page1_names": [user.first_name for user in page1],
-        "page2_expected_count": len(page2_with_admin),
+        "order_customer": "aaron lower",
     }
 
     if manifest["count"] != SEEDED_USER_COUNT + 1:

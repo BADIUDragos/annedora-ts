@@ -130,6 +130,11 @@ html="$(curl -fsS -m 5 "$FRONTEND_URL/")" || fail "frontend did not respond at $
 [[ "$html" == *"Annedora - Honey House"* ]] || fail "frontend HTML is not the Annedora shell"
 
 verify_app_env "$STATE_DIR"
+(
+  cd "$APP_ROOT/backend"
+  VERIFY_BACKEND_DIR="$APP_ROOT/backend" \
+    "$STATE_DIR/venv/bin/python" "$SCRIPT_DIR/assert_safe_settings.py" >/dev/null
+) || fail "effective settings still have live mail, Stripe, or Cloudinary credentials"
 user_count="$(
   cd "$APP_ROOT/backend"
   "$STATE_DIR/venv/bin/python" - <<'PY'
