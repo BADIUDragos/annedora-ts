@@ -6,7 +6,6 @@ import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import { StripePublicKeyInterface, useCreatePaymentIntentMutation, useLazyGetStripePublicKeyQuery } from "../../../store/apis/orderApi";
-import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 interface PaymentInterface {
@@ -17,7 +16,6 @@ const Payment: React.FC<PaymentInterface> = ({ amount }) => {
 
   const { t } = useTranslation("order")
 
-  const dispatch = useDispatch()
   const [stripeFetched, setStripeFetched] = useState(false)
   const [publicKey, setPublicKey] = useState<StripePublicKeyInterface | null>(null);
   const [stripePromise, setStripePromise] = useState<Stripe | null>(null);
@@ -40,7 +38,6 @@ const Payment: React.FC<PaymentInterface> = ({ amount }) => {
     
     if (stripeFetched && publicKey && !stripePromise) {
       const loadStripePromise = async () => {
-        console.log(publicKey)
         const stripe = await loadStripe(publicKey.stripe_public)
         setStripePromise(stripe)
       }
@@ -56,7 +53,7 @@ const Payment: React.FC<PaymentInterface> = ({ amount }) => {
 
     getClientSecret()
 
-  },[dispatch, amount, stripePromise, publicKey])
+  },[amount, stripePromise, publicKey])
 
   return (
     <>
