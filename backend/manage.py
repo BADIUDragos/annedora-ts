@@ -6,6 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    if len(sys.argv) > 1 and sys.argv[1] == "test" and not os.environ.get("DATABASE_URL"):
+        os.environ["DATABASE_URL"] = "sqlite:///:memory:"
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
     try:
         from django.core.management import execute_from_command_line
