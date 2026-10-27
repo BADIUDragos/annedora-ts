@@ -17,3 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_permissions(self, obj):
         return [perm.codename for perm in obj.user_permissions.all()]
+
+
+class UserListSerializer(UserSerializer):
+    """Admin list payload. ``created_at`` reads Django's ``User.date_joined``."""
+
+    created_at = serializers.DateTimeField(source='date_joined', read_only=True)
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ['created_at']

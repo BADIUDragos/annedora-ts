@@ -10,6 +10,7 @@ export interface UserInfoState {
   email: string
   isSuperuser: boolean
   isStaff: boolean
+  created_at?: string
 }
 
 export interface RegisterCredentials {

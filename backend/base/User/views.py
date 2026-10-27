@@ -16,7 +16,8 @@ from rest_framework import generics, status
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from .listing import parse_user_list_params
+from .serializers import UserSerializer, UserListSerializer
 from ..permission_classes import IsSelfOrAdmin
 from django.conf import settings
 
@@ -25,9 +26,50 @@ logger = logging.getLogger(__name__)
 
 @permission_classes([IsAuthenticated, IsAdminUser])
 class UserListView(generics.ListAPIView):
+    """Paginated admin user list.
+
+    This does not use ``PageNumberPagination`` or ``OrderingFilter``. Those
+    would change the contract this endpoint already has:
+
+    - ``page_size`` must be one of 10, 25, 50, 100, not any integer up to a max
+    - ``page-size`` is accepted as an alias
+    - ``sort`` and ``direction`` are separate parameters, and unknown values
+      are 400 rather than ignored
+    - a page past the end is an empty 200 with the real count, not a 404
+    - the body includes ``page`` and ``page_size``
+    - ``first_name`` and ``email`` sort case-insensitively
+    """
+
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserListSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def list(self, request, *args, **kwargs):
+        params, error = parse_user_list_params(request.query_params)
+        if error is not None:
+            return Response({'detail': error}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = (
+            User.objects.all()
+            .prefetch_related('user_permissions')
+            .order_by(*params.ordering())
+        )
+        total = queryset.count()
+        last_page = 1 if total == 0 else (total + params.page_size - 1) // params.page_size
+
+        if params.page > last_page:
+            page_users = []
+        else:
+            start = (params.page - 1) * params.page_size
+            page_users = queryset[start:start + params.page_size]
+
+        serializer = self.get_serializer(page_users, many=True)
+        return Response({
+            'count': total,
+            'page': params.page,
+            'page_size': params.page_size,
+            'results': serializer.data,
+        })
 
 
 @permission_classes([IsAuthenticated, IsSelfOrAdmin])
