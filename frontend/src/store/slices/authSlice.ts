@@ -5,7 +5,7 @@ import {
 } from "../interfaces/authInterfaces";
 import { decodeToken } from "../../functions/decodeToken";
 
-export const getTokensFromLocalStorage = (): TokensState | null => {
+const getTokensFromLocalStorage = (): TokensState | null => {
   try {
     const tokensString = localStorage.getItem("tokens");
     if (!tokensString) {
@@ -17,7 +17,7 @@ export const getTokensFromLocalStorage = (): TokensState | null => {
   }
 };
 
-export const getInitialAuthState = (): AuthState => {
+const getInitialAuthState = (): AuthState => {
   const parsedTokens = getTokensFromLocalStorage();
   if (!parsedTokens) {
     return { tokens: null, userInfo: null };
