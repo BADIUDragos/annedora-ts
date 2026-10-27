@@ -91,4 +91,3 @@ export const {
   useValidateTokenQuery,
   useUpdatePasswordMutation
 } = authApi;
-export { authApi };
