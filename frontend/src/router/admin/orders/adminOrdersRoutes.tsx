@@ -13,14 +13,6 @@ const adminOrdersRoutes = {
         </ProtectedRoute>
       ),
     },
-    // {
-    //   path: ":id",
-    //   element: (
-    //     <ProtectedRoute requiredStaff={true}>
-    //       <AdminEditProductPage />
-    //     </ProtectedRoute>
-    //   ),
-    // },
   ],
 };
 
