@@ -24,7 +24,6 @@ jobs:
       - name: Run Django tests
         env:
           SECRET_KEY: dummy
-          DATABASE_URL: sqlite:///:memory:
         run: python manage.py test
 
   test-frontend:
