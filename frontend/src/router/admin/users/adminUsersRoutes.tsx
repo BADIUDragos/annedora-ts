@@ -21,14 +21,6 @@ const adminUsersRoutes = {
         </ProtectedRoute>
       ),
     },
-    {
-      path: "edit/:id",
-      element: (
-        <ProtectedRoute requiredStaff={true}>
-          <></>
-        </ProtectedRoute>
-      ),
-    },
   ],
 };
 
