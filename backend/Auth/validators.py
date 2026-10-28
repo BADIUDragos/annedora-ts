@@ -1,9 +1,12 @@
 from django.core.exceptions import ValidationError
-import re
 
 
 def validate_username(value):
-    if not re.match(r'^[a-zA-Z ]+$', value):
+    # isalpha() accepts accented letters. The previous ASCII range did not.
+    if (
+        not value
+        or any(not character.isalpha() and character != ' ' for character in value)
+    ):
         raise ValidationError(
             'Name field must contain only alphabetic characters.'
         )
