@@ -20,7 +20,7 @@ const OrderInfo: React.FC<CreatedOrder> = (order) => {
       <p>
         <strong>{t("address")}:</strong> {order.shipping_address.address},{" "}
         {order.shipping_address.city},{"   "}
-        {order.shipping_address.postalCode},{"   "}
+        {order.shipping_address.postal_code},{"   "}
         {"Canada"}
       </p>
       {order.is_paid ? (
