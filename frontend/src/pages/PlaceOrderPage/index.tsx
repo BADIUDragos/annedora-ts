@@ -19,17 +19,15 @@ const PlaceOrderScreen = () => {
 
   const cart = useCart();
   const { prices, option } = useOrder();
-
-  if (cart.cartItems.length === 0) {
-    return <Navigate to={"/"} />;
-  }
-
   const dispatch = useDispatch();
   const { cartItems } = cart;
-
   const [getTotal, { isLoading }] = useGetTotalMutation();
 
   useEffect(() => {
+    if (cartItems.length === 0) {
+      return;
+    }
+
     const fetchTotal = async () => {
       const items = cartItems.map((item) => ({
         id: item.id,
@@ -45,7 +43,11 @@ const PlaceOrderScreen = () => {
     };
 
     fetchTotal();
-  }, [option, cartItems, getTotal]);
+  }, [option, cartItems, getTotal, dispatch]);
+
+  if (cart.cartItems.length === 0) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <Container>
