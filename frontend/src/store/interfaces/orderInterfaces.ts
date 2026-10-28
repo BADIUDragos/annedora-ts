@@ -1,6 +1,12 @@
 import { UserInfoState } from "./authInterfaces";
 import { CartItem, ShippingAddress } from "./cartInterfaces";
 
+export interface OrderShippingAddress {
+  address: string;
+  city: string;
+  postal_code: string;
+}
+
 export interface Prices {
   subtotal: number | undefined;
   tax: number | undefined;
@@ -46,6 +52,6 @@ export interface CreatedOrder {
   is_delivered: boolean;
   delivered_at: string | null;
   order_items: CreatedOrderItem[];
-  shipping_address: ShippingAddress;
+  shipping_address: OrderShippingAddress;
   order_option: DeliveryPickupInterface;
 }
