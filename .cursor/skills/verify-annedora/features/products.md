@@ -26,7 +26,7 @@ Manual, not scripted. There is no command that runs the bullets below. Use the s
 - **Open the catalog.** Open `/products`. Run `page.goto(frontendUrl + "/products")` and `page.getByRole("heading", { name: "Products" }).waitFor()`. Both `Clover Honey` and `Beeswax Candle` are visible. The category control's button reads `All Products`.
 - **Filter to honey.** Open that button and choose `Honey`. Run `page.getByRole("button", { name: "All Products" }).click()` and then activate the menu item named `Honey`. The URL contains `category=honey`. `Clover Honey` is visible and `Beeswax Candle` is not.
 - **Filter to candles.** Choose `Candles` the same way. `Beeswax Candle` is visible and `Clover Honey` is not.
-- **Open a product.** The candles filter hides Clover Honey, so open `/products` before choosing that link. Run `page.goto(frontendUrl + "/products")` and `page.getByRole("link", { name: "Clover Honey" }).first().click()`. The button reads `All Products`. The page shows a heading `Clover Honey`, the text `Price: $12.00`, and a button named `Add to cart`.
+- **Open a product.** The candles filter hides Clover Honey, so open `/products` before choosing that link. Run `page.goto(frontendUrl + "/products")`. The button reads `All Products`. Run `page.getByRole("link", { name: "Clover Honey" }).first().click()`. The page shows a heading `Clover Honey`, the text `Price: $12.00`, and a button named `Add to cart`.
 - **Proof.** Screenshot the unfiltered catalog and the honey-only catalog. Both screenshots show the Annedora header. Do not treat a broken product image as a failed filter.
 
 ## Gotchas
